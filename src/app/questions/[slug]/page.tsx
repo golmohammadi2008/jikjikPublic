@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getQuestion } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
-import { PANEL_URL, SITE_NAME, SITE_URL } from "@/lib/config";
+import { SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { deriveTitle, excerpt, formatCount, formatJalali } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VoiceAnswer from "@/components/VoiceAnswer";
@@ -168,7 +168,7 @@ export default async function QuestionPage({ params }: Props) {
                       </Link>
                       <a
                         className={idx === 0 ? "btn btn-saffron btn-sm" : "btn btn-ghost btn-sm"}
-                        href={`${PANEL_URL}`}
+                        href={panelUserUrl(a.responder.username)}
                       >
                         {idx === 0 ? `رزرو جلسه با ${a.responder.name}` : "رزرو جلسه"}
                       </a>
@@ -183,7 +183,7 @@ export default async function QuestionPage({ params }: Props) {
         <aside className="ask-cta">
           <h2>سوال مشابهی داری؟</h2>
           <p>بپرس؛ همان لحظه پاسخ هوش مصنوعی می‌گیری و متخصص‌ها هم جواب می‌دهند. رایگان و بی‌نام.</p>
-          <a className="btn btn-saffron" href={`${PANEL_URL}`}>
+          <a className="btn btn-saffron" href={panelAskUrl()}>
             سوالم را می‌پرسم
           </a>
         </aside>

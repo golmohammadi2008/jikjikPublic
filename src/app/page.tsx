@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getHome } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
-import { APP_DOWNLOAD_URL, PANEL_URL, SITE_NAME, SITE_URL } from "@/lib/config";
+import { APP_DOWNLOAD_URL, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { formatCount } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VideoBadge from "@/components/VideoBadge";
@@ -65,7 +65,7 @@ export default async function HomePage() {
             پاسخ فوری هوش مصنوعی + پاسخ متخصص تاییدشده. اگر لازم شد، همان‌جا جلسه آنلاین رزرو کن.
           </p>
 
-          <form className="ask-box" action={`${PANEL_URL}`} method="get" role="search">
+          <form className="ask-box" action={panelAskUrl()} method="get" role="search">
             <label className="sr-only" htmlFor="hero-q">
               سوال خود را بنویسید
             </label>
@@ -189,7 +189,7 @@ export default async function HomePage() {
                       <span className="stats">
                         {formatCount(p.likesCount)} پسند · {formatCount(p.commentsCount)} دیدگاه
                       </span>
-                      <a className="btn btn-thyme btn-sm" href={`${PANEL_URL}`}>
+                      <a className="btn btn-thyme btn-sm" href={panelUserUrl(p.author.username)}>
                         رزرو جلسه
                       </a>
                     </div>

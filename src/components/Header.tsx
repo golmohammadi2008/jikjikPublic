@@ -1,6 +1,9 @@
 import Link from "next/link";
-import { PANEL_URL, SITE_NAME } from "@/lib/config";
+import { SITE_NAME, panelAskUrl } from "@/lib/config";
+import HeaderAuth from "@/components/HeaderAuth";
 
+// استاتیک نگه‌داشته می‌شود (کش/ISR صفحات عمومی حفظ شود) — چک لاگین در HeaderAuth
+// سمت کلاینت انجام می‌شود، نه اینجا با cookies() که کل صفحه را دینامیک می‌کند.
 export default function Header() {
   return (
     <header className="site-header">
@@ -15,10 +18,8 @@ export default function Header() {
           <Link href="/category/lawyer">حقوقی</Link>
         </nav>
         <div className="header-actions">
-          <a className="btn btn-ghost btn-sm" href={PANEL_URL}>
-            ورود
-          </a>
-          <a className="btn btn-saffron btn-sm" href={`${PANEL_URL}`}>
+          <HeaderAuth />
+          <a className="btn btn-saffron btn-sm" href={panelAskUrl()}>
             سوال بپرس
           </a>
         </div>

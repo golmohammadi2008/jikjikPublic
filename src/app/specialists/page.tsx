@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSpecialists } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
-import { PANEL_URL, SITE_NAME } from "@/lib/config";
+import { SITE_NAME, panelUserUrl } from "@/lib/config";
 import Avatar from "@/components/Avatar";
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ export default async function SpecialistsPage() {
                   </div>
                 </Link>
                 <div className="p-foot" style={{ paddingTop: 0 }}>
-                  <a className="btn btn-thyme btn-sm" href={`${PANEL_URL}`}>
+                  <a className="btn btn-thyme btn-sm" href={panelUserUrl(s.username)}>
                     رزرو جلسه
                   </a>
                 </div>

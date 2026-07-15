@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPost } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
-import { PANEL_URL, SITE_NAME, SITE_URL } from "@/lib/config";
+import { SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { deriveTitle, excerpt, formatCount, formatJalali } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 
@@ -130,10 +130,10 @@ export default async function PostPage({ params }: Props) {
               </span>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <a className="btn btn-ghost btn-sm" href={`${PANEL_URL}`}>
+              <a className="btn btn-ghost btn-sm" href={panelAskUrl()}>
                 سوال بپرس
               </a>
-              <a className="btn btn-saffron btn-sm" href={`${PANEL_URL}`}>
+              <a className="btn btn-saffron btn-sm" href={panelUserUrl(post.author.username)}>
                 رزرو جلسه
               </a>
             </div>
