@@ -36,8 +36,10 @@ export default function HeaderAuth() {
       fetch(`/api/users/profile/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
         .then((r) => (r.ok ? r.json() : null))
         .then((body) => {
-          if (cancelled || !body?.data?.name) return;
-          setMe({ name: body.data.name, username: body.data.username, avatar: body.data.avatar ?? null });
+          // این endpoint پروفایل را flat برمی‌گرداند (بدون data-wrapper) — fallback برای هر دو حالت
+          const data = body?.data ?? body;
+          if (cancelled || !data?.name) return;
+          setMe({ name: data.name, username: data.username, avatar: data.avatar ?? null });
         })
         .catch(() => {});
     };
