@@ -6,6 +6,7 @@ import { buildSlug, extractObjectId } from "@/lib/slug";
 import { SITE_NAME, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { excerpt, formatCount } from "@/lib/format";
 import Avatar from "@/components/Avatar";
+import VerifiedTick from "@/components/VerifiedTick";
 import VideoBadge from "@/components/VideoBadge";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -46,7 +47,7 @@ export default async function SpecialistPage({ params }: Props) {
         <div className="p-head" style={{ padding: "0 0 6px" }}>
           <Avatar name={specialist.name} src={specialist.avatar} size={56} />
           <div>
-            <b style={{ fontSize: 18 }}>{specialist.name}</b>
+            <b style={{ fontSize: 18 }}>{specialist.name}<VerifiedTick /></b>
             <small>
               {specialist.specialty || specialist.categoryLabel || ""}
               {specialist.ratingAvg ? ` · ⭐ ${specialist.ratingAvg.toFixed(1)} (${formatCount(specialist.ratingCount)} نظر)` : ""}

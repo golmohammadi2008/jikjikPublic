@@ -86,13 +86,26 @@ img, video { max-width: 100%; display: block; }
   cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
 }
 .btn:hover { transform: translateY(-1px); }
-.btn-saffron { background: var(--saffron); color: #fff; box-shadow: 0 6px 18px -8px rgba(37, 99, 235, .6); }
-.btn-saffron:hover { background: var(--saffron-deep); }
+.btn:active { transform: translateY(0); }
+.btn svg { flex: 0 0 auto; }
+.btn-saffron {
+  background: linear-gradient(180deg, #3B82F6, var(--saffron));
+  color: #fff; box-shadow: 0 6px 18px -8px rgba(37, 99, 235, .55), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.btn-saffron:hover { background: var(--saffron-deep); box-shadow: 0 10px 24px -10px rgba(37, 99, 235, .65); }
 .btn-thyme { background: var(--thyme); color: #fff; }
 .btn-thyme:hover { background: var(--thyme-deep); }
 .btn-ghost { border-color: var(--line); background: var(--surface); color: var(--ink); }
-.btn-ghost:hover { border-color: var(--thyme); color: var(--thyme); }
+.btn-ghost:hover { border-color: var(--thyme); color: var(--thyme); box-shadow: 0 6px 16px -10px rgba(23, 33, 43, .25); }
 .btn-sm { padding: 7px 16px; font-size: 13.5px; }
+
+/* تیک تایید — نشان اصالت متخصص‌های احراز‌شده */
+.verified-tick {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%; background: var(--thyme);
+  vertical-align: -2px; margin-inline-start: 4px; flex: 0 0 auto;
+}
+.verified-tick svg { width: 9px; height: 9px; }
 
 /* --- چیپ‌ها --- */
 .chip {
@@ -119,17 +132,31 @@ img, video { max-width: 100%; display: block; }
   box-shadow: 0 4px 12px -4px rgba(37, 99, 235, .5);
 }
 .main-nav { display: flex; gap: 22px; font-size: 14.5px; color: var(--ink-2); }
+.main-nav a { position: relative; padding-bottom: 2px; }
+.main-nav a::after {
+  content: ""; position: absolute; inset-inline: 0; bottom: -4px; height: 2px; border-radius: 1px;
+  background: var(--thyme); transform: scaleX(0); transition: transform .18s ease;
+}
 .main-nav a:hover { color: var(--thyme); }
+.main-nav a:hover::after { transform: scaleX(1); }
 .header-actions { margin-inline-start: auto; display: flex; gap: 10px; }
 @media (max-width: 720px) { .main-nav { display: none; } }
 
 /* ============ هیرو: باکس سوال، خودِ محصول ============ */
-.hero { padding: 64px 0 40px; text-align: center; position: relative; overflow: hidden; }
+.hero { padding: 72px 0 48px; text-align: center; position: relative; overflow: hidden; }
 .hero::before {
   content: ""; position: absolute; inset: auto 50% -140px auto; transform: translateX(50%);
-  width: 720px; height: 280px; border-radius: 50%;
+  width: 780px; height: 300px; border-radius: 50%;
   background: radial-gradient(closest-side, var(--thyme-tint), transparent 70%);
   z-index: -1;
+}
+/* بافت نقطه‌ای خیلی ملایم — حس craft بدون شلوغی */
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--thyme) 14%, transparent) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,.7), transparent 75%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.7), transparent 75%);
 }
 .hero h1 {
   font-family: var(--font-display); font-weight: 800;
@@ -142,6 +169,19 @@ img, video { max-width: 100%; display: block; }
 }
 .hero p.lead { color: var(--ink-2); font-size: clamp(15px, 2.2vw, 18px); margin-top: 14px; }
 .hero-cta { margin-top: 32px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.hero-cta .btn { padding: 13px 26px; font-size: 15.5px; }
+
+/* نوار اعتماد زیر هیرو — سه ویژگی واقعی محصول، حس اصالت و اعتبار */
+.trust-strip {
+  margin: 34px auto 0; max-width: 760px;
+  display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+}
+.trust-strip .t-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--ink-2);
+}
+.trust-strip .t-item svg { color: var(--thyme); }
 
 .ask-box {
   max-width: 640px; margin: 32px auto 0; display: flex; gap: 10px;
@@ -168,7 +208,13 @@ img, video { max-width: 100%; display: block; }
 /* ============ سکشن‌ها ============ */
 .section { padding: 46px 0; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-.section-head h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(21px, 3vw, 28px); }
+.section-head h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(21px, 3vw, 28px); position: relative; padding-inline-start: 14px; }
+/* امضای بصری برند: تیغه‌ی آبی کنار تیتر هر سکشن */
+.section-head h2::before {
+  content: ""; position: absolute; inset-inline-start: 0; top: 50%; transform: translateY(-50%);
+  width: 5px; height: 72%; border-radius: 3px;
+  background: linear-gradient(180deg, #3B82F6, var(--thyme-deep));
+}
 .section-head a.more { font-size: 14px; font-weight: 500; color: var(--thyme); white-space: nowrap; }
 .section-head a.more:hover { color: var(--thyme-deep); }
 

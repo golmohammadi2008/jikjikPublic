@@ -6,6 +6,7 @@ import { APP_DOWNLOAD_URL, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from
 import { formatCount } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VideoBadge from "@/components/VideoBadge";
+import VerifiedTick from "@/components/VerifiedTick";
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
@@ -67,21 +68,41 @@ export default async function HomePage() {
 
           <div className="hero-cta">
             <a className="btn btn-saffron" href={panelAskUrl()}>
-              💬 سوال خود را بپرس
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              سوال خود را بپرس
             </a>
             <a className="btn btn-ghost" href="/specialists">
-              🗓 رزرو جلسه آنلاین
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              رزرو جلسه آنلاین
             </a>
           </div>
 
-          <div className="hero-proof">
-            <span className="avatar-stack" aria-hidden="true">
-              <span style={{ background: "#0E7266" }}>م</span>
-              <span style={{ background: "#6553C6" }}>س</span>
-              <span style={{ background: "#C46A05" }}>ر</span>
-              <span style={{ background: "#3C6E9F" }}>ن</span>
+          <div className="trust-strip">
+            <span className="t-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2 4 5.5V11c0 5 3.4 9.4 8 10.5 4.6-1.1 8-5.5 8-10.5V5.5L12 2z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              متخصص‌های تاییدشده با احراز هویت
             </span>
-            <span>متخصص‌های تاییدشده آماده پاسخ‌اند · پاسخ هوش مصنوعی همان لحظه</span>
+            <span className="t-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M13 2 3 14h7l-1 8L21 9h-7l-1-7z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+              </svg>
+              پاسخ هوش مصنوعی، همان لحظه
+            </span>
+            <span className="t-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              جلسه آنلاین امن و خصوصی
+            </span>
           </div>
         </div>
       </section>
@@ -153,7 +174,7 @@ export default async function HomePage() {
                     <Link className="p-head" href={`/specialists/${authorSlug}`}>
                       <Avatar name={p.author.name} src={p.author.avatar} />
                       <div>
-                        <b>{p.author.name}</b>
+                        <b>{p.author.name}<VerifiedTick /></b>
                         <small>
                           {p.author.specialty || p.author.categoryLabel || ""}
                           {p.author.ratingAvg ? ` · ⭐ ${p.author.ratingAvg.toFixed(1)}` : ""}

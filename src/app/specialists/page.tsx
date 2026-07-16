@@ -4,6 +4,7 @@ import { getSpecialists } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
 import { SITE_NAME, panelUserUrl } from "@/lib/config";
 import Avatar from "@/components/Avatar";
+import VerifiedTick from "@/components/VerifiedTick";
 
 export const metadata: Metadata = {
   title: "متخصص‌ها",
@@ -36,7 +37,7 @@ export default async function SpecialistsPage() {
                 <Link className="p-head" href={`/specialists/${slug}`}>
                   <Avatar name={s.name} src={s.avatar} />
                   <div>
-                    <b>{s.name}</b>
+                    <b>{s.name}<VerifiedTick /></b>
                     <small>
                       {s.specialty || s.categoryLabel || ""}
                       {s.ratingAvg ? ` · ⭐ ${s.ratingAvg.toFixed(1)} (${s.ratingCount})` : ""}
