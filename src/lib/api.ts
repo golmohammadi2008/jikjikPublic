@@ -1,4 +1,4 @@
-import { CategoryDetail, HomeData, PostDetail, QuestionDetail, SpecialistDetail, SpecialistsList } from "./types";
+import { CategoryDetail, HomeData, PostDetail, QuestionDetail, QuestionsArchive, SpecialistDetail, SpecialistsList } from "./types";
 
 // این‌جا Server Component است — مستقیم سمت سرور به بک‌اند وصل می‌شود (نه از
 // طریق rewrite که برای فراخوانی‌های کلاینتی/مرورگر است). روی خودِ سرور،
@@ -27,3 +27,13 @@ export const getPost = (id: string) => get<PostDetail>(`/posts/${id}`, 300);
 export const getSpecialists = () => get<SpecialistsList>("/specialists", 300);
 export const getSpecialist = (id: string) => get<SpecialistDetail>(`/specialists/${id}`, 300);
 export const getCategory = (key: string) => get<CategoryDetail>(`/category/${key}`, 300);
+
+// آرشیو کامل سوال‌ها — بخش اصلی سئو؛ صفحه‌بندی‌شده + فیلتر دسته + مرتب‌سازی
+export const getQuestionsArchive = (params: { page?: number; category?: string; sort?: "newest" | "top" } = {}) => {
+  const qs = new URLSearchParams();
+  if (params.page && params.page > 1) qs.set("page", String(params.page));
+  if (params.category) qs.set("category", params.category);
+  if (params.sort) qs.set("sort", params.sort);
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  return get<QuestionsArchive>(`/questions${suffix}`, 120);
+};

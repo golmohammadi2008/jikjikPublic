@@ -113,3 +113,11 @@ export type CategoryDetail = {
   category: { key: string; label: string };
   questions: CategoryQuestion[];
 };
+
+export type QuestionsArchive = {
+  questions: CategoryQuestion[];
+  page: number;
+  totalPages: number;
+  total: number;
+  categories: { key: string; label: string; count: number }[];
+};
