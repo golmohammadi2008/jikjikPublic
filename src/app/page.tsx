@@ -56,7 +56,8 @@ export default async function HomePage() {
       />
 
       <section className="hero">
-        <div className="wrap">
+        <div className="wrap hero-grid">
+          <div className="hero-copy">
           <h1>
             هر سوال،
             <br />
@@ -103,6 +104,47 @@ export default async function HomePage() {
               </svg>
               جلسه آنلاین امن و خصوصی
             </span>
+          </div>
+          </div>
+
+          {/* صحنه‌ی شناور — کارت متخصص، حباب ویدیوکال و چیپ جلسه دور نشان برند */}
+          <div className="hero-art" aria-hidden="true">
+            <span className="ha-ring" />
+            <span className="ha-mark">ب</span>
+
+            <div className="ha-card ha-specialist">
+              <span className="ha-avatar" style={{ background: "linear-gradient(135deg,#6553C6,#8B5CF6)" }}>م</span>
+              <span>
+                <b>دکتر محمدی</b>
+                <small>متخصص روانشناسی</small>
+              </span>
+              <span className="ha-rating">۴.۹ ★</span>
+            </div>
+
+            <div className="ha-card ha-session">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              <span>
+                <b>جلسه آنلاین</b>
+                <small>۳۰ دقیقه</small>
+              </span>
+            </div>
+
+            <span className="ha-bubble ha-video">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="m22 8-6 4 6 4V8z" fill="#fff"/>
+                <rect x="2" y="6" width="14" height="12" rx="2" fill="#fff"/>
+              </svg>
+            </span>
+
+            <span className="ha-avatar ha-solo" style={{ background: "linear-gradient(135deg,#0E7266,#10B981)" }}>س</span>
+
+            <div className="ha-card ha-ai">
+              <span className="chip chip-ai">✦ پاسخ هوش مصنوعی</span>
+              <small>همان لحظه، رایگان</small>
+            </div>
           </div>
         </div>
       </section>
