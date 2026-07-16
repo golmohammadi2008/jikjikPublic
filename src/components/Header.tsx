@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE_NAME, panelAskUrl } from "@/lib/config";
+import { PANEL_URL, SITE_NAME } from "@/lib/config";
 import HeaderAuth from "@/components/HeaderAuth";
 
 // استاتیک نگه‌داشته می‌شود (کش/ISR صفحات عمومی حفظ شود) — چک لاگین در HeaderAuth
@@ -9,19 +9,17 @@ export default function Header() {
     <header className="site-header">
       <div className="wrap">
         <Link className="logo" href="/">
-          {SITE_NAME}<span className="dot">.</span>
+          <span className="logo-mark" aria-hidden="true">ب</span>
+          {SITE_NAME}
         </Link>
         <nav className="main-nav" aria-label="ناوبری اصلی">
-          <Link href="/questions">سوال‌ها</Link>
-          <Link href="/specialists">متخصص‌ها</Link>
-          <Link href="/category/doctor">پزشکی</Link>
-          <Link href="/category/lawyer">حقوقی</Link>
+          <Link href="/">صفحه اصلی</Link>
+          <Link href="/questions">پرسش و پاسخ</Link>
+          <Link href="/specialists">متخصصان</Link>
+          <a href={`${PANEL_URL}/sessions`}>جلسات من</a>
         </nav>
         <div className="header-actions">
           <HeaderAuth />
-          <a className="btn btn-saffron btn-sm" href={panelAskUrl()}>
-            سوال بپرس
-          </a>
         </div>
       </div>
     </header>

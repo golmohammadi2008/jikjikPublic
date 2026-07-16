@@ -65,8 +65,13 @@ export default function HeaderAuth() {
     );
   }
   return (
-    <a className="btn btn-ghost btn-sm" href={PANEL_URL}>
-      ورود
-    </a>
+    <>
+      <a className="btn btn-ghost btn-sm" href={PANEL_URL}>
+        ورود
+      </a>
+      <a className="btn btn-saffron btn-sm" href={`${PANEL_URL}/auth`}>
+        ثبت‌نام
+      </a>
+    </>
   );
 }

@@ -8,10 +8,10 @@ import Avatar from "@/components/Avatar";
 import VideoBadge from "@/components/VideoBadge";
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} — سوالت را بپرس، همین حالا جواب بگیر`,
+  title: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
   alternates: { canonical: "/" },
   openGraph: {
-    title: `${SITE_NAME} — سوالت را بپرس، همین حالا جواب بگیر`,
+    title: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
     description: "پاسخ فوری هوش مصنوعی + پاسخ متخصص تاییدشده + رزرو جلسه آنلاین.",
     url: "/",
   },
@@ -57,29 +57,22 @@ export default async function HomePage() {
       <section className="hero">
         <div className="wrap">
           <h1>
-            سوالت را بپرس،
+            هر سوال،
             <br />
-            <em>همین حالا</em> جواب بگیر
+            <em>متخصص</em> خودش را دارد
           </h1>
           <p className="lead">
-            پاسخ فوری هوش مصنوعی + پاسخ متخصص تاییدشده. اگر لازم شد، همان‌جا جلسه آنلاین رزرو کن.
+            سوالت رو از متخصص بپرس و در یک جلسه آنلاین، بهترین پاسخ را دریافت کن.
           </p>
 
-          <form className="ask-box" action={panelAskUrl()} method="get" role="search">
-            <label className="sr-only" htmlFor="hero-q">
-              سوال خود را بنویسید
-            </label>
-            <input
-              id="hero-q"
-              name="q"
-              type="text"
-              placeholder="مثلاً: چطور اضطراب شبانه را کنترل کنم؟"
-              autoComplete="off"
-            />
-            <button className="btn btn-saffron" type="submit">
-              بپرس — رایگان
-            </button>
-          </form>
+          <div className="hero-cta">
+            <a className="btn btn-saffron" href={panelAskUrl()}>
+              💬 سوال خود را بپرس
+            </a>
+            <a className="btn btn-ghost" href="/specialists">
+              🗓 رزرو جلسه آنلاین
+            </a>
+          </div>
 
           <div className="hero-proof">
             <span className="avatar-stack" aria-hidden="true">
@@ -145,7 +138,7 @@ export default async function HomePage() {
         <section className="section" id="posts">
           <div className="wrap">
             <div className="section-head">
-              <h2>از متخصص‌های جیک‌جیک</h2>
+              <h2>از متخصص‌های بلدیم</h2>
               <Link className="more" href="/specialists">
                 همه متخصص‌ها ←
               </Link>
@@ -224,7 +217,7 @@ export default async function HomePage() {
           <div className="app-banner">
             <div>
               <h2>جواب متخصص که آمد، باخبر شو</h2>
-              <p>اپ جیک‌جیک را نصب کن تا پاسخ‌ها و یادآوری جلسه‌ها با اعلان به دستت برسد.</p>
+              <p>اپ بلدیم را نصب کن تا پاسخ‌ها و یادآوری جلسه‌ها با اعلان به دستت برسد.</p>
             </div>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <a className="btn btn-thyme" href={APP_DOWNLOAD_URL}>

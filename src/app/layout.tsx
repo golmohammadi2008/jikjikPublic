@@ -7,11 +7,11 @@ import { PUBLIC_INDEXING, SITE_NAME, SITE_URL } from "@/lib/config";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — سوالت را بپرس، همین حالا جواب بگیر`,
+    default: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
     template: `%s — ${SITE_NAME}`,
   },
   description:
-    "در جیک‌جیک سوالت را می‌پرسی، همان لحظه پاسخ هوش مصنوعی می‌گیری و متخصص‌های تاییدشده پاسخ می‌دهند. اگر لازم شد، جلسه آنلاین رزرو می‌کنی.",
+    "در بلدیم سوالت را می‌پرسی، همان لحظه پاسخ هوش مصنوعی می‌گیری و متخصص‌های تاییدشده پاسخ می‌دهند. اگر لازم شد، جلسه آنلاین رزرو می‌کنی.",
   robots: PUBLIC_INDEXING
     ? { index: true, follow: true }
     : { index: false, follow: false },

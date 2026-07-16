@@ -8,7 +8,8 @@ export default function Footer() {
         <div className="cols">
           <div>
             <Link className="logo" href="/">
-              {SITE_NAME}<span className="dot">.</span>
+              <span className="logo-mark" aria-hidden="true">ب</span>
+              {SITE_NAME}
             </Link>
             <p style={{ marginTop: 8, maxWidth: 320 }}>
               پلتفرم پرسش از متخصص و رزرو جلسه آنلاین.

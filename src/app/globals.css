@@ -1,5 +1,5 @@
 /* ============================================================
-   جیک‌جیک — استایل بخش عمومی (بدون لاگین)
+   بلدیم — استایل بخش عمومی (بدون لاگین)
    پالت: سپید نعنایی / سبز آویشن / زعفرانی (فقط اکشن پولی) / بنفش AI
    فونت: Estedad (تیتر) + Vazirmatn (متن)
    امضای طراحی: «نخ پاسخ» — خط عمودی که سوال را به پاسخ و رزرو وصل می‌کند
@@ -39,12 +39,14 @@
   --ink: #17212B;
   --ink-2: #5A6B7A;
   --ink-3: #8E9CA8;
-  --thyme: #2CA5E0;
-  --thyme-deep: #229ED9;
-  --thyme-tint: #E3F3FB;
-  --saffron: #E5810C;
-  --saffron-deep: #C46A05;
-  --saffron-tint: #FDF1E1;
+  /* ریبرند «بلدیم» — آبی سلطنتی یکدست؛ نام متغیرها برای جلوگیری از تغییر
+     صدها استفاده حفظ شده (thyme=اکسنت/لینک، saffron=دکمه اصلی، هر دو آبی) */
+  --thyme: #2563EB;
+  --thyme-deep: #1D4ED8;
+  --thyme-tint: #E8EFFE;
+  --saffron: #2563EB;
+  --saffron-deep: #1D4ED8;
+  --saffron-tint: #E8EFFE;
   --ai: #7C5CFF;
   --ai-tint: #F0ECFF;
   --line: #E5E7EB;
@@ -84,7 +86,7 @@ img, video { max-width: 100%; display: block; }
   cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
 }
 .btn:hover { transform: translateY(-1px); }
-.btn-saffron { background: var(--saffron); color: #fff; box-shadow: 0 6px 18px -8px rgba(229, 129, 12, .6); }
+.btn-saffron { background: var(--saffron); color: #fff; box-shadow: 0 6px 18px -8px rgba(37, 99, 235, .6); }
 .btn-saffron:hover { background: var(--saffron-deep); }
 .btn-thyme { background: var(--thyme); color: #fff; }
 .btn-thyme:hover { background: var(--thyme-deep); }
@@ -108,8 +110,14 @@ img, video { max-width: 100%; display: block; }
   border-bottom: 1px solid var(--line);
 }
 .site-header .wrap { display: flex; align-items: center; gap: 28px; height: 64px; }
-.logo { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--thyme-deep); }
-.logo .dot { color: var(--saffron); }
+.logo { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--ink); }
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 12px;
+  background: linear-gradient(145deg, #3B82F6, #1D4ED8);
+  color: #fff; font-size: 20px; font-weight: 800; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px -4px rgba(37, 99, 235, .5);
+}
 .main-nav { display: flex; gap: 22px; font-size: 14.5px; color: var(--ink-2); }
 .main-nav a:hover { color: var(--thyme); }
 .header-actions { margin-inline-start: auto; display: flex; gap: 10px; }
@@ -133,6 +141,7 @@ img, video { max-width: 100%; display: block; }
   background: var(--saffron-tint); z-index: -1; border-radius: 4px;
 }
 .hero p.lead { color: var(--ink-2); font-size: clamp(15px, 2.2vw, 18px); margin-top: 14px; }
+.hero-cta { margin-top: 32px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
 .ask-box {
   max-width: 640px; margin: 32px auto 0; display: flex; gap: 10px;

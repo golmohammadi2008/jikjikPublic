@@ -62,7 +62,7 @@ export default async function QuestionPage({ params }: Props) {
       text: question.text,
       dateCreated: question.createdAt,
       answerCount: question.answerCount,
-      author: { "@type": "Person", name: "کاربر جیک‌جیک" },
+      author: { "@type": "Person", name: "کاربر بلدیم" },
       ...(topExpert
         ? {
             acceptedAnswer: {
@@ -71,7 +71,7 @@ export default async function QuestionPage({ params }: Props) {
               dateCreated: topExpert.createdAt,
               upvoteCount: topExpert.likeCount,
               url: `${SITE_URL}/questions/${buildSlug(question.text, question.id)}#answer-${topExpert.id}`,
-              author: { "@type": "Person", name: topExpert.responder?.name ?? "متخصص جیک‌جیک" },
+              author: { "@type": "Person", name: topExpert.responder?.name ?? "متخصص بلدیم" },
             },
           }
         : {}),
@@ -108,7 +108,7 @@ export default async function QuestionPage({ params }: Props) {
         <h1>{question.text}</h1>
         <div className="q-meta">
           <span className="chip">{question.categoryLabel}</span>
-          <span>پرسیده‌شده توسط کاربر جیک‌جیک (بی‌نام)</span>
+          <span>پرسیده‌شده توسط کاربر بلدیم (بی‌نام)</span>
           <span>·</span>
           <time dateTime={question.createdAt}>{formatJalali(question.createdAt)}</time>
         </div>
@@ -118,7 +118,7 @@ export default async function QuestionPage({ params }: Props) {
             <div className="thread-item ai" key={a.id}>
               <div className="answer-card ai-card">
                 <div className="a-head">
-                  <span className="chip chip-ai">✦ پاسخ هوش مصنوعی جیک‌جیک</span>
+                  <span className="chip chip-ai">✦ پاسخ هوش مصنوعی بلدیم</span>
                   <small style={{ color: "var(--ink-3)" }}>همان لحظه ثبت سوال</small>
                 </div>
                 <div className="a-body">
