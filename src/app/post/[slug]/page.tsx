@@ -142,7 +142,7 @@ export default async function PostPage({ params }: Props) {
 
         {related.length > 0 && (
           <section className="related" aria-label="سوال‌های مرتبط">
-            <h2>کاربران بلدیم درباره همین موضوع پرسیده‌اند</h2>
+            <h2>کاربران وینو درباره همین موضوع پرسیده‌اند</h2>
             <ul>
               {related.map((r) => (
                 <li key={r.id}>

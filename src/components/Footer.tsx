@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="cols">
           <div>
             <Link className="logo" href="/">
-              <span className="logo-mark" aria-hidden="true">ب</span>
+              <span className="logo-mark" aria-hidden="true">و</span>
               {SITE_NAME}
             </Link>
             <p style={{ marginTop: 8, maxWidth: 320 }}>

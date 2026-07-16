@@ -9,7 +9,7 @@ export default function Header() {
     <header className="site-header">
       <div className="wrap">
         <Link className="logo" href="/">
-          <span className="logo-mark" aria-hidden="true">ب</span>
+          <span className="logo-mark" aria-hidden="true">و</span>
           {SITE_NAME}
         </Link>
         <nav className="main-nav" aria-label="ناوبری اصلی">

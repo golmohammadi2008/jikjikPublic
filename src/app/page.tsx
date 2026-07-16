@@ -116,7 +116,7 @@ export default async function HomePage() {
           {/* صحنه‌ی شناور — کارت متخصص، حباب ویدیوکال و چیپ جلسه دور نشان برند */}
           <div className="hero-art" aria-hidden="true">
             <span className="ha-ring" />
-            <span className="ha-mark">ب</span>
+            <span className="ha-mark">و</span>
 
             <div className="ha-card ha-specialist">
               <span className="ha-avatar" style={{ background: "linear-gradient(135deg,#6553C6,#8B5CF6)" }}>م</span>
@@ -211,7 +211,7 @@ export default async function HomePage() {
         <section className="section" id="posts">
           <div className="wrap">
             <div className="section-head">
-              <h2>از متخصص‌های بلدیم</h2>
+              <h2>از متخصص‌های وینو</h2>
               <Link className="more" href="/specialists">
                 همه متخصص‌ها ←
               </Link>
@@ -290,7 +290,7 @@ export default async function HomePage() {
           <div className="app-banner">
             <div>
               <h2>جواب متخصص که آمد، باخبر شو</h2>
-              <p>اپ بلدیم را نصب کن تا پاسخ‌ها و یادآوری جلسه‌ها با اعلان به دستت برسد.</p>
+              <p>اپ وینو را نصب کن تا پاسخ‌ها و یادآوری جلسه‌ها با اعلان به دستت برسد.</p>
             </div>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <a className="btn btn-thyme" href={APP_DOWNLOAD_URL}>

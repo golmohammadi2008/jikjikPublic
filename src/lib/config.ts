@@ -1,4 +1,4 @@
-export const SITE_NAME = "بلدیم";
+export const SITE_NAME = "وینو";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://jikjik.minicook.ir";
 export const APP_DOWNLOAD_URL = "https://jikjik.minicook.ir/jikjik.apk";
 
