@@ -56,6 +56,12 @@ export default async function HomePage() {
       />
 
       <section className="hero">
+        <div className="hero-bg" aria-hidden="true">
+          <span className="hb-blob hb-blob-1" />
+          <span className="hb-blob hb-blob-2" />
+          <span className="hb-blob hb-blob-3" />
+          <span className="hb-grid" />
+        </div>
         <div className="wrap hero-grid">
           <div className="hero-copy">
           <h1>
@@ -147,6 +153,10 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+
+        <svg className="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,32 C240,80 480,0 720,24 C960,48 1200,88 1440,40 L1440,80 L0,80 Z" fill="var(--bg)" />
+        </svg>
       </section>
 
       {hotQuestions.length > 0 && (
