@@ -1,36 +1,22 @@
 /* ============================================================
    وینو — استایل بخش عمومی (بدون لاگین)
    پالت: سپید نعنایی / سبز آویشن / زعفرانی (فقط اکشن پولی) / بنفش AI
-   فونت: Estedad (تیتر) + Vazirmatn (متن)
+   فونت: IRANYekanX FaNum (واحد کل محصول)
    امضای طراحی: «نخ پاسخ» — خط عمودی که سوال را به پاسخ و رزرو وصل می‌کند
    ============================================================ */
 
 /* --- فونت‌ها: سلف‌هاست از همین سرور (public/fonts) — نه CDN خارجی، تا با
-   فیلترینگ/محدودیت‌های شبکه ملی قطع نشود --- */
+   فیلترینگ/محدودیت‌های شبکه ملی قطع نشود.
+   IRANYekanX FaNum (ارقام فارسی) — فونت واحد کل محصول (اپ/پنل/ادمین/سایت) --- */
 @font-face {
-  font-family: "Estedad";
-  src: url("/fonts/Estedad-Bold.woff2") format("woff2");
-  font-weight: 700; font-display: swap;
-}
-@font-face {
-  font-family: "Estedad";
-  src: url("/fonts/Estedad-ExtraBold.woff2") format("woff2");
-  font-weight: 800; font-display: swap;
-}
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("/fonts/Vazirmatn-Regular.woff2") format("woff2");
+  font-family: "IRANYekanXFaNum";
+  src: url("/fonts/IRANYekanXFaNum-Regular.woff2") format("woff2");
   font-weight: 400; font-display: swap;
 }
 @font-face {
-  font-family: "Vazirmatn";
-  src: url("/fonts/Vazirmatn-Medium.woff2") format("woff2");
-  font-weight: 500; font-display: swap;
-}
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("/fonts/Vazirmatn-Bold.woff2") format("woff2");
-  font-weight: 700; font-display: swap;
+  font-family: "IRANYekanXFaNum";
+  src: url("/fonts/IRANYekanXFaNum-Bold.woff2") format("woff2");
+  font-weight: 500 900; font-display: swap;
 }
 
 :root {
@@ -53,8 +39,8 @@
   --radius: 14px;
   --radius-lg: 22px;
   --shadow: 0 1px 2px rgba(30, 43, 41, .05), 0 8px 24px -12px rgba(30, 43, 41, .12);
-  --font-display: "Estedad", "Vazirmatn", system-ui, sans-serif;
-  --font-body: "Vazirmatn", system-ui, sans-serif;
+  --font-display: "IRANYekanXFaNum", system-ui, sans-serif;
+  --font-body: "IRANYekanXFaNum", system-ui, sans-serif;
   --wrap: 1080px;
 }
 
