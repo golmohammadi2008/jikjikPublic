@@ -482,12 +482,11 @@ img, video { max-width: 100%; display: block; }
 .err-page p { color: var(--ink-2); font-size: 15.5px; margin-top: 10px; max-width: 460px; }
 .err-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; justify-content: center; }
 
-/* ── وضعیت آنلاین متخصص ── */
-.avatar-wrap { position: relative; display: inline-flex; flex: 0 0 auto; }
-.avatar-wrap.is-online::after {
-  content: ""; position: absolute; bottom: 1px; inset-inline-end: 1px;
-  width: 12px; height: 12px; border-radius: 50%;
-  background: #22c55e; border: 2.5px solid var(--surface);
+/* ── وضعیت آنلاین متخصص: رینگ سبز دور آواتار (گپ + حلقه، سبک اینستاگرام) ── */
+.avatar-wrap { position: relative; display: inline-flex; flex: 0 0 auto; border-radius: 50%; }
+.avatar-wrap.is-online {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #22c55e;
+  margin: 3px;
 }
 .online-badge {
   display: inline-block; margin-inline-start: 6px; vertical-align: 1px;
