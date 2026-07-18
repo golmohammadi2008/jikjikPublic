@@ -5,6 +5,10 @@ export const APP_DOWNLOAD_URL = "https://weeno.ir/weeno.apk";
 // پنل وب (لاگین، پرسش، پروفایل متخصص)
 export const PANEL_URL = "https://panel.weeno.ir";
 
+// API عمومی برای فراخوانی‌های کلاینتی (تشخیص لاگین در هدر) — weeno.ir خودش
+// /api را پروکسی نمی‌کند، پس مستقیم به ساب‌دامین api می‌رود (CORS: *)
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE || "https://api.weeno.ir";
+
 /** رزرو جلسه — مستقیم به پروفایل متخصص در پنل وب */
 export function panelUserUrl(username: string): string {
   return `${PANEL_URL}/user/${username}`;

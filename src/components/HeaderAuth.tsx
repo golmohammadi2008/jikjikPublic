@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PANEL_URL, SESSION_TOKEN_COOKIE, panelProfileUrl } from "@/lib/config";
+import { API_BASE_URL, PANEL_URL, SESSION_TOKEN_COOKIE, panelProfileUrl } from "@/lib/config";
 import Avatar from "@/components/Avatar";
 
 type Me = { name: string; username: string; avatar: string | null };
@@ -33,7 +33,7 @@ export default function HeaderAuth() {
       if (!token) { setMe(null); return; }
       const userId = decodeUserId(token);
       if (!userId) { setMe(null); return; }
-      fetch(`/api/users/profile/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${API_BASE_URL}/api/users/profile/${userId}`, { headers: { Authorization: `Bearer ${token}` } })
         .then((r) => (r.ok ? r.json() : null))
         .then((body) => {
           // این endpoint پروفایل را flat برمی‌گرداند (بدون data-wrapper) — fallback برای هر دو حالت
