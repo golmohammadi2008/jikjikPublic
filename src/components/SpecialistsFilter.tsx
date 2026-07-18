@@ -90,11 +90,14 @@ export default function SpecialistsFilter({ specialists }: { specialists: Specia
             return (
               <article className="post-card" key={s.id}>
                 <Link className="p-head" href={`/specialists/${slug}`}>
-                  <Avatar name={s.name} src={s.avatar} />
+                  <span className={`avatar-wrap${s.online ? " is-online" : ""}`}>
+                    <Avatar name={s.name} src={s.avatar} />
+                  </span>
                   <div>
                     <b>
                       {s.name}
                       <VerifiedTick />
+                      {s.online && <span className="online-badge">آنلاین</span>}
                     </b>
                     <small>
                       {s.specialty || s.categoryLabel || ""}

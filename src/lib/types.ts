@@ -79,6 +79,7 @@ export type SpecialistListItem = {
   categoryLabel: string | null;
   ratingAvg: number;
   ratingCount: number;
+  online?: boolean;
 };
 
 export type SpecialistsList = { specialists: SpecialistListItem[] };

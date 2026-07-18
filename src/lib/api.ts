@@ -26,7 +26,8 @@ export const getHome = () => get<HomeData>("/home", 120);
 // اینجا رد نمی‌شود (اصلاً از این API برنمی‌گردد)
 export const getQuestion = (id: string) => get<QuestionDetail>(`/questions/${id}`, 300);
 export const getPost = (id: string) => get<PostDetail>(`/posts/${id}`, 300);
-export const getSpecialists = () => get<SpecialistsList>("/specialists", 300);
+// کش کوتاه‌تر چون شامل وضعیت آنلاین است (نباید خیلی کهنه باشد)
+export const getSpecialists = () => get<SpecialistsList>("/specialists", 60);
 export const getSpecialist = (id: string) => get<SpecialistDetail>(`/specialists/${id}`, 300);
 export const getCategory = (key: string) => get<CategoryDetail>(`/category/${key}`, 300);
 
