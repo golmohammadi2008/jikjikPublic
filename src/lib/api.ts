@@ -3,7 +3,9 @@ import { CategoryDetail, HomeData, PostDetail, QuestionDetail, QuestionsArchive,
 // این‌جا Server Component است — مستقیم سمت سرور به بک‌اند وصل می‌شود (نه از
 // طریق rewrite که برای فراخوانی‌های کلاینتی/مرورگر است). روی خودِ سرور،
 // ۱۲۷.۰.۰.۱ سریع‌تر از دامنه‌ی عمومی است.
-const BACKEND_URL = process.env.BACKEND_URL || "https://jikjik.minicook.ir";
+// SSR روی همان سرور بک‌اند اجرا می‌شود — loopback هم سریع‌تر است و هم به
+// DNS/SSL دامنه‌ی عمومی وابسته نیست (مهم حین مهاجرت دامنه)
+const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:3000";
 
 async function get<T>(path: string, revalidateSec: number): Promise<T | null> {
   try {
