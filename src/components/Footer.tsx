@@ -14,10 +14,17 @@ export default function Footer() {
             <p style={{ marginTop: 8, maxWidth: 320 }}>
               پلتفرم پرسش از متخصص و رزرو جلسه آنلاین.
             </p>
+            <p style={{ marginTop: 12, fontSize: 13.5 }}>
+              پشتیبانی:{" "}
+              <a href="tel:+988736235218" style={{ color: "var(--thyme)", fontWeight: 600, direction: "ltr", display: "inline-block" }}>
+                ۰۸۷۳۶۲۳۵۲۱۸
+              </a>
+            </p>
           </div>
           <nav aria-label="لینک‌های فوتر">
             <Link href="/questions">سوال‌ها</Link>
             <Link href="/specialists">متخصص‌ها</Link>
+            <Link href="/contact">ارتباط با ما</Link>
             <Link href="/terms">شرایط استفاده</Link>
             <Link href="/privacy">حریم خصوصی</Link>
             <Link href="/specialist-signup">متخصص شو</Link>
