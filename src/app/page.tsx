@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getHome } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
 import { APP_DOWNLOAD_URL, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
-import { formatCount } from "@/lib/format";
+import { formatCount, formatRating } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VideoBadge from "@/components/VideoBadge";
 import VerifiedTick from "@/components/VerifiedTick";
@@ -124,7 +124,7 @@ export default async function HomePage() {
                 <b>دکتر محمدی</b>
                 <small>متخصص روانشناسی</small>
               </span>
-              <span className="ha-rating">۴.۹ ★</span>
+              <span className="ha-rating">⭐ ۴٫۹</span>
             </div>
 
             <div className="ha-card ha-session">
@@ -196,7 +196,12 @@ export default async function HomePage() {
                       )}
                     </div>
                     <footer>
-                      <span>{formatCount(q.specialistAnswerCount)} پاسخ متخصص</span>
+                      <span className="meta-ic">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ verticalAlign: "-1px" }}>
+                          <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.6-.8L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        {formatCount(q.specialistAnswerCount)} پاسخ متخصص
+                      </span>
                       <span>{formatCount(q.answerCount)} پاسخ در مجموع</span>
                     </footer>
                   </article>
@@ -229,7 +234,7 @@ export default async function HomePage() {
                         <b>{p.author.name}<VerifiedTick /></b>
                         <small>
                           {p.author.specialty || p.author.categoryLabel || ""}
-                          {p.author.ratingAvg ? ` · ⭐ ${p.author.ratingAvg.toFixed(1)}` : ""}
+                          {p.author.ratingAvg ? ` · ⭐ ${formatRating(p.author.ratingAvg)}` : ""}
                         </small>
                       </div>
                     </Link>

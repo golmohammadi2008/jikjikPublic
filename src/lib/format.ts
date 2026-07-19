@@ -38,3 +38,8 @@ export function formatJalali(iso: string): string {
 export function formatCount(n: number): string {
   return new Intl.NumberFormat("fa-IR").format(n);
 }
+
+/** امتیاز با ارقام فارسی و ممیز فارسی «٫» — مثل «۴٫۸» */
+export function formatRating(n: number): string {
+  return new Intl.NumberFormat("fa-IR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
+}
