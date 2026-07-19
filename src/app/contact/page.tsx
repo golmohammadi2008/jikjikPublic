@@ -29,7 +29,7 @@ export default function ContactPage() {
             <span className="ci-icon" aria-hidden="true">☎</span>
             <div>
               <b>پشتیبانی تلفنی</b>
-              <a href="tel:+988736235218" dir="ltr" style={{ display: "inline-block", color: "var(--thyme)", fontWeight: 600 }}>۰۸۷۳۶۲۳۵۲۱۸</a>
+              <a href="tel:+982191550953" dir="ltr" style={{ display: "inline-block", color: "var(--thyme)", fontWeight: 600 }}>۰۲۱۹۱۵۵۰۹۵۳</a>
             </div>
           </div>
           <div className="contact-info-item">

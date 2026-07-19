@@ -77,6 +77,7 @@ export type SpecialistListItem = {
   specialty: string | null;
   category: string | null;
   categoryLabel: string | null;
+  bio: string | null;
   ratingAvg: number;
   ratingCount: number;
   online?: boolean;

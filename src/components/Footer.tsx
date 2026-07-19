@@ -16,8 +16,8 @@ export default function Footer() {
             </p>
             <p style={{ marginTop: 12, fontSize: 13.5 }}>
               پشتیبانی:{" "}
-              <a href="tel:+988736235218" style={{ color: "var(--thyme)", fontWeight: 600, direction: "ltr", display: "inline-block" }}>
-                ۰۸۷۳۶۲۳۵۲۱۸
+              <a href="tel:+982191550953" style={{ color: "var(--thyme)", fontWeight: 600, direction: "ltr", display: "inline-block" }}>
+                ۰۲۱۹۱۵۵۰۹۵۳
               </a>
             </p>
           </div>

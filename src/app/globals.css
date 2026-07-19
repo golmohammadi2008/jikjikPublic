@@ -355,6 +355,54 @@ img, video { max-width: 100%; display: block; }
 .post-card .p-foot { display: flex; justify-content: space-between; align-items: center; padding: 0 16px 16px; }
 .p-foot .stats { font-size: 12.5px; color: var(--ink-3); }
 
+/* ============ کارت متخصص ============ */
+.spec-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px; padding-bottom: 40px;
+}
+.spec-card {
+  position: relative; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: 18px; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.spec-card:hover {
+  transform: translateY(-3px); box-shadow: var(--shadow);
+  border-color: color-mix(in srgb, var(--thyme) 32%, var(--line));
+}
+/* کل کارت کلیک‌پذیر است؛ دکمه‌ی رزرو در فوتر روی آن قرار می‌گیرد */
+.spec-link { display: block; }
+.spec-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.spec-top { display: flex; align-items: flex-start; gap: 12px; }
+.spec-top .p-avatar { width: 52px; height: 52px; font-size: 15px; }
+.spec-id { flex: 1; min-width: 0; }
+.spec-name {
+  font: 700 15.5px/1.5 var(--font-display); color: var(--ink);
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+}
+.spec-role { font: 400 12.5px/1.6 var(--font-body); color: var(--ink-2); margin-top: 1px; }
+.spec-rate {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px;
+  font: 700 12.5px/1 var(--font-body); color: #B45309;
+  background: #FEF3C7; border-radius: 999px; padding: 5px 9px;
+}
+.spec-rate small { font-weight: 500; color: #92400E; opacity: .7; }
+.spec-bio {
+  font: 400 13px/1.9 var(--font-body); color: var(--ink-2); margin-top: 12px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.spec-foot {
+  position: relative; z-index: 1; margin-top: auto; padding-top: 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.spec-card .spec-foot::before {
+  content: ""; position: absolute; inset-inline: -18px; top: 0; height: 1px; background: var(--line);
+}
+@media (max-width: 560px) {
+  .spec-grid { grid-template-columns: 1fr; gap: 12px; }
+  .spec-card { padding: 16px; }
+  .spec-name { font-size: 14.5px; }
+}
+
 /* ============ دسته‌ها ============ */
 .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
 .cat {

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { panelUserUrl } from "@/lib/config";
 import { buildSlug } from "@/lib/slug";
+import { formatRating } from "@/lib/format";
 import type { SpecialistListItem } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
@@ -84,28 +85,35 @@ export default function SpecialistsFilter({ specialists }: { specialists: Specia
       {filtered.length === 0 ? (
         <p style={{ color: "var(--ink-2)", padding: "20px 0" }}>موردی با این فیلتر پیدا نشد.</p>
       ) : (
-        <div className="post-grid" style={{ paddingBottom: 40 }}>
+        <div className="spec-grid">
           {filtered.map((s) => {
             const slug = buildSlug(s.name, s.id);
             return (
-              <article className="post-card" key={s.id}>
-                <Link className="p-head" href={`/specialists/${slug}`}>
-                  <span className={`avatar-wrap${s.online ? " is-online" : ""}`}>
-                    <Avatar name={s.name} src={s.avatar} />
-                  </span>
-                  <div>
-                    <b>
-                      {s.name}
-                      <VerifiedTick />
-                      {s.online && <span className="online-badge">آنلاین</span>}
-                    </b>
-                    <small>
-                      {s.specialty || s.categoryLabel || ""}
-                      {s.ratingAvg ? ` · ⭐ ${s.ratingAvg.toFixed(1)} (${s.ratingCount})` : ""}
-                    </small>
+              <article className="spec-card" key={s.id}>
+                <Link className="spec-link" href={`/specialists/${slug}`}>
+                  <div className="spec-top">
+                    <span className={`avatar-wrap${s.online ? " is-online" : ""}`}>
+                      <Avatar name={s.name} src={s.avatar} />
+                    </span>
+                    <div className="spec-id">
+                      <div className="spec-name">
+                        {s.name}
+                        <VerifiedTick />
+                        {s.online && <span className="online-badge">آنلاین</span>}
+                      </div>
+                      <div className="spec-role">{s.specialty || s.categoryLabel || ""}</div>
+                    </div>
+                    {s.ratingAvg > 0 && (
+                      <span className="spec-rate" title={`${s.ratingCount} نظر`}>
+                        ⭐ {formatRating(s.ratingAvg)}
+                        <small>({s.ratingCount.toLocaleString("fa-IR")})</small>
+                      </span>
+                    )}
                   </div>
+                  {s.bio && <p className="spec-bio">{s.bio}</p>}
                 </Link>
-                <div className="p-foot" style={{ paddingTop: 0 }}>
+                <div className="spec-foot">
+                  {s.categoryLabel && <span className="chip">{s.categoryLabel}</span>}
                   <a className="btn btn-thyme btn-sm" href={panelUserUrl(s.username)}>
                     رزرو جلسه
                   </a>
