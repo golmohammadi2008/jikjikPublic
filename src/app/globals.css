@@ -523,7 +523,20 @@ img, video { max-width: 100%; display: block; }
 .site-footer nav a:hover { color: var(--thyme); }
 .legal-note { margin-top: 18px; font-size: 12px; color: var(--ink-3); max-width: 640px; }
 
+/* نماد اعتماد — کادر سفید با همان شعاع و حاشیه‌ی کارت‌های سایت،
+   تا لوگوی اینماد (که پس‌زمینه‌ی خودش را دارد) وصله‌ی جدا به‌نظر نرسد */
+.footer-badges { display: flex; gap: 12px; align-items: flex-start; }
+.footer-badges a {
+  display: inline-flex; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 8px; line-height: 0;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.footer-badges a:hover { border-color: var(--thyme); transform: translateY(-2px); }
+.footer-badges img { width: 90px; height: auto; border-radius: 6px; }
+
 @media (max-width: 640px) {
+  .footer-badges { justify-content: center; width: 100%; margin-top: 4px; }
   .hero { padding-top: 44px; }
   .ask-box { border-radius: var(--radius-lg); flex-direction: column; padding: 12px; }
   .ask-box .btn { justify-content: center; }

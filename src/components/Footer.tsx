@@ -29,6 +29,25 @@ export default function Footer() {
             <Link href="/privacy">حریم خصوصی</Link>
             <Link href="/specialist-signup">متخصص شو</Link>
           </nav>
+
+          {/* نماد اعتماد الکترونیکی — کد و referrerPolicy برای اعتبارسنجی
+              اینماد لازم‌اند و نباید حذف شوند. next/image استفاده نمی‌کنیم
+              چون تصویر باید مستقیم از دامنه‌ی خود اینماد سرو شود. */}
+          <div className="footer-badges">
+            <a
+              referrerPolicy="origin"
+              target="_blank"
+              href="https://trustseal.enamad.ir/?id=6938582&Code=zeQF7WdEpF02ru2Y69qECAX925MxJb6l"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                referrerPolicy="origin"
+                src="https://trustseal.enamad.ir/logo.aspx?id=6938582&Code=zeQF7WdEpF02ru2Y69qECAX925MxJb6l"
+                alt="نماد اعتماد الکترونیکی"
+                {...{ code: "zeQF7WdEpF02ru2Y69qECAX925MxJb6l" }}
+              />
+            </a>
+          </div>
         </div>
         <p className="legal-note">
           پاسخ‌های هوش مصنوعی صرفاً جنبه اطلاع‌رسانی اولیه دارند و جایگزین تشخیص و نظر متخصص نیستند. در شرایط
