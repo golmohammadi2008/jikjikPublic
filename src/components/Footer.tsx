@@ -22,11 +22,14 @@ export default function Footer() {
             </p>
           </div>
           <nav aria-label="لینک‌های فوتر">
+            <Link href="/how-it-works">چطور کار می‌کند</Link>
             <Link href="/questions">سوال‌ها</Link>
             <Link href="/specialists">متخصص‌ها</Link>
+            <Link href="/faq">سوالات متداول</Link>
             <Link href="/contact">ارتباط با ما</Link>
-            <Link href="/terms">شرایط استفاده</Link>
+            <Link href="/terms">شرایط و قوانین</Link>
             <Link href="/privacy">حریم خصوصی</Link>
+            <Link href="/specialist-guide">آیین‌نامه متخصص</Link>
             <Link href="/specialist-signup">متخصص شو</Link>
           </nav>
 

@@ -508,6 +508,34 @@ img, video { max-width: 100%; display: block; }
 .post-page h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(20px, 3.6vw, 28px); line-height: 1.7; }
 .post-page .p-text { font-size: 16px; color: var(--ink-2); margin-top: 8px; }
 
+/* ============ صفحات محتوایی/حقوقی (شرایط، راهنما، آیین‌نامه، سوالات) ============ */
+.legal .lead { font-size: 17px; color: var(--ink); line-height: 2; }
+.legal h2 {
+  font-family: var(--font-display); font-weight: 800; font-size: 20px;
+  margin-top: 32px; margin-bottom: 8px; color: var(--ink); scroll-margin-top: 90px;
+}
+.legal h3 { font-weight: 700; font-size: 16.5px; margin-top: 22px; margin-bottom: 6px; color: var(--ink); }
+.legal p { margin: 8px 0; line-height: 2; }
+.legal ul, .legal ol { margin: 8px 0; padding-inline-start: 22px; line-height: 2; }
+.legal li { margin: 5px 0; }
+.legal strong { color: var(--ink); font-weight: 700; }
+/* فهرست پیمایش بالای صفحه‌های بلند */
+.legal-toc {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px;
+  padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+}
+.legal-toc a {
+  font-size: 13px; font-weight: 600; color: var(--ink-2);
+  padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg);
+}
+.legal-toc a:hover { color: var(--thyme); border-color: var(--thyme); }
+/* کارت جمع‌بندی/نکته */
+.legal-callout {
+  margin: 16px 0; padding: 14px 16px; border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--thyme) 35%, var(--line));
+  background: color-mix(in srgb, var(--thyme) 7%, transparent); line-height: 2;
+}
+
 /* ============ بنر اپ + فوتر ============ */
 .app-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
