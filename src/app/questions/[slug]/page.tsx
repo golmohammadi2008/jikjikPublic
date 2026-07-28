@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getQuestion } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
-import { SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
+import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { deriveTitle, excerpt, formatCount, formatJalali } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VoiceAnswer from "@/components/VoiceAnswer";
@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} — پاسخ متخصص در ${SITE_NAME}`,
       description: "پاسخ فوری هوش مصنوعی + پاسخ متخصص تاییدشده.",
       url: `/questions/${canonicalSlug}`,
+      images: [OG_IMAGE],
     },
   };
 }

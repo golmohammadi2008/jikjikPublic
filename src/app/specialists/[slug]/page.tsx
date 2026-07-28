@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
-import { SITE_NAME, panelAskUrl, panelUserUrl } from "@/lib/config";
+import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { excerpt, formatCount } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
@@ -27,6 +27,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${specialist.name} | ${specialist.specialty || specialist.categoryLabel || "متخصص"}`,
     description: `پروفایل ${specialist.name}${specialist.specialty ? ` — ${specialist.specialty}` : ""} در ${SITE_NAME}. سوال بپرس یا جلسه آنلاین رزرو کن.`,
     alternates: { canonical: `/specialists/${canonicalSlug}` },
+    openGraph: {
+      type: "profile",
+      title: `${specialist.name} — ${specialist.specialty || specialist.categoryLabel || "متخصص"}`,
+      description: excerpt(specialist.bio || `سوال بپرس یا جلسه آنلاین رزرو کن.`, 155),
+      url: `/specialists/${canonicalSlug}`,
+      images: specialist.avatar ? [{ url: specialist.avatar }] : [OG_IMAGE],
+    },
   };
 }
 
@@ -36,9 +43,53 @@ export default async function SpecialistPage({ params }: Props) {
   if (!data) notFound();
 
   const { specialist, posts, related } = data;
+  const canonicalSlug = buildSlug(specialist.name, specialist.id);
+  const url = `${SITE_URL}/specialists/${canonicalSlug}`;
+
+  // این صفحه‌ها تا حالا هیچ داده‌ی ساختاریافته‌ای نداشتند. Person + امتیاز +
+  // مسیر صفحه، همان چیزی است که گوگل برای نتیجه‌ی متخصص می‌خواهد.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    mainEntity: {
+      "@type": "Person",
+      name: specialist.name,
+      url,
+      ...(specialist.avatar ? { image: specialist.avatar } : {}),
+      ...(specialist.bio ? { description: excerpt(specialist.bio, 300) } : {}),
+      ...(specialist.specialty || specialist.categoryLabel
+        ? { jobTitle: specialist.specialty || specialist.categoryLabel }
+        : {}),
+      worksFor: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
+      // بدون ratingCount، گوگل aggregateRating را نادیده می‌گیرد
+      ...(specialist.ratingAvg && specialist.ratingCount
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: specialist.ratingAvg.toFixed(1),
+              ratingCount: specialist.ratingCount,
+              bestRating: 5,
+              worstRating: 1,
+            },
+          }
+        : {}),
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: SITE_NAME, item: `${SITE_URL}/` },
+        { "@type": "ListItem", position: 2, name: "متخصص‌ها", item: `${SITE_URL}/specialists` },
+        { "@type": "ListItem", position: 3, name: specialist.name },
+      ],
+    },
+  };
 
   return (
     <main className="wrap" id="booking">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <nav className="breadcrumb" aria-label="مسیر صفحه">
         <Link href="/">{SITE_NAME}</Link> › <Link href="/specialists">متخصص‌ها</Link>
       </nav>

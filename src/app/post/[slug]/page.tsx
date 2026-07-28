@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPost } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
-import { SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
+import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { deriveTitle, excerpt, formatCount, formatJalali } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description: `از زبان ${post.author.specialty || post.author.categoryLabel || "متخصص"} — با امکان رزرو جلسه آنلاین.`,
       url: `/post/${canonicalSlug}`,
-      images: post.imageUrl && !post.isVideo ? [post.imageUrl] : undefined,
+      images: post.imageUrl && !post.isVideo ? [post.imageUrl] : [OG_IMAGE],
     },
   };
 }

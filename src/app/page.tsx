@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getHome } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
-import { APP_DOWNLOAD_URL, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
+import { APP_DOWNLOAD_URL, OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { formatCount, formatRating } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VideoBadge from "@/components/VideoBadge";
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
     description: "پاسخ فوری هوش مصنوعی + پاسخ متخصص تاییدشده + رزرو جلسه آنلاین.",
     url: "/",
+    images: [OG_IMAGE],
   },
 };
 

@@ -2,6 +2,11 @@ export const SITE_NAME = "وینو";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://weeno.ir";
 export const APP_DOWNLOAD_URL = "https://weeno.ir/weeno.apk";
 
+// تصویر پیش‌فرضِ اشتراک‌گذاری. هر صفحه‌ای که openGraph خودش را تعریف می‌کند
+// باید این را هم بگذارد: Next آبجکتِ openGraph والد را merge نمی‌کند و کاملاً
+// جایگزینش می‌کند، پس بدون این، آن صفحه بی‌تصویر در تلگرام/واتساپ باز می‌شود.
+export const OG_IMAGE = "/assets/og-cover.png";
+
 // پنل وب (لاگین، پرسش، پروفایل متخصص)
 export const PANEL_URL = "https://panel.weeno.ir";
 
