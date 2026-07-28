@@ -781,3 +781,80 @@ img, video { max-width: 100%; display: block; }
   .legal-banner { flex-direction: column; align-items: stretch; }
   .legal-banner .btn { text-align: center; }
 }
+
+/* ── بخش دانلود: اندروید / iOS / PWA ── */
+.dl-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px 28px;
+  margin: 20px 0 8px;
+}
+.dl-head h2 { font-family: var(--font-display); font-size: 20px; font-weight: 800; }
+.dl-head p { font-size: 14px; color: var(--ink-2); margin-top: 6px; }
+
+.dl-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0 18px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+.dl-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink-2);
+  font: 700 13.5px var(--font-body);
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.dl-tab:hover { border-color: var(--thyme); color: var(--thyme); }
+.dl-tab.is-active {
+  background: var(--thyme);
+  border-color: var(--thyme);
+  color: #fff;
+}
+
+.dl-lead { font-size: 14.5px; line-height: 2; color: var(--ink-2); margin-bottom: 16px; }
+.dl-note { font-size: 12.5px; color: var(--ink-3); margin-top: 14px; line-height: 1.9; }
+
+.dl-steps {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dl-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.95;
+  color: var(--ink-2);
+}
+.dl-step-num {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--thyme-tint);
+  color: var(--thyme-deep, var(--thyme));
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+@media (max-width: 560px) {
+  .dl-card { padding: 20px 18px; }
+  .dl-tab { flex: 1; justify-content: center; padding: 9px 10px; }
+}

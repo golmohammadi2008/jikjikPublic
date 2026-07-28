@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getHome } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
-import { APP_DOWNLOAD_URL, OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
+import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
+import AppDownload from "@/components/AppDownload";
 import { formatCount, formatRating } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VideoBadge from "@/components/VideoBadge";
@@ -293,17 +294,7 @@ export default async function HomePage() {
 
       <section className="section">
         <div className="wrap">
-          <div className="app-banner">
-            <div>
-              <h2>جواب متخصص که آمد، باخبر شو</h2>
-              <p>اپ وینو را نصب کن تا پاسخ‌ها و یادآوری جلسه‌ها با اعلان به دستت برسد.</p>
-            </div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn btn-thyme" href={APP_DOWNLOAD_URL}>
-                دریافت برای اندروید
-              </a>
-            </div>
-          </div>
+          <AppDownload />
         </div>
       </section>
     </main>
