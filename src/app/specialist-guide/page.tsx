@@ -64,7 +64,7 @@ export default function SpecialistGuidePage() {
             <li>هزینه‌ی جلسه را خود متخصص تعیین می‌کند و پیش از رزرو به کاربر نمایش داده می‌شود.</li>
             <li>
               پلتفرم بابت خدمات واسطه‌گری <strong>کارمزد</strong> دریافت می‌کند. نرخ پیش‌فرض
-              <strong> ۵٪</strong> مبلغ جلسه است، می‌تواند برای هر متخصص اختصاصی تعیین شود و حتی
+              <strong> ۲۰٪</strong> مبلغ جلسه است، می‌تواند برای هر متخصص اختصاصی تعیین شود و حتی
               <strong> ۰٪ (رایگان)</strong> باشد. نرخ فعلی شما همیشه در پنل خودتان دیده می‌شود.
             </li>
             <li>
@@ -93,9 +93,9 @@ export default function SpecialistGuidePage() {
                   <td><strong>۵۰۰٬۰۰۰</strong></td>
                 </tr>
                 <tr>
-                  <td>۵٪ (پیش‌فرض)</td>
-                  <td>۲۵٬۰۰۰</td>
-                  <td><strong>۴۷۵٬۰۰۰</strong></td>
+                  <td>۲۰٪ (پیش‌فرض)</td>
+                  <td>۱۰۰٬۰۰۰</td>
+                  <td><strong>۴۰۰٬۰۰۰</strong></td>
                 </tr>
                 <tr>
                   <td>۳۰٪ (سقف)</td>
