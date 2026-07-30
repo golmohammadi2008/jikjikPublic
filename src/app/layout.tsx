@@ -31,7 +31,14 @@ export const metadata: Metadata = {
     images: [{ url: "/assets/og-cover.png", width: 1200, height: 630, alt: SITE_NAME }],
   },
   twitter: { card: "summary_large_image", images: ["/assets/og-cover.png"] },
-  icons: { icon: "/favicon.ico", apple: "/assets/logo-512.png" },
+  icons: {
+    icon: [
+      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   applicationName: SITE_NAME,
   authors: [{ name: SITE_NAME, url: SITE_URL }],
 };
