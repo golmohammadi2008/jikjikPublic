@@ -138,7 +138,8 @@ export default function SpecialistGuidePage() {
               <h2 style={{ marginTop: 0 }}>می‌خواهید متخصص شوید؟</h2>
               <p>درخواست عضویت بدهید و پس از تایید مدارک، فعالیت‌تان را شروع کنید.</p>
             </div>
-            <a className="btn btn-saffron" href={`${PANEL_URL}/specialist-signup`}>شروع ثبت‌نام متخصص</a>
+            {/* /specialist-signup در پنل وجود ندارد و ۴۰۴ می‌داد — مسیر واقعی احراز هویت /verify است */}
+            <a className="btn btn-saffron" href={`${PANEL_URL}/verify`}>شروع ثبت‌نام متخصص</a>
           </div>
         </div>
       </article>

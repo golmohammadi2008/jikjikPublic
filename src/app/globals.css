@@ -536,6 +536,23 @@ img, video { max-width: 100%; display: block; }
   background: color-mix(in srgb, var(--thyme) 7%, transparent); line-height: 2;
 }
 
+/* مراحل شماره‌دار (صفحه‌ی «متخصص شو») — شماره‌ها بج دایره‌ای می‌شوند تا
+   ترتیب مراحل در یک نگاه خوانده شود، نه به‌شکل فهرست ساده‌ی متنی */
+.legal ol.signup-steps { list-style: none; margin: 16px 0; padding: 0; display: grid; gap: 12px; }
+.signup-steps li {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; border-radius: var(--radius-lg);
+  border: 1px solid var(--line); background: var(--surface);
+}
+.signup-step-num {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 800; font-size: 14px;
+  background: color-mix(in srgb, var(--saffron) 16%, transparent);
+  color: var(--saffron);
+}
+.signup-steps li b { display: block; font-size: 15px; margin-bottom: 4px; }
+.legal .signup-steps li p { margin: 0; color: var(--ink-2); }
+
 /* ============ بنر اپ + فوتر ============ */
 .app-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
