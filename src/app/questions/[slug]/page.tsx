@@ -52,7 +52,22 @@ export default async function QuestionPage({ params }: Props) {
   const expertAnswers = answers
     .filter((a) => !a.isAi)
     .sort((a, b) => b.likeCount - a.likeCount);
-  const topExpert = expertAnswers[0];
+  /**
+   * متنِ پاسخ برای داده‌ی ساختاریافته.
+   *
+   * پاسخِ صوتی `body` خالی دارد و متنش در transcript است. بدونِ این، گوگل
+   * روی acceptedAnswer خطای بحرانیِ «Missing field text» می‌داد و صفحه از
+   * نتایج غنی بیرون می‌افتاد.
+   */
+  const answerText = (a: (typeof answers)[number]) =>
+    (a.body || "").trim() || (a.transcript || "").trim();
+
+  /**
+   * پاسخِ پذیرفته‌شده باید **متن داشته باشد**، وگرنه اصلاً اعلامش نمی‌کنیم.
+   * پرلایک‌ترین پاسخ ممکن است صوتیِ بدونِ رونویسی باشد؛ در آن حالت سراغ
+   * پاسخِ بعدی می‌رویم به‌جای فرستادنِ یک acceptedAnswerِ بی‌متن.
+   */
+  const accepted = expertAnswers.find((a) => answerText(a).length > 0);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -63,19 +78,50 @@ export default async function QuestionPage({ params }: Props) {
       text: question.text,
       dateCreated: question.createdAt,
       answerCount: question.answerCount,
-      author: { "@type": "Person", name: "کاربر وینو" },
-      ...(topExpert
+      // پرسش‌ها ناشناس‌اند و صفحه‌ی پروفایلِ عمومی ندارند؛ url به خودِ سایت
+      // اشاره می‌کند تا فیلدِ پیشنهادیِ گوگل خالی نماند
+      author: { "@type": "Person", name: "کاربر وینو", url: `${SITE_URL}/` },
+      ...(accepted
         ? {
             acceptedAnswer: {
               "@type": "Answer",
-              text: topExpert.body,
-              dateCreated: topExpert.createdAt,
-              upvoteCount: topExpert.likeCount,
-              url: `${SITE_URL}/questions/${buildSlug(question.text, question.id)}#answer-${topExpert.id}`,
-              author: { "@type": "Person", name: topExpert.responder?.name ?? "متخصص وینو" },
+              text: answerText(accepted),
+              dateCreated: accepted.createdAt,
+              upvoteCount: accepted.likeCount,
+              url: `${SITE_URL}/questions/${buildSlug(question.text, question.id)}#answer-${accepted.id}`,
+              author: {
+                "@type": "Person",
+                name: accepted.responder?.name ?? "متخصص وینو",
+                url: accepted.responder
+                  ? `${SITE_URL}/specialists/${buildSlug(accepted.responder.name, accepted.responder.id)}`
+                  : `${SITE_URL}/specialists`,
+              },
             },
           }
         : {}),
+      // بقیه‌ی پاسخ‌ها هم اعلام می‌شوند: answerCount بدونِ suggestedAnswer یعنی
+      // گوگل عددی می‌بیند که پشتش داده‌ای نیست
+      ...(() => {
+        const others = expertAnswers.filter((a) => a !== accepted && answerText(a).length > 0);
+        return others.length
+          ? {
+              suggestedAnswer: others.map((a) => ({
+                "@type": "Answer",
+                text: answerText(a),
+                dateCreated: a.createdAt,
+                upvoteCount: a.likeCount,
+                url: `${SITE_URL}/questions/${buildSlug(question.text, question.id)}#answer-${a.id}`,
+                author: {
+                  "@type": "Person",
+                  name: a.responder?.name ?? "متخصص وینو",
+                  url: a.responder
+                    ? `${SITE_URL}/specialists/${buildSlug(a.responder.name, a.responder.id)}`
+                    : `${SITE_URL}/specialists`,
+                },
+              })),
+            }
+          : {};
+      })(),
     },
     breadcrumb: {
       "@type": "BreadcrumbList",
