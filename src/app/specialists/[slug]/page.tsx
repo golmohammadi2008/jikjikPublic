@@ -140,7 +140,7 @@ export default async function SpecialistPage({ params }: Props) {
                       {p.imageUrl ? (
                         p.isVideo ? (
                           <>
-                            <video src={p.imageUrl} muted playsInline preload="metadata" />
+                            <video src={p.videoUrl ?? p.imageUrl} poster={p.videoUrl ? p.imageUrl : undefined} muted playsInline preload="metadata" />
                             <VideoBadge />
                           </>
                         ) : (

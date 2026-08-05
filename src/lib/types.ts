@@ -38,6 +38,8 @@ export type PublicPost = {
   caption: string;
   imageUrl: string;
   isVideo: boolean;
+  /** آدرسِ خودِ ویدیو؛ imageUrl کاورِ آن است */
+  videoUrl?: string | null;
   likesCount: number;
   commentsCount: number;
   createdAt: string;
@@ -90,6 +92,8 @@ export type SpecialistPost = {
   caption: string;
   imageUrl: string;
   isVideo: boolean;
+  /** آدرسِ خودِ ویدیو؛ imageUrl کاورِ آن است */
+  videoUrl?: string | null;
   likesCount: number;
   commentsCount: number;
   createdAt: string;

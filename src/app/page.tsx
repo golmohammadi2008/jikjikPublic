@@ -244,7 +244,7 @@ export default async function HomePage() {
                       {p.imageUrl ? (
                         p.isVideo ? (
                           <>
-                            <video src={p.imageUrl} muted playsInline preload="metadata" />
+                            <video src={p.videoUrl ?? p.imageUrl} poster={p.videoUrl ? p.imageUrl : undefined} muted playsInline preload="metadata" />
                             <VideoBadge />
                           </>
                         ) : (

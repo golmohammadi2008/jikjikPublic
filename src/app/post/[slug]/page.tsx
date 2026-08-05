@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description: `از زبان ${post.author.specialty || post.author.categoryLabel || "متخصص"} — با امکان رزرو جلسه آنلاین.`,
       url: `/post/${canonicalSlug}`,
-      images: post.imageUrl && !post.isVideo ? [post.imageUrl] : [OG_IMAGE],
+      // ویدیوها هم کاور دارند؛ imageUrl دیگر خودِ ویدیو نیست که نشود به‌عنوان
+      // تصویرِ اشتراک‌گذاری استفاده کرد
+      images: post.imageUrl ? [post.imageUrl] : [OG_IMAGE],
     },
   };
 }
@@ -53,7 +55,7 @@ export default async function PostPage({ params }: Props) {
     "@type": "Article",
     headline: title,
     datePublished: post.createdAt,
-    image: post.imageUrl && !post.isVideo ? post.imageUrl : undefined,
+    image: post.imageUrl || undefined,
     author: {
       "@type": "Person",
       name: post.author.name,
@@ -105,7 +107,7 @@ export default async function PostPage({ params }: Props) {
         {post.imageUrl && (
           <div className="p-media">
             {post.isVideo ? (
-              <video src={post.imageUrl} controls playsInline preload="metadata" />
+              <video src={post.videoUrl ?? post.imageUrl} poster={post.videoUrl ? post.imageUrl : undefined} controls playsInline preload="metadata" />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={post.imageUrl} alt={title} loading="lazy" />
