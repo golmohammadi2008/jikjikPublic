@@ -7,16 +7,41 @@ import { CategoryDetail, HomeData, PostDetail, QuestionDetail, QuestionsArchive,
 // DNS/SSL دامنه‌ی عمومی وابسته نیست (مهم حین مهاجرت دامنه)
 const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:3000";
 
+/**
+ * فراخوانی بک‌اند برای رندر سمت سرور.
+ *
+ * تفاوتِ مهم بین «نبود» و «نشد»:
+ *
+ * قبلاً هر خطایی — قطعیِ لحظه‌ایِ بک‌اند، ۵۰۳ حین ری‌استارت، تایم‌اوت — به
+ * `null` تبدیل می‌شد و صفحه با دست خالی رندر می‌شد: خروجی ۲۰۰ بود ولی بدون
+ * سوال و بدون متخصص. Next همان رندرِ خالی را در کش ISR می‌نشاند و تا پایان
+ * پنجره‌ی revalidate به همه تحویل می‌داد. یعنی یک ری‌استارتِ چندثانیه‌ایِ
+ * بک‌اند، صفحه‌ی اصلی را برای دقایق طولانی خالی نگه می‌داشت.
+ *
+ * حالا فقط ۴۰۴ یعنی «واقعاً وجود ندارد» و null برمی‌گردد (تا صفحه notFound
+ * بدهد). هر خطای دیگر throw می‌شود: Next رندر را کش نمی‌کند، آخرین نسخه‌ی
+ * سالم را نگه می‌دارد و دفعه‌ی بعد دوباره تلاش می‌کند.
+ */
 async function get<T>(path: string, revalidateSec: number): Promise<T | null> {
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/public${path}`, {
-      next: { revalidate: revalidateSec },
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as T;
-  } catch {
-    return null;
+  const url = `${BACKEND_URL}/api/public${path}`;
+
+  // یک تلاش دوباره: بیشترِ خطاها همان قطعیِ کوتاهِ ری‌استارت‌اند و بلافاصله رفع می‌شوند
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url, { next: { revalidate: revalidateSec } });
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      return (await res.json()) as T;
+    } catch (err) {
+      if (attempt === 0) {
+        await new Promise((r) => setTimeout(r, 300));
+        continue;
+      }
+      console.error(`[public-site] fetch failed: ${path}`, err);
+      throw err;
+    }
   }
+  return null;
 }
 
 // صفحه‌ی اصلی: محتوای نسبتاً پرتغییر، کش کوتاه

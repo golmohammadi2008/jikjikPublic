@@ -920,3 +920,78 @@ img, video { max-width: 100%; display: block; }
   .dl-card { padding: 20px 18px; }
   .dl-tab { flex: 1; justify-content: center; padding: 9px 10px; }
 }
+
+/* ============================================================
+   لایه‌ی حرکت
+   ------------------------------------------------------------
+   قاعده‌ی سفت‌وسخت: هیچ انیمیشنی نباید محتوا را پنهان کند.
+   حالتِ پیش‌فرضِ هر المان «دیده‌شده» است؛ فقط جایی که مرورگر
+   انیمیشنِ اسکرول‌محور را واقعاً پشتیبانی می‌کند (@supports)
+   از حالتِ محو شروع می‌کنیم. این‌طور اگر انیمیشن اجرا نشد،
+   صفحه‌ی خالی نمی‌ماند — با جاوااسکریپت این تضمین وجود نداشت.
+   احترام به prefers-reduced-motion بالاتر در همین فایل، سراسری
+   اعمال شده است.
+   ============================================================ */
+
+@keyframes wn-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ورودِ نرمِ محتوای بالای صفحه — یک‌بار در لود، بدون وابستگی به اسکرول */
+.hero h1,
+.hero .lead,
+.hero .hero-cta,
+.hero .trust-strip {
+  animation: wn-rise .55s cubic-bezier(.22, .8, .3, 1) both;
+}
+.hero .lead        { animation-delay: .06s; }
+.hero .hero-cta    { animation-delay: .12s; }
+.hero .trust-strip { animation-delay: .18s; }
+
+/* آشکارشدن با اسکرول — فقط روی مرورگرهایی که تایم‌لاینِ view دارند */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .q-card,
+    .qa-row,
+    .post-card,
+    .spec-card,
+    .review-card,
+    .cat,
+    .section-head {
+      animation: wn-rise .5s cubic-bezier(.22, .8, .3, 1) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 42%;
+    }
+  }
+}
+
+/* بالا آمدن کارت زیر اشاره‌گر — با سایه‌ی نرم‌تر به‌جای پرش */
+.q-card,
+.spec-card,
+.review-card,
+.cat {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.q-card:hover,
+.spec-card:hover,
+.cat:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: color-mix(in srgb, var(--thyme) 35%, var(--line));
+}
+
+/* ستاره‌ها هنگام ورود کارت، یک‌بار می‌درخشند — ریزجزئیاتی که کارت را زنده می‌کند */
+@media (prefers-reduced-motion: no-preference) {
+  .review-card:hover .stars svg,
+  .spec-card:hover .stars svg {
+    animation: wn-star-pop .35s ease;
+  }
+}
+@keyframes wn-star-pop {
+  50% { transform: scale(1.12) rotate(-3deg); }
+}
+
+/* دکمه‌ها: بازخوردِ فشردن، نه فقط hover */
+.btn { will-change: transform; }
+.btn:active { transform: translateY(1px) scale(.985); }
