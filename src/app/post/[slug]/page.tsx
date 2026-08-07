@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getPost } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
@@ -23,6 +23,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { post } = data;
   const title = deriveTitle(post.caption, 80);
   const canonicalSlug = buildSlug(post.caption, post.id);
+
+  // اسلاگِ غیرکانونیکال را ۳۰۸ می‌کنیم به‌جای سرو با تگ canonical.
+  // چرا: هر اسلاگی که به همان ObjectId ختم شود ۲۰۰ می‌گرفت، پس با هر ویرایشِ
+  // متن، نشانیِ قدیمی هم زنده می‌ماند و گوگل آن را «Alternate page with proper
+  // canonical tag» ثبت می‌کرد — بودجه‌ی خزش صرفِ تکراری‌ها می‌شد. ریدایرکت،
+  // سیگنال‌ها را روی یک نشانی جمع می‌کند.
+  if (slug !== canonicalSlug) redirect(`/post/${canonicalSlug}`);
 
   return {
     title: `${title} | ${post.author.name}`,

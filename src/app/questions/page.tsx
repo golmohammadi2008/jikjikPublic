@@ -62,7 +62,7 @@ export default async function QuestionsArchivePage({ searchParams }: Props) {
       </nav>
 
       <div className="section-head">
-        <h2>همه سوال‌ها</h2>
+        <h1>همه سوال‌ها</h1>
       </div>
 
       <div className="filter-bar">

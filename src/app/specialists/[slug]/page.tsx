@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
@@ -45,6 +45,14 @@ export default async function SpecialistPage({ params }: Props) {
 
   const { specialist, posts, related, reviews = [] } = data;
   const canonicalSlug = buildSlug(specialist.name, specialist.id);
+
+  // اسلاگِ غیرکانونیکال را ۳۰۸ می‌کنیم به‌جای سرو با تگ canonical.
+  // چرا: هر اسلاگی که به همان ObjectId ختم شود ۲۰۰ می‌گرفت، پس با هر ویرایشِ
+  // متن، نشانیِ قدیمی هم زنده می‌ماند و گوگل آن را «Alternate page with proper
+  // canonical tag» ثبت می‌کرد — بودجه‌ی خزش صرفِ تکراری‌ها می‌شد. ریدایرکت،
+  // سیگنال‌ها را روی یک نشانی جمع می‌کند.
+  if (slug !== canonicalSlug) redirect(`/specialists/${canonicalSlug}`);
+
   const url = `${SITE_URL}/specialists/${canonicalSlug}`;
 
   const jobTitle = specialist.specialty || specialist.categoryLabel || "متخصص";
@@ -143,7 +151,13 @@ export default async function SpecialistPage({ params }: Props) {
         <div className="p-head" style={{ padding: "0 0 6px" }}>
           <Avatar name={specialist.name} src={specialist.avatar} size={56} />
           <div>
-            <b style={{ fontSize: 18 }}>{specialist.name}<VerifiedTick /></b>
+            {/* نامِ متخصص باید h1 باشد: صفحه‌ی پروفایل هیچ h1 نداشت و گوگل
+                موضوعِ صفحه را فقط از تایتل حدس می‌زد. block می‌ماند تا مثل
+                قبل، خطِ تخصص زیرش بیفتد نه کنارش. */}
+            <h1 style={{ display: "block", fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800, lineHeight: 1.5, color: "var(--ink)" }}>
+              {specialist.name}
+              <VerifiedTick />
+            </h1>
             <small style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               {specialist.specialty || specialist.categoryLabel || ""}
               {hasRating && (
@@ -230,7 +244,7 @@ export default async function SpecialistPage({ params }: Props) {
                           </>
                         ) : (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.imageUrl} alt="" loading="lazy" />
+                          <img src={p.imageUrl} alt={excerpt(p.caption, 100) || "پست منتشرشده"} loading="lazy" decoding="async" />
                         )
                       ) : (
                         <span>{p.caption.slice(0, 24)}</span>

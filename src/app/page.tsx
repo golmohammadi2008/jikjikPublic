@@ -4,7 +4,7 @@ import { getHome } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import AppDownload from "@/components/AppDownload";
-import { formatCount, formatRating } from "@/lib/format";
+import { excerpt, formatCount, formatRating } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VideoBadge from "@/components/VideoBadge";
 import VerifiedTick from "@/components/VerifiedTick";
@@ -249,7 +249,7 @@ export default async function HomePage() {
                           </>
                         ) : (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.imageUrl} alt="" loading="lazy" />
+                          <img src={p.imageUrl} alt={excerpt(p.caption, 100) || "پست منتشرشده"} loading="lazy" decoding="async" />
                         )
                       ) : (
                         <span>{p.caption.slice(0, 24)}</span>

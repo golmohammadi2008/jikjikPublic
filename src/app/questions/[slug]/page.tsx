@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getQuestion } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
@@ -24,8 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const { question, answers } = data;
   const title = deriveTitle(question.text, 90);
-  const topAnswer = answers.find((a) => !a.isAi) ?? answers[0];
-  const description = topAnswer ? excerpt(topAnswer.body, 155) : excerpt(question.text, 155);
+  // پاسخِ متخصص را ترجیح می‌دهیم، ولی فقط اگر *متن* داشته باشد: پاسخِ صوتی
+  // body خالی دارد و انتخابش، توضیحِ متا را خالی می‌کرد (گوگل صفحه‌ی بی‌توضیح
+  // را «Crawled - currently not indexed» می‌گذارد). ترتیب: متخصصِ متن‌دار →
+  // هر پاسخِ متن‌دار → خودِ متنِ سوال.
+  const withText = answers.filter((a) => (a.body || '').trim());
+  const topAnswer = withText.find((a) => !a.isAi) ?? withText[0];
+  const description = excerpt(topAnswer?.body || question.text, 155);
   const canonicalSlug = buildSlug(question.text, question.id);
 
   return {
@@ -48,6 +53,14 @@ export default async function QuestionPage({ params }: Props) {
   if (!data) notFound();
 
   const { question, answers, related } = data;
+  // اسلاگِ غیرکانونیکال را ۳۰۸ می‌کنیم به‌جای سرو با تگ canonical.
+  // چرا: هر اسلاگی که به همان ObjectId ختم شود ۲۰۰ می‌گرفت، پس با هر ویرایشِ
+  // متن، نشانیِ قدیمی هم زنده می‌ماند و گوگل آن را «Alternate page with proper
+  // canonical tag» ثبت می‌کرد — بودجه‌ی خزش صرفِ تکراری‌ها می‌شد. ریدایرکت،
+  // سیگنال‌ها را روی یک نشانی جمع می‌کند.
+  const canonicalSlug = buildSlug(question.text, question.id);
+  if (slug !== canonicalSlug) redirect(`/questions/${canonicalSlug}`);
+
   const aiAnswers = answers.filter((a) => a.isAi);
   const expertAnswers = answers
     .filter((a) => !a.isAi)

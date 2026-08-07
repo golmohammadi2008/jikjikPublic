@@ -282,8 +282,10 @@ img, video { max-width: 100%; display: block; }
 /* ============ سکشن‌ها ============ */
 .section { padding: 46px 0; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 40px 0 18px; }
+.section-head h1,
 .section-head h2 { font: 800 24px/1.5 var(--font-display); color: var(--ink); position: relative; padding-inline-start: 14px; }
 /* امضای بصری برند: تیغه‌ی آبی کنار تیتر هر سکشن */
+.section-head h1::before,
 .section-head h2::before {
   content: ""; position: absolute; inset-inline-start: 0; top: 50%; transform: translateY(-50%);
   width: 5px; height: 72%; border-radius: 3px;
@@ -629,6 +631,7 @@ img, video { max-width: 100%; display: block; }
   .ask-box .btn { justify-content: center; }
   .section { padding: 34px 0; }
   /* موبایل: یک پله پایین‌تر (تیتر بخش ۲۰، تیتر کارت ۱۵.۵، بدنه ۱۳.۵، متا ۱۲) */
+  .section-head h1,
   .section-head h2 { font-size: 20px; margin: 32px 0 14px; }
   .q-card .q-title { font-size: 15.5px; }
   .q-card .answer-peek { font-size: 13.5px; }
