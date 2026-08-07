@@ -502,6 +502,15 @@ img, video { max-width: 100%; display: block; }
 .related li a:hover { color: var(--thyme); }
 .related li small { color: var(--ink-3); white-space: nowrap; }
 
+/* ============ نظر مراجعان (پروفایل متخصص) ============ */
+.review-list { list-style: none; display: grid; gap: 12px; }
+.review-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 14px 16px; }
+.review-card .r-head { display: flex; align-items: center; gap: 10px; }
+.review-card .r-head b { font: 700 14px/1.5 var(--font-display); color: var(--ink); display: block; }
+.review-card .r-head small { font: 400 12px/1.6 var(--font-body); color: var(--ink-3); }
+.review-card .r-stars { margin-inline-start: auto; color: #d99100; font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
+.review-card p { margin-top: 10px; font-size: 14.5px; line-height: 1.9; color: var(--ink-2); }
+
 /* ============ صفحه پست ============ */
 .post-page { max-width: 680px; margin-inline: auto; }
 .post-page .p-media { border-radius: var(--radius-lg); overflow: hidden; margin: 18px 0; aspect-ratio: auto; min-height: 220px; }

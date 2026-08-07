@@ -99,9 +99,20 @@ export type SpecialistPost = {
   createdAt: string;
 };
 
+/** نظر یک مراجع پس از جلسه — فقط نام و آواتارِ نظردهنده عمومی است */
+export type SpecialistReview = {
+  id: string;
+  rating: number;
+  text: string;
+  createdAt: string;
+  client: { name: string; avatar: string | null };
+};
+
 export type SpecialistDetail = {
   specialist: SpecialistListItem;
   posts: SpecialistPost[];
+  /** فقط نظرهای متن‌دار؛ سرور نظرهای بی‌متن را فیلتر می‌کند */
+  reviews: SpecialistReview[];
   related: { id: string; text: string; answerCount: number }[];
 };
 

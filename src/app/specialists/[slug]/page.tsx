@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
-import { excerpt, formatCount } from "@/lib/format";
+import { excerpt, formatCount, formatJalali, formatRating } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
 import VideoBadge from "@/components/VideoBadge";
@@ -42,7 +42,7 @@ export default async function SpecialistPage({ params }: Props) {
   const data = await loadSpecialist(slug);
   if (!data) notFound();
 
-  const { specialist, posts, related } = data;
+  const { specialist, posts, related, reviews = [] } = data;
   const canonicalSlug = buildSlug(specialist.name, specialist.id);
   const url = `${SITE_URL}/specialists/${canonicalSlug}`;
 
@@ -73,6 +73,19 @@ export default async function SpecialistPage({ params }: Props) {
             },
           }
         : {}),
+      // خودِ نظرها هم به داده‌ی ساختاریافته می‌روند: aggregateRating تنها یک عدد
+      // است، ولی review‌ها همان چیزی‌اند که گوگل زیر نتیجه نقل‌قول می‌کند
+      ...(reviews.length
+        ? {
+            review: reviews.slice(0, 5).map((r) => ({
+              "@type": "Review",
+              reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+              author: { "@type": "Person", name: r.client.name },
+              datePublished: r.createdAt,
+              reviewBody: excerpt(r.text, 300),
+            })),
+          }
+        : {}),
     },
     breadcrumb: {
       "@type": "BreadcrumbList",
@@ -101,7 +114,7 @@ export default async function SpecialistPage({ params }: Props) {
             <b style={{ fontSize: 18 }}>{specialist.name}<VerifiedTick /></b>
             <small>
               {specialist.specialty || specialist.categoryLabel || ""}
-              {specialist.ratingAvg ? ` · ⭐ ${specialist.ratingAvg.toFixed(1)} (${formatCount(specialist.ratingCount)} نظر)` : ""}
+              {specialist.ratingAvg ? ` · ⭐ ${formatRating(specialist.ratingAvg)} (${formatCount(specialist.ratingCount)} نظر)` : ""}
             </small>
           </div>
         </div>
@@ -125,6 +138,39 @@ export default async function SpecialistPage({ params }: Props) {
             </div>
           </div>
         </div>
+
+        {/* نظرها بالای پست‌ها می‌آیند: کسی که پروفایل متخصص را باز می‌کند اول
+            می‌خواهد بداند تجربه‌ی بقیه چه بوده، بعد محتوایش را ببیند */}
+        {reviews.length > 0 && (
+          <section style={{ marginTop: 36 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 800, marginBottom: 14 }}>
+              نظر مراجعان
+              {specialist.ratingAvg ? (
+                <span style={{ fontSize: 14, fontWeight: 500, color: "var(--ink-2)" }}>
+                  {" "}— ⭐ {formatRating(specialist.ratingAvg)} از {formatCount(specialist.ratingCount)} نظر
+                </span>
+              ) : null}
+            </h2>
+            <ul className="review-list">
+              {reviews.map((r) => (
+                <li className="review-card" key={r.id}>
+                  <div className="r-head">
+                    <Avatar name={r.client.name} src={r.client.avatar} size={36} />
+                    <div>
+                      <b>{r.client.name}</b>
+                      <small>{formatJalali(r.createdAt)}</small>
+                    </div>
+                    <span className="r-stars" aria-label={`${r.rating} از ۵`}>
+                      {"★".repeat(r.rating)}
+                      {"☆".repeat(5 - r.rating)}
+                    </span>
+                  </div>
+                  <p>{r.text}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {posts.length > 0 && (
           <section style={{ marginTop: 36 }}>
