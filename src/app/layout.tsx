@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { preload } from "react-dom";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -48,13 +49,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /**
+   * پری‌لودِ فونت با API خودِ ری‌اکت، نه تگِ دستی داخل <head>.
+   *
+   * ری‌اکت ۱۹ خودش `<link rel=preload>` را به <head> hoist می‌کند؛ وقتی تگ را
+   * دستی هم آن‌جا گذاشته بودیم، هر فونت **دو بار** پری‌لود می‌شد و کروم هشدار
+   * «preloaded but not used» می‌داد — نسخه‌ی دوم واقعاً مصرف نمی‌شد و فقط
+   * پهنای باند و اولویتِ صف را می‌گرفت. این API تکراری‌ها را حذف می‌کند.
+   *
+   * فقط دو وزنِ واقعاً رندرـبحرانی: بدنه (Vazirmatn 400) و تیترِ صفحه
+   * (Estedad 800) که روی صفحه‌های محتوایی همان المانِ LCP است. وزن‌های دیگر
+   * از روی @font-face می‌آیند و پری‌لودشان صف را شلوغ می‌کرد.
+   */
+  preload("/fonts/Vazirmatn-Regular.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  preload("/fonts/Estedad-ExtraBold.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+
   return (
     <html lang="fa" dir="rtl">
-      <head>
-        {/* preload وزن‌های حیاتی: بدنه ۴۰۰ و بولد ۷۰۰ (Vazirmatn) */}
-        <link rel="preload" href="/fonts/Vazirmatn-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/Vazirmatn-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-      </head>
       <body>
         <Header />
         {children}
