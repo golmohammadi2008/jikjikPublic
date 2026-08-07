@@ -8,6 +8,7 @@ import { excerpt, formatCount, formatJalali, formatRating } from "@/lib/format";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
 import VideoBadge from "@/components/VideoBadge";
+import Stars from "@/components/Stars";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -46,55 +47,86 @@ export default async function SpecialistPage({ params }: Props) {
   const canonicalSlug = buildSlug(specialist.name, specialist.id);
   const url = `${SITE_URL}/specialists/${canonicalSlug}`;
 
-  // این صفحه‌ها تا حالا هیچ داده‌ی ساختاریافته‌ای نداشتند. Person + امتیاز +
-  // مسیر صفحه، همان چیزی است که گوگل برای نتیجه‌ی متخصص می‌خواهد.
+  const jobTitle = specialist.specialty || specialist.categoryLabel || "متخصص";
+  const hasRating = !!(specialist.ratingAvg && specialist.ratingCount);
+
+  const aggregateRating = hasRating
+    ? {
+        "@type": "AggregateRating",
+        ratingValue: specialist.ratingAvg.toFixed(1),
+        ratingCount: specialist.ratingCount,
+        bestRating: 5,
+        worstRating: 1,
+      }
+    : null;
+
+  // فقط نظرهای متن‌دار به مارک‌آپ می‌روند — گوگل چیزی برای نقل‌قول می‌خواهد
+  const reviewNodes = reviews.slice(0, 5).map((r) => ({
+    "@type": "Review",
+    reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+    author: { "@type": "Person", name: r.client.name },
+    datePublished: r.createdAt,
+    reviewBody: excerpt(r.text, 300),
+  }));
+
+  /**
+   * امتیاز روی ProfessionalService سوار می‌شود، نه روی Person.
+   *
+   * گوگل ستاره‌ی نتیجه (review snippet) را فقط برای مجموعه‌ی مشخصی از تایپ‌ها
+   * نشان می‌دهد — LocalBusiness و زیرشاخه‌هایش، Organization، Product و چند
+   * تای دیگر. Person در آن فهرست نیست، پس aggregateRating روی Person معتبر
+   * پارس می‌شد ولی هیچ‌وقت به ستاره‌ی نتایج تبدیل نمی‌شد.
+   *
+   * ProfessionalService ادعای نادرستی هم نمی‌سازد: متخصص واقعاً خدمتِ حرفه‌ای
+   * ارائه می‌دهد و provider همان شخص است. هویت شخص در همان Person می‌ماند و
+   * دو گره با @id به هم وصل‌اند.
+   */
+  const personId = `${url}#person`;
+  const serviceId = `${url}#service`;
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    mainEntity: {
-      "@type": "Person",
-      name: specialist.name,
-      url,
-      ...(specialist.avatar ? { image: specialist.avatar } : {}),
-      ...(specialist.bio ? { description: excerpt(specialist.bio, 300) } : {}),
-      ...(specialist.specialty || specialist.categoryLabel
-        ? { jobTitle: specialist.specialty || specialist.categoryLabel }
-        : {}),
-      worksFor: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
-      // بدون ratingCount، گوگل aggregateRating را نادیده می‌گیرد
-      ...(specialist.ratingAvg && specialist.ratingCount
-        ? {
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: specialist.ratingAvg.toFixed(1),
-              ratingCount: specialist.ratingCount,
-              bestRating: 5,
-              worstRating: 1,
-            },
-          }
-        : {}),
-      // خودِ نظرها هم به داده‌ی ساختاریافته می‌روند: aggregateRating تنها یک عدد
-      // است، ولی review‌ها همان چیزی‌اند که گوگل زیر نتیجه نقل‌قول می‌کند
-      ...(reviews.length
-        ? {
-            review: reviews.slice(0, 5).map((r) => ({
-              "@type": "Review",
-              reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5, worstRating: 1 },
-              author: { "@type": "Person", name: r.client.name },
-              datePublished: r.createdAt,
-              reviewBody: excerpt(r.text, 300),
-            })),
-          }
-        : {}),
-    },
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: SITE_NAME, item: `${SITE_URL}/` },
-        { "@type": "ListItem", position: 2, name: "متخصص‌ها", item: `${SITE_URL}/specialists` },
-        { "@type": "ListItem", position: 3, name: specialist.name },
-      ],
-    },
+    "@graph": [
+      {
+        "@type": "ProfilePage",
+        "@id": url,
+        mainEntity: { "@id": personId },
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: SITE_NAME, item: `${SITE_URL}/` },
+            { "@type": "ListItem", position: 2, name: "متخصص‌ها", item: `${SITE_URL}/specialists` },
+            { "@type": "ListItem", position: 3, name: specialist.name },
+          ],
+        },
+      },
+      {
+        "@type": "Person",
+        "@id": personId,
+        name: specialist.name,
+        url,
+        jobTitle,
+        ...(specialist.avatar ? { image: specialist.avatar } : {}),
+        ...(specialist.bio ? { description: excerpt(specialist.bio, 300) } : {}),
+        worksFor: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": serviceId,
+        name: `${specialist.name} — ${jobTitle}`,
+        url,
+        ...(specialist.avatar ? { image: specialist.avatar } : {}),
+        ...(specialist.bio ? { description: excerpt(specialist.bio, 300) } : {}),
+        provider: { "@id": personId },
+        areaServed: { "@type": "Country", name: "ایران" },
+        // جلسه‌ها آنلاین‌اند؛ نشانی فیزیکی نداریم و ساختنش داده‌ی جعلی می‌شد
+        serviceType: jobTitle,
+        parentOrganization: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
+        // بدون ratingCount، گوگل aggregateRating را نادیده می‌گیرد
+        ...(aggregateRating ? { aggregateRating } : {}),
+        ...(reviewNodes.length ? { review: reviewNodes } : {}),
+      },
+    ],
   };
 
   return (
@@ -112,9 +144,15 @@ export default async function SpecialistPage({ params }: Props) {
           <Avatar name={specialist.name} src={specialist.avatar} size={56} />
           <div>
             <b style={{ fontSize: 18 }}>{specialist.name}<VerifiedTick /></b>
-            <small>
+            <small style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               {specialist.specialty || specialist.categoryLabel || ""}
-              {specialist.ratingAvg ? ` · ⭐ ${formatRating(specialist.ratingAvg)} (${formatCount(specialist.ratingCount)} نظر)` : ""}
+              {hasRating && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <Stars value={specialist.ratingAvg} size={13} />
+                  {formatRating(specialist.ratingAvg)} ({formatCount(specialist.ratingCount)} نظر)
+                </>
+              )}
             </small>
           </div>
         </div>
@@ -142,28 +180,29 @@ export default async function SpecialistPage({ params }: Props) {
         {/* نظرها بالای پست‌ها می‌آیند: کسی که پروفایل متخصص را باز می‌کند اول
             می‌خواهد بداند تجربه‌ی بقیه چه بوده، بعد محتوایش را ببیند */}
         {reviews.length > 0 && (
-          <section style={{ marginTop: 36 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 800, marginBottom: 14 }}>
-              نظر مراجعان
-              {specialist.ratingAvg ? (
-                <span style={{ fontSize: 14, fontWeight: 500, color: "var(--ink-2)" }}>
-                  {" "}— ⭐ {formatRating(specialist.ratingAvg)} از {formatCount(specialist.ratingCount)} نظر
-                </span>
-              ) : null}
-            </h2>
+          <section className="reviews" aria-labelledby="reviews-title">
+            <h2 id="reviews-title">نظر کاربران</h2>
+
+            {hasRating && (
+              <div className="review-summary">
+                <strong>{formatRating(specialist.ratingAvg)}</strong>
+                <div>
+                  <Stars value={specialist.ratingAvg} />
+                  <small>بر پایه‌ی {formatCount(specialist.ratingCount)} نظرِ ثبت‌شده پس از جلسه</small>
+                </div>
+              </div>
+            )}
+
             <ul className="review-list">
               {reviews.map((r) => (
                 <li className="review-card" key={r.id}>
                   <div className="r-head">
-                    <Avatar name={r.client.name} src={r.client.avatar} size={36} />
-                    <div>
+                    <Avatar name={r.client.name} src={r.client.avatar} size={40} />
+                    <div className="r-who">
                       <b>{r.client.name}</b>
-                      <small>{formatJalali(r.createdAt)}</small>
+                      <Stars value={r.rating} />
                     </div>
-                    <span className="r-stars" aria-label={`${r.rating} از ۵`}>
-                      {"★".repeat(r.rating)}
-                      {"☆".repeat(5 - r.rating)}
-                    </span>
+                    <time dateTime={r.createdAt}>{formatJalali(r.createdAt)}</time>
                   </div>
                   <p>{r.text}</p>
                 </li>

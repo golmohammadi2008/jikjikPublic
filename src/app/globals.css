@@ -502,14 +502,47 @@ img, video { max-width: 100%; display: block; }
 .related li a:hover { color: var(--thyme); }
 .related li small { color: var(--ink-3); white-space: nowrap; }
 
-/* ============ نظر مراجعان (پروفایل متخصص) ============ */
+/* ============ نظر کاربران (پروفایل متخصص) ============ */
+.stars { display: inline-flex; align-items: center; direction: ltr; line-height: 0; }
+
+.reviews { margin-top: 40px; }
+.reviews h2 { font-family: var(--font-display); font-size: 19px; font-weight: 800; margin-bottom: 14px; }
+
+/* خلاصه‌ی امتیاز: عددِ درشت اول، بعد ستاره و تعداد — ترتیبِ خواندنِ طبیعی */
+.review-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+.review-summary > strong { font: 800 34px/1 var(--font-display); color: var(--ink); }
+.review-summary small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--ink-2); }
+
 .review-list { list-style: none; display: grid; gap: 12px; }
-.review-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 14px 16px; }
-.review-card .r-head { display: flex; align-items: center; gap: 10px; }
-.review-card .r-head b { font: 700 14px/1.5 var(--font-display); color: var(--ink); display: block; }
-.review-card .r-head small { font: 400 12px/1.6 var(--font-body); color: var(--ink-3); }
-.review-card .r-stars { margin-inline-start: auto; color: #d99100; font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
-.review-card p { margin-top: 10px; font-size: 14.5px; line-height: 1.9; color: var(--ink-2); }
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+}
+/* ستاره کنارِ خودِ نام می‌نشیند نه چسبیده به لبه‌ی کارت: قبلاً بین نام و
+   ستاره یک فاصله‌ی خالیِ بزرگ می‌افتاد و به‌هم مربوط به‌نظر نمی‌رسیدند */
+.review-card .r-head { display: flex; align-items: center; gap: 12px; }
+.review-card .r-who { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.review-card .r-head b { font: 700 14.5px/1.4 var(--font-display); color: var(--ink); }
+.review-card time { margin-inline-start: auto; font-size: 12px; color: var(--ink-3); white-space: nowrap; align-self: flex-start; }
+.review-card p { margin-top: 12px; font-size: 14.5px; line-height: 1.95; color: var(--ink-2); }
+
+@media (max-width: 480px) {
+  .review-summary { gap: 12px; padding: 14px; }
+  .review-summary > strong { font-size: 28px; }
+  .review-card { padding: 14px; }
+  .review-card time { font-size: 11px; }
+}
 
 /* ============ صفحه پست ============ */
 .post-page { max-width: 680px; margin-inline: auto; }
