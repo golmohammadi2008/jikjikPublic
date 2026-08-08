@@ -7,7 +7,21 @@ export default function robots(): MetadataRoute.Robots {
     return { rules: { userAgent: "*", disallow: "/" } };
   }
   return {
-    rules: { userAgent: "*", allow: "/" },
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      /**
+       * فقط فایل نصبی: ۸۹ مگابایت است و خزیدنش هیچ فایده‌ای ندارد.
+       *
+       * عمداً فونت‌ها، CSS/JS و favicon بسته نشدند — گوگل صفحه را رندر می‌کند
+       * و بستنِ این‌ها ارزیابی رندر را خراب می‌کند (و favicon همان آیکونی است
+       * که کنار نتیجه نشان می‌دهد). این‌که در گزارش زیر
+       * «Crawled - currently not indexed» می‌آیند ایراد نیست: فایل‌اند، نه
+       * صفحه، و اصلاً قرار نیست ایندکس شوند.
+       */
+      disallow: ["/weeno.apk", "/weeno-*.apk"],
+    },
     sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

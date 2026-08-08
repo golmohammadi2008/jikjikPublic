@@ -41,11 +41,10 @@ export default async function HomePage() {
         url: `${SITE_URL}/`,
         name: SITE_NAME,
         publisher: { "@id": `${SITE_URL}/#org` },
-        potentialAction: {
-          "@type": "SearchAction",
-          target: `${SITE_URL}/questions?query={search_term_string}`,
-          "query-input": "required name=search_term_string",
-        },
+        // SearchAction عمداً حذف شد: `/questions` اصلاً پارامتر `query` ندارد
+        // (فقط page/category/sort). گوگل خودِ الگو را به‌عنوان یک نشانی خزید و
+        // `/questions?query={search_term_string}` در سرچ‌کنسول ثبت شد. تا وقتی
+        // جست‌وجوی واقعی روی سایت نداریم، اعلامش فقط خطا می‌سازد.
       },
     ],
   };

@@ -21,7 +21,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const page = Math.max(1, parseInt(sp.page || "1") || 1);
   const category = sp.category;
   const sort = sp.sort === "top" ? "top" : "newest";
-  const canonical = buildUrl({ page, category, sort });
+  // ترتیب در کانونیکال نمی‌آید. `?sort=top` همان مجموعه‌ی سوال‌هاست با چیدمانِ
+  // دیگر، نه صفحه‌ی تازه‌ای؛ وقتی هر ترکیب خودش را کانونیکال اعلام می‌کرد،
+  // گوگل آن‌ها را تکراری می‌دید و خودش کانونیکالِ دیگری انتخاب می‌کرد
+  // («Duplicate, Google chose different canonical»). دسته و شماره‌ی صفحه
+  // می‌مانند چون واقعاً محتوای متفاوتی نشان می‌دهند.
+  const canonical = buildUrl({ page, category, sort: "newest" });
 
   const title = category
     ? `سوال‌های حوزه ${category}${page > 1 ? ` — صفحه ${page}` : ""}`

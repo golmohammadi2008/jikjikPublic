@@ -75,6 +75,29 @@ export default async function PostPage({ params }: Props) {
       logo: { "@type": "ImageObject", url: `${SITE_URL}/assets/logo-512.png` },
     },
     mainEntityOfPage: `${SITE_URL}/post/${canonicalSlug}`,
+    /**
+     * پستِ ویدیویی باید VideoObject داشته باشد.
+     *
+     * سرچ‌کنسول می‌گفت «Video isn't on a watch page»: ویدیو روی صفحه پخش
+     * می‌شد ولی هیچ داده‌ی ساختاریافته‌ای نمی‌گفت این صفحه، صفحه‌ی تماشای
+     * همان ویدیوست. بدون آن، گوگل نتیجه‌ی ویدیویی نمی‌سازد.
+     *
+     * thumbnailUrl الزامی است و imageUrl همان کاورِ ویدیوست (بک‌اند برای
+     * پستِ ویدیویی کاور را در imageUrl می‌گذارد و خودِ فایل را در videoUrl).
+     */
+    ...(post.isVideo && post.videoUrl
+      ? {
+          video: {
+            "@type": "VideoObject",
+            name: title,
+            description: excerpt(post.caption, 200) || title,
+            uploadDate: post.createdAt,
+            contentUrl: post.videoUrl,
+            embedUrl: `${SITE_URL}/post/${canonicalSlug}`,
+            ...(post.imageUrl ? { thumbnailUrl: [post.imageUrl] } : {}),
+          },
+        }
+      : {}),
   };
 
   return (
