@@ -35,14 +35,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${title} | ${post.author.name}`,
     description: excerpt(post.caption, 155),
     alternates: { canonical: `/post/${canonicalSlug}` },
+    // بدون این، twitter.images از لایه‌ی ریشه ارث می‌رسید و در توییتر/ایکس
+    // کاورِ عمومی نشان داده می‌شد نه خودِ پست. آرایه‌ی خالی یعنی «از
+    // opengraph-image استفاده کن».
+    twitter: { card: "summary_large_image", images: [] },
     openGraph: {
       type: "article",
       title,
       description: `از زبان ${post.author.specialty || post.author.categoryLabel || "متخصص"} — با امکان رزرو جلسه آنلاین.`,
       url: `/post/${canonicalSlug}`,
-      // ویدیوها هم کاور دارند؛ imageUrl دیگر خودِ ویدیو نیست که نشود به‌عنوان
-      // تصویرِ اشتراک‌گذاری استفاده کرد
-      images: post.imageUrl ? [post.imageUrl] : [OG_IMAGE],
+      // images اینجا ست نمی‌شود تا کارتِ برنددارِ opengraph-image.tsx به‌کار
+      // برود. قبلاً عکسِ خامِ پست می‌رفت و هر بازنشری بدون نام و نشانِ وینو
+      // منتشر می‌شد.
     },
   };
 }
