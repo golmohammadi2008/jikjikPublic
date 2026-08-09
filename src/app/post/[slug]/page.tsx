@@ -24,13 +24,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = deriveTitle(post.caption, 80);
   const canonicalSlug = buildSlug(post.caption, post.id);
 
-  // اسلاگِ غیرکانونیکال را ۳۰۸ می‌کنیم به‌جای سرو با تگ canonical.
-  // چرا: هر اسلاگی که به همان ObjectId ختم شود ۲۰۰ می‌گرفت، پس با هر ویرایشِ
-  // متن، نشانیِ قدیمی هم زنده می‌ماند و گوگل آن را «Alternate page with proper
-  // canonical tag» ثبت می‌کرد — بودجه‌ی خزش صرفِ تکراری‌ها می‌شد. ریدایرکت،
-  // سیگنال‌ها را روی یک نشانی جمع می‌کند.
-  if (slug !== canonicalSlug) redirect(`/post/${canonicalSlug}`);
-
   return {
     title: `${title} | ${post.author.name}`,
     description: excerpt(post.caption, 155),
@@ -60,6 +53,11 @@ export default async function PostPage({ params }: Props) {
   const title = deriveTitle(post.caption, 80);
   const authorSlug = buildSlug(post.author.name, post.author.id);
   const canonicalSlug = buildSlug(post.caption, post.id);
+
+  // اسلاگِ غیرکانونیکال ۳۰۸ می‌خورد. این باید در *کامپوننت صفحه* باشد نه در
+  // generateMetadata: آن‌جا redirect نه ریدایرکتِ HTTP می‌سازد و نه متادیتا
+  // را تولید می‌کند، یعنی صفحه بدون canonical و بدون og سرو می‌شد.
+  if (slug !== canonicalSlug) redirect(`/post/${canonicalSlug}`);
 
   const jsonLd = {
     "@context": "https://schema.org",
