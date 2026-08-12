@@ -2,12 +2,57 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getPost } from "@/lib/api";
-import { buildSlug, extractObjectId } from "@/lib/slug";
+import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { deriveTitle, excerpt, formatCount, formatJalali } from "@/lib/format";
+import { captionPlainText } from "@/lib/caption";
+import type { PublicPostMedia } from "@/lib/types";
 import Avatar from "@/components/Avatar";
+import Caption from "@/components/Caption";
 
 type Props = { params: Promise<{ slug: string }> };
+
+/**
+ * عنوانِ پست از کپشن می‌آید، ولی پستِ عکس/ویدیوی بی‌کپشن رشته‌ی خالی می‌داد و
+ * تگ عنوان به شکل «‌ | نام متخصص» سرو می‌شد. جایگزینِ آبرومند بهتر از خالی است.
+ *
+ * ورودی باید *متنِ ساده* باشد نه کپشنِ خام: وگرنه ستاره‌ها و بک‌تیک‌ها مستقیم
+ * در تگ <title> و توضیحاتِ نتیجه‌ی گوگل ظاهر می‌شوند.
+ */
+function postTitle(post: { title?: string; caption: string }, plain: string, authorName: string): string {
+  // عنوانِ صریح، بعد سطر اولِ کپشن، بعد جایگزینِ آبرومند
+  return post.title?.trim() || deriveTitle(plain, 80) || `پستی از ${authorName}`;
+}
+
+/** یک اسلایدِ پست — عکس یا ویدیو. تک‌رسانه‌ای و کاروسل هر دو از همین می‌آیند. */
+function PostSlide({ item, alt, index }: { item: PublicPostMedia; alt: string; index: number }) {
+  if (item.isVideo) {
+    return (
+      <video
+        src={item.videoUrl ?? item.url}
+        poster={item.videoUrl ? item.url : undefined}
+        controls
+        playsInline
+        preload="metadata"
+      />
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={item.url}
+      alt={index === 0 ? alt : `${alt} — تصویر ${formatCount(index + 1)}`}
+      // اسلایدِ اول همان تصویرِ شاخصِ صفحه است و نباید تنبل باشد
+      loading={index === 0 ? 'eager' : 'lazy'}
+    />
+  );
+}
+
+/** ثانیه ← ISO 8601، شکلی که schema.org برای duration می‌خواهد */
+function isoDuration(seconds: number): string {
+  const s = Math.max(0, Math.round(seconds));
+  return `PT${Math.floor(s / 60)}M${s % 60}S`;
+}
 
 async function loadPost(slug: string) {
   const id = extractObjectId(slug);
@@ -21,12 +66,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!data) return {};
 
   const { post } = data;
-  const title = deriveTitle(post.caption, 80);
-  const canonicalSlug = buildSlug(post.caption, post.id);
+  const plain = captionPlainText(post.caption);
+  const title = postTitle(post, plain, post.author.name);
+  const canonicalSlug = buildPostSlug(post);
 
   return {
-    title: `${title} | ${post.author.name}`,
-    description: excerpt(post.caption, 155),
+    // پستِ بی‌کپشن عنوانش خودش نامِ متخصص را دارد؛ دوباره چسباندنش می‌شد
+    // «پستی از مریم | مریم — وینو».
+    title: (post.title?.trim() || plain) ? `${title} | ${post.author.name}` : title,
+    description: excerpt(plain, 155)
+      || post.title?.trim()
+      || `پستِ ${post.author.name}${post.author.specialty ? `، ${post.author.specialty}` : ""} در ${SITE_NAME} — با امکان رزرو جلسه آنلاین.`,
+    /**
+     * پستِ بی‌کپشن هیچ متنی برای ایندکس ندارد: عنوانش خالی بود («‌ | نام»)،
+     * description نداشت و اسلاگش می‌شد همان ObjectId خام. سه پست از پنج پست
+     * همین‌طور بودند و هر سه در «Crawled - currently not indexed» نشستند.
+     * از سایت‌مپ هم بیرون‌اند (sitemap.ts). با نوشتنِ کپشن، خودبه‌خود
+     * برمی‌گردند.
+     */
+    // عنوانِ صریح هم مثل کپشن، «متنِ قابلِ ایندکس» حساب می‌شود
+    ...(plain || post.title?.trim() ? {} : { robots: { index: false, follow: true } }),
     alternates: { canonical: `/post/${canonicalSlug}` },
     // بدون این، twitter.images از لایه‌ی ریشه ارث می‌رسید و در توییتر/ایکس
     // کاورِ عمومی نشان داده می‌شد نه خودِ پست. آرایه‌ی خالی یعنی «از
@@ -50,9 +109,21 @@ export default async function PostPage({ params }: Props) {
   if (!data) notFound();
 
   const { post, related } = data;
-  const title = deriveTitle(post.caption, 80);
+  const plain = captionPlainText(post.caption);
+  const title = postTitle(post, plain, post.author.name);
   const authorSlug = buildSlug(post.author.name, post.author.id);
-  const canonicalSlug = buildSlug(post.caption, post.id);
+  const canonicalSlug = buildPostSlug(post);
+
+  /**
+   * اسلایدهای پست. بک‌اند برای پستِ تک‌رسانه‌ای هم آرایه می‌سازد، ولی این
+   * جایگزین برای وقتی است که سایت جلوتر از بک‌اندِ مستقر دیپلوی شود — بدونش
+   * صفحه‌ی پست تا لحظه‌ی دیپلویِ بک‌اند بدونِ تصویر سرو می‌شد.
+   */
+  const slides = post.media?.length
+    ? post.media
+    : post.imageUrl
+      ? [{ url: post.imageUrl, isVideo: post.isVideo, videoUrl: post.videoUrl }]
+      : [];
 
   // اسلاگِ غیرکانونیکال ۳۰۸ می‌خورد. این باید در *کامپوننت صفحه* باشد نه در
   // generateMetadata: آن‌جا redirect نه ریدایرکتِ HTTP می‌سازد و نه متادیتا
@@ -92,10 +163,14 @@ export default async function PostPage({ params }: Props) {
           video: {
             "@type": "VideoObject",
             name: title,
-            description: excerpt(post.caption, 200) || title,
+            description: excerpt(plain, 200) || title,
             uploadDate: post.createdAt,
             contentUrl: post.videoUrl,
-            embedUrl: `${SITE_URL}/post/${canonicalSlug}`,
+            // embedUrl حذف شد: این نشانی یک پلیرِ قابل‌جاسازی نیست، خودِ صفحه‌ی
+            // تماشاست. mainEntityOfPage/url همان را می‌گوید و embedUrlِ نادرست
+            // فقط گوگل را به دنبال پلیری می‌فرستد که وجود ندارد.
+            url: `${SITE_URL}/post/${canonicalSlug}`,
+            ...(post.durationSec ? { duration: isoDuration(post.durationSec) } : {}),
             ...(post.imageUrl ? { thumbnailUrl: [post.imageUrl] } : {}),
           },
         }
@@ -136,19 +211,38 @@ export default async function PostPage({ params }: Props) {
 
         <h1>{title}</h1>
 
-        {post.imageUrl && (
+        {/* کاروسل کاملاً با CSS کار می‌کند (scroll-snap) — این صفحه سرورساید و
+            بدونِ جاوااسکریپتِ کلاینت رندر می‌شود و باید همان‌طور بماند.
+            پست‌های تک‌رسانه‌ای از همین مسیر می‌روند: بک‌اند برایشان هم آرایه‌ی
+            یک‌عضوی می‌سازد، پس یک مسیرِ رندر بیشتر نداریم. */}
+        {slides.length > 0 && (
           <div className="p-media">
-            {post.isVideo ? (
-              <video src={post.videoUrl ?? post.imageUrl} poster={post.videoUrl ? post.imageUrl : undefined} controls playsInline preload="metadata" />
+            {/* پستِ تک‌رسانه‌ای دقیقاً همان DOMِ قبلی را می‌گیرد — بدون نوار و
+                بدون قابِ اضافه. تصویرِ صفحه‌ی سئو تا امروز ارتفاعِ طبیعیِ خودش
+                را داشت و پیچیدنش در قابِ کاروسل، همان عکس را به نسبتِ ۴:۳
+                می‌بُرید. */}
+            {slides.length === 1 ? (
+              <PostSlide item={slides[0]} alt={title} index={0} />
             ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={post.imageUrl} alt={title} loading="lazy" />
+              <>
+                <span className="p-media-count">{`${formatCount(slides.length)} رسانه`}</span>
+                {/* کاروسل کاملاً با CSS کار می‌کند (scroll-snap): این صفحه
+                    سرورساید و بدونِ جاوااسکریپتِ کلاینت رندر می‌شود و باید
+                    همان‌طور بماند. */}
+                <div className="p-media-track">
+                  {slides.map((m, i) => (
+                    <div className="p-media-slide" key={`${i}-${m.url}`}>
+                      <PostSlide item={m} alt={title} index={i} />
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         )}
 
         <div className="p-text">
-          <p>{post.caption}</p>
+          <Caption text={post.caption} />
         </div>
 
         <div className="answer-card" style={{ marginTop: 24 }}>

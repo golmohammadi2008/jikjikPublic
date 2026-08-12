@@ -549,6 +549,24 @@ img, video { max-width: 100%; display: block; }
 /* ============ صفحه پست ============ */
 .post-page { max-width: 680px; margin-inline: auto; }
 .post-page .p-media { border-radius: var(--radius-lg); overflow: hidden; margin: 18px 0; aspect-ratio: auto; min-height: 220px; }
+
+/* کاروسلِ صفحه‌ی پست — کاملاً CSS. این صفحه سرورساید و بدونِ جاوااسکریپتِ
+   کلاینت سرو می‌شود؛ اسکرول‌اسنپ همان صفحه‌بندی و لمسِ بومی را می‌دهد. */
+.p-media-track {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+}
+.p-media-slide { flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; }
+/* داخلِ کاروسل، اسلایدها هم‌قد می‌مانند تا اسنپ نلغزد */
+.p-media-track img, .p-media-track video { aspect-ratio: 4 / 3; object-fit: cover; }
+.p-media-count {
+  position: absolute; top: 10px; inset-inline-end: 10px; z-index: 1;
+  padding: 3px 9px; border-radius: 12px;
+  background: rgb(0 0 0 / 60%); color: #fff; font-size: 12px; font-weight: 700;
+}
 .post-page h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(20px, 3.6vw, 28px); line-height: 1.7; }
 .post-page .p-text { font-size: 16px; color: var(--ink-2); margin-top: 8px; }
 
@@ -995,3 +1013,43 @@ img, video { max-width: 100%; display: block; }
 /* دکمه‌ها: بازخوردِ فشردن، نه فقط hover */
 .btn { will-change: transform; }
 .btn:active { transform: translateY(1px) scale(.985); }
+
+/* ── نشانه‌گذاری کپشن پست: بولد، ایتالیک، کد، هشتگ ─────────────────── */
+.post-page .p-text p + p { margin-top: 10px; }
+.post-page .p-text strong { color: var(--ink); font-weight: 700; }
+.post-page .p-text p { white-space: pre-wrap; }
+
+.cap-tag { color: var(--thyme); font-weight: 600; unicode-bidi: isolate; }
+
+/* کدِ درون‌خطی — dir=ltr روی خودِ تگ است، اینجا فقط ظاهر */
+.p-text code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .92em; background: var(--thyme-tint); color: var(--thyme-deep);
+  padding: 1px 6px; border-radius: 6px; unicode-bidi: isolate;
+}
+
+.code-block {
+  margin: 14px 0; border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; background: #0E1526;
+}
+.code-block figcaption {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 7px 12px; background: rgba(255, 255, 255, .06); color: #93A4C4;
+  font: 600 12px/1.6 var(--font-body); letter-spacing: .02em;
+}
+/* برچسبِ زبان همیشه لاتین است */
+.code-block figcaption > span { direction: ltr; text-transform: lowercase; }
+.code-block pre {
+  margin: 0; padding: 12px 14px; overflow-x: auto; direction: ltr; text-align: left;
+}
+.code-block code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px; line-height: 1.75; color: #E6EDF7; background: none;
+  padding: 0; white-space: pre; tab-size: 2;
+}
+.code-copy {
+  border: 1px solid rgba(255, 255, 255, .18); background: transparent; color: #C9D6EC;
+  font: 600 11.5px/1 var(--font-body); padding: 5px 10px; border-radius: 8px;
+  cursor: pointer; transition: background .15s ease, color .15s ease;
+}
+.code-copy:hover { background: rgba(255, 255, 255, .12); color: #fff; }

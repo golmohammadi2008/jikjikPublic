@@ -33,13 +33,33 @@ export type PublicPostAuthor = {
   ratingCount?: number;
 };
 
+/** یک اسلایدِ کاروسل؛ برای اسلایدِ ویدیویی `url` کاورِ آن است نه خودِ فایل */
+export type PublicPostMedia = {
+  url: string;
+  isVideo: boolean;
+  videoUrl?: string | null;
+  durationSec?: number;
+  aspectRatio?: number;
+};
+
 export type PublicPost = {
   id: string;
+  /** عنوانِ صریحِ پست؛ خالی یعنی از کپشن حدس بزن */
+  title?: string;
   caption: string;
+  /**
+   * اسلایدهای پست (تا ۶ تا). بک‌اند برای پست‌های تک‌رسانه‌ایِ قدیمی هم همیشه
+   * یک آرایه‌ی یک‌عضوی می‌سازد، پس این‌جا لازم نیست دو شکل را جدا مدیریت کنیم.
+   * فقط تک‌پست این را دارد؛ گریدها فقط `imageUrl` را می‌گیرند.
+   */
+  media?: PublicPostMedia[];
+  /** تصویرِ شاخص = اسلایدِ اول. متای سئو و کارتِ opengraph از همین می‌آیند */
   imageUrl: string;
   isVideo: boolean;
   /** آدرسِ خودِ ویدیو؛ imageUrl کاورِ آن است */
   videoUrl?: string | null;
+  /** طول ویدیو به ثانیه — فقط در تک‌پست، برای VideoObject */
+  durationSec?: number | null;
   likesCount: number;
   commentsCount: number;
   createdAt: string;
@@ -89,6 +109,7 @@ export type SpecialistsList = { specialists: SpecialistListItem[] };
 
 export type SpecialistPost = {
   id: string;
+  title?: string;
   caption: string;
   imageUrl: string;
   isVideo: boolean;
