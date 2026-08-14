@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { getPost } from "@/lib/api";
 import { extractObjectId } from "@/lib/slug";
+import { captionPlainText } from "@/lib/caption";
 import { excerpt } from "@/lib/format";
 import { SITE_NAME } from "@/lib/config";
 
@@ -47,7 +48,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   // برای همین نسخه‌ی ttf کنار بقیه‌ی فونت‌ها نگه داشته شده است
   const font = await readFile(path.join(process.cwd(), "public/fonts/Estedad-Bold.ttf"));
 
-  const caption = excerpt(post?.caption || "", 90);
+  const caption = excerpt(captionPlainText(post?.caption || ""), 90);
   const author = post?.author?.name || SITE_NAME;
   const role = post?.author?.specialty || post?.author?.categoryLabel || "متخصص";
   /**

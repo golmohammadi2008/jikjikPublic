@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getHome, getQuestionsArchive, getSpecialists } from "@/lib/api";
-import { buildSlug } from "@/lib/slug";
+import { buildPostSlug, buildSlug } from "@/lib/slug";
 import { SITE_URL } from "@/lib/config";
 
 // آرشیو سوال‌ها بخش اصلی سئوی سایت است، ولی قبلاً فقط «سوال‌های داغِ» صفحه‌ی
@@ -54,7 +54,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // صفحه‌های ثابت — /faq و /how-it-works و بقیه اصلاً در sitemap نبودند
   const entries: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
+    // بدون اسلشِ آخر — دقیقاً همان رشته‌ای که تگ canonical صفحه‌ی اصلی می‌دهد.
+    // (Next برای `canonical: "/"` آدرس را بدون اسلش می‌سازد.)
+    { url: SITE_URL, lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: `${SITE_URL}/questions`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/specialists`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${SITE_URL}/how-it-works`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.7 },
@@ -73,7 +75,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entries.push(e);
   };
 
+  // فقط حوزه‌هایی که واقعاً سوال دارند. حوزه‌ی خالی صفحه‌ی خالی است و صفحه‌ی
+  // خالی در سایت‌مپ یعنی به گوگل آدرسی داده‌ایم که خودمان noindexش کرده‌ایم —
+  // دقیقاً همان تناقضی که «Crawled - currently not indexed» می‌سازد.
   for (const c of home?.categories ?? []) {
+    if (!c.count) continue;
     push({ url: `${SITE_URL}/category/${c.key}`, lastModified: now, changeFrequency: "daily", priority: 0.7 });
   }
 
@@ -110,9 +116,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
+  // پستِ بی‌کپشن در صفحه‌ی خودش noindex است (post/[slug]/page.tsx) — پس اینجا
+  // هم نباید بیاید.
   for (const p of home?.posts ?? []) {
+    if (!p.caption?.trim() && !p.title?.trim()) continue;
     push({
-      url: `${SITE_URL}/post/${buildSlug(p.caption, p.id)}`,
+      url: `${SITE_URL}/post/${buildPostSlug(p)}`,
       lastModified: p.createdAt,
       changeFrequency: "weekly",
       priority: 0.6,

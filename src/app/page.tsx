@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getHome } from "@/lib/api";
-import { buildSlug } from "@/lib/slug";
+import { buildPostSlug, buildSlug } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import AppDownload from "@/components/AppDownload";
 import { excerpt, formatCount, formatRating } from "@/lib/format";
+import { captionPlainText } from "@/lib/caption";
 import Avatar from "@/components/Avatar";
-import VideoBadge from "@/components/VideoBadge";
+import PostThumb from "@/components/PostThumb";
 import VerifiedTick from "@/components/VerifiedTick";
 
 export const metadata: Metadata = {
@@ -225,7 +226,11 @@ export default async function HomePage() {
 
             <div className="post-grid">
               {posts.map((p) => {
-                const postSlug = buildSlug(p.caption, p.id);
+                // کارتِ فهرست همیشه متنِ ساده نشان می‌دهد: کلمپِ دو خطی با
+                // بلوکِ کد می‌شکند و ستاره‌های بولد در پیش‌نمایش زشت‌اند.
+                // نشانه‌گذاری، جای خودش را در صفحه‌ی پست دارد.
+                const plain = captionPlainText(p.caption);
+                const postSlug = buildPostSlug(p);
                 const authorSlug = buildSlug(p.author.name, p.author.id);
                 return (
                   <article className="post-card" key={p.id}>
@@ -240,26 +245,20 @@ export default async function HomePage() {
                       </div>
                     </Link>
                     <Link className="p-media" href={`/post/${postSlug}`} aria-label="مشاهده پست">
-                      {p.imageUrl ? (
-                        p.isVideo ? (
-                          <>
-                            <video src={p.videoUrl ?? p.imageUrl} poster={p.videoUrl ? p.imageUrl : undefined} muted playsInline preload="metadata" />
-                            <VideoBadge />
-                          </>
-                        ) : (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.imageUrl} alt={excerpt(p.caption, 100) || "پست منتشرشده"} loading="lazy" decoding="async" />
-                        )
-                      ) : (
-                        <span>{p.caption.slice(0, 24)}</span>
-                      )}
+                      <PostThumb
+                        imageUrl={p.imageUrl}
+                        isVideo={p.isVideo}
+                        alt={excerpt(plain, 100) || "پست منتشرشده"}
+                        fallbackText={plain.slice(0, 24)}
+                      />
                     </Link>
                     <div className="p-body">
-                      <p>{p.caption}</p>
+                      <p>{plain}</p>
                     </div>
                     <div className="p-foot">
                       <span className="stats">
                         {formatCount(p.likesCount)} پسند · {formatCount(p.commentsCount)} دیدگاه
+                        {(p.viewsCount || 0) > 0 ? ` · ${formatCount(p.viewsCount!)} بازدید` : ''}
                       </span>
                       <a className="btn btn-thyme btn-sm" href={panelUserUrl(p.author.username)}>
                         رزرو جلسه

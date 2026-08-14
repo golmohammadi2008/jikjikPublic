@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
-import { buildSlug, extractObjectId } from "@/lib/slug";
+import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import { excerpt, formatCount, formatJalali, formatRating } from "@/lib/format";
+import { captionPlainText } from "@/lib/caption";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
-import VideoBadge from "@/components/VideoBadge";
+import PostThumb from "@/components/PostThumb";
 import Stars from "@/components/Stars";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -232,30 +233,26 @@ export default async function SpecialistPage({ params }: Props) {
             </h2>
             <div className="post-grid">
               {posts.map((p) => {
-                const postSlug = buildSlug(p.caption, p.id);
+                // مثل صفحه‌ی اصلی: کارت متنِ ساده، صفحه‌ی پست نشانه‌گذاری
+                const plain = captionPlainText(p.caption);
+                const postSlug = buildPostSlug(p);
                 return (
                   <article className="post-card" key={p.id}>
                     <Link className="p-media" href={`/post/${postSlug}`} aria-label="مشاهده پست">
-                      {p.imageUrl ? (
-                        p.isVideo ? (
-                          <>
-                            <video src={p.videoUrl ?? p.imageUrl} poster={p.videoUrl ? p.imageUrl : undefined} muted playsInline preload="metadata" />
-                            <VideoBadge />
-                          </>
-                        ) : (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.imageUrl} alt={excerpt(p.caption, 100) || "پست منتشرشده"} loading="lazy" decoding="async" />
-                        )
-                      ) : (
-                        <span>{p.caption.slice(0, 24)}</span>
-                      )}
+                      <PostThumb
+                        imageUrl={p.imageUrl}
+                        isVideo={p.isVideo}
+                        alt={excerpt(plain, 100) || "پست منتشرشده"}
+                        fallbackText={plain.slice(0, 24)}
+                      />
                     </Link>
                     <div className="p-body">
-                      <p>{excerpt(p.caption, 90)}</p>
+                      <p>{excerpt(plain, 90)}</p>
                     </div>
                     <div className="p-foot">
                       <span className="stats">
                         {formatCount(p.likesCount)} پسند · {formatCount(p.commentsCount)} دیدگاه
+                        {(p.viewsCount || 0) > 0 ? ` · ${formatCount(p.viewsCount!)} بازدید` : ''}
                       </span>
                     </div>
                   </article>

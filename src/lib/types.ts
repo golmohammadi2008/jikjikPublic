@@ -62,6 +62,8 @@ export type PublicPost = {
   durationSec?: number | null;
   likesCount: number;
   commentsCount: number;
+  /** بازدید — بک‌اندهای قدیمی‌تر نمی‌فرستادند، پس اختیاری */
+  viewsCount?: number;
   createdAt: string;
   author: PublicPostAuthor;
 };
@@ -117,6 +119,8 @@ export type SpecialistPost = {
   videoUrl?: string | null;
   likesCount: number;
   commentsCount: number;
+  /** بازدید — بک‌اندهای قدیمی‌تر نمی‌فرستادند، پس اختیاری */
+  viewsCount?: number;
   createdAt: string;
 };
 
