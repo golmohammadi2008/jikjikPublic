@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+
+      # ⚠️ `next build` عمداً اینجا نیست. صفحه‌های این سایت موقع بیلد از
+      # api.weeno.ir داده می‌گیرند؛ رانرِ گیت‌هاب یا به آن نمی‌رسد یا کند
+      # می‌رسد، و شکستِ شبکه به‌جای باگِ کد قرمز می‌شود. گاردِ واقعی سرِ
+      # دیپلوی است: deploy.sh با BACKEND_URL بیلد می‌کند و در نبودِ بک‌اند
+      # می‌شکند به‌جای اینکه سایتِ خالی تحویل دهد.
