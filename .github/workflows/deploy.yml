@@ -1,0 +1,57 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: بیلد
+        # ⚠️ بدون BACKEND_URL، صفحه‌ها با بک‌اندِ ۱۲۷.۰.۰.۱ پیش‌رندر می‌شوند و
+        # یک سایتِ خالیِ ۲۰۰ به پروداکشن می‌رود. کد الان در نبودِ بک‌اند
+        # می‌شکند به‌جای تحویلِ سایتِ خالی — این متغیر همان گارد را زنده نگه
+        # می‌دارد. اگر رانرِ گیت‌هاب به api.weeno.ir نرسد، همین‌جا قرمز
+        # می‌شود؛ آن‌وقت باید از لپ‌تاپ دیپلوی کرد.
+        run: npm run build
+        env:
+          BACKEND_URL: https://api.weeno.ir
+
+      - name: آماده‌سازی کلید SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: بسته‌بندی
+        run: tar czf /tmp/deploy.tgz .next public package.json package-lock.json next.config.*
+
+      - name: آپلود و نصب
+        run: |
+          H="root@${{ secrets.DEPLOY_HOST }}"
+          scp -o StrictHostKeyChecking=no /tmp/deploy.tgz "$H:/tmp/deploy.tgz"
+          ssh -o StrictHostKeyChecking=no "$H" "/root/remote-install.sh site"
+
+      - name: راستی‌آزمایی محتوا از بیرون
+        # فقط کد ۲۰۰ کافی نیست: سایتِ خالی هم ۲۰۰ می‌دهد. دنبال محتوای واقعی
+        # می‌گردیم.
+        run: |
+          body=$(curl -s --max-time 25 https://weeno.ir/)
+          echo "$body" | grep -q 'داغ‌ترین' && echo "محتوا سرجایش است" && exit 0
+          echo "صفحه‌ی اصلی محتوا ندارد"
+          exit 1
