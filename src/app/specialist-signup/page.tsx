@@ -113,12 +113,12 @@ export default function SpecialistSignupPage() {
           <ul>
             <li>قیمت جلسه را <strong>خودتان</strong> تعیین می‌کنید و پیش از رزرو به کاربر نمایش داده می‌شود.</li>
             <li>
-              کارمزد پیش‌فرض پلتفرم <strong>۲۰٪</strong> مبلغ جلسه است. این نرخ می‌تواند برای هر متخصص
-              اختصاصی تعیین شود و حتی <strong>۰٪</strong> باشد؛ نرخ فعلی شما همیشه در پنل خودتان دیده می‌شود.
+              پلتفرم بابت واسطه‌گری کارمزد دریافت می‌کند. نرخ می‌تواند برای هر متخصص اختصاصی تعیین
+              شود و <strong>نرخ دقیقِ شما همیشه در پنل خودتان دیده می‌شود</strong>.
             </li>
             <li>
-              <strong>سقف قطعی:</strong> جمع کسر از شما (کارمزد و هر مالیات احتمالی) در هیچ حالتی از
-              <strong> ۳۰٪</strong> مبلغ جلسه بیشتر نمی‌شود — این سقف داخل خود سامانه اعمال شده است.
+              <strong>سقف قطعی:</strong> جمع کسر از شما (کارمزد و هر مالیات احتمالی) سقف مشخصی
+              دارد که داخل خود سامانه اعمال شده و بالاتر از آن قابل ثبت نیست.
             </li>
             <li>
               <strong>مالیات بر ارزش افزوده در حال حاضر صفر است</strong> و چیزی بابت آن کسر نمی‌شود. اگر
@@ -127,36 +127,9 @@ export default function SpecialistSignupPage() {
             </li>
           </ul>
 
-          <div className="legal-table-wrap">
-            <table className="legal-table">
-              <caption style={{ captionSide: "top", textAlign: "right", padding: "0 0 8px", fontWeight: 700, fontSize: 13.5 }}>
-                مثال: جلسه‌ی ۵۰۰٬۰۰۰ تومانی (با نرخ مالیات صفرِ فعلی)
-              </caption>
-              <thead>
-                <tr>
-                  <th>نرخ کارمزد</th>
-                  <th>کارمزد {SITE_NAME}</th>
-                  <th>سهم شما</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>۰٪</td>
-                  <td>۰</td>
-                  <td><strong>۵۰۰٬۰۰۰</strong></td>
-                </tr>
-                <tr>
-                  <td>۲۰٪ (پیش‌فرض)</td>
-                  <td>۱۰۰٬۰۰۰</td>
-                  <td><strong>۴۰۰٬۰۰۰</strong></td>
-                </tr>
-                <tr>
-                  <td>۳۰٪ (سقف)</td>
-                  <td>۱۵۰٬۰۰۰</td>
-                  <td><strong>۳۵۰٬۰۰۰</strong></td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="legal-callout">
+            <strong>سهم شما پیش از انتشار هر تایم، در پنل با عدد دقیق نشان داده می‌شود.</strong>{" "}
+            هنگام تعیین قیمت، مبلغی که پس از کسر کارمزد به شما می‌رسد همان‌جا محاسبه می‌شود.
           </div>
 
           <ul>
