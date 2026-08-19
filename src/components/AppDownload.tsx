@@ -1,20 +1,73 @@
 "use client";
 
 import { useState } from "react";
-import { APP_DOWNLOAD_URL, PANEL_URL, SITE_NAME } from "@/lib/config";
+import { APP_DOWNLOAD_URL, PANEL_URL, SITE_NAME, STORE_URLS } from "@/lib/config";
 
-/* سه راهِ داشتنِ وینو روی گوشی/دسکتاپ.
-   نکته‌ی مهم: نسخه‌ی نیتیوِ iOS نداریم — روی آیفون همان وب‌اپ (PWA) از سافاری
-   نصب می‌شود و آیکونش کنار بقیه‌ی اپ‌ها می‌نشیند. به‌جای وعده‌ی «به‌زودی در
-   اپ‌استور»، همین راهِ واقعی را با مراحلش نشان می‌دهیم. */
+/**
+ * راه‌های داشتنِ وینو روی دستگاه.
+ *
+ * چه چیزی عوض شد و چرا:
+ *   • ایموجی به‌عنوان آیکون رفت. ایموجی در هر سیستم‌عامل شکلِ دیگری دارد،
+ *     اندازه‌اش با متن هماهنگ نمی‌شود و برای صفحه‌خوان نویز است. جایش SVG
+ *     درون‌خطی نشست که رنگش را از خودِ متن می‌گیرد.
+ *   • فروشگاه‌ها آمدند بالا. کاربر ایرانی اپ را از مایکت و بازار می‌گیرد؛
+ *     فایلِ نصبیِ مستقیم راهِ دوم است نه اول. نشانیِ خالی در config یعنی
+ *     هنوز منتشر نشده و دکمه‌اش اصلاً ساخته نمی‌شود — لینکِ مرده بدتر از
+ *     نبودنِ دکمه است.
+ *   • تب‌ها ماندند ولی متنشان کوتاه شد: هر تب یک کارِ روشن دارد، نه یک
+ *     پاراگراف توضیح.
+ *
+ * نسخه‌ی نیتیوِ iOS نداریم و وعده‌اش را هم نمی‌دهیم؛ روی آیفون همان وب‌اپ
+ * از سافاری نصب می‌شود و آیکونش کنار بقیه می‌نشیند.
+ */
 
 type Tab = "android" | "ios" | "pwa";
 
-const TABS: { key: Tab; label: string; icon: string }[] = [
-  { key: "android", label: "اندروید", icon: "🤖" },
-  { key: "ios", label: "آیفون (iOS)", icon: "🍎" },
-  { key: "pwa", label: "مرورگر / دسکتاپ", icon: "💻" },
+function IconAndroid() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.6 9.48l1.84-3.18a.4.4 0 00-.7-.4l-1.87 3.22a11.4 11.4 0 00-9.74 0L5.26 5.9a.4.4 0 10-.7.4L6.4 9.48A10.8 10.8 0 001 18h22a10.8 10.8 0 00-5.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z" />
+    </svg>
+  );
+}
+function IconApple() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.2-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.6 2.3 2.8 2.2 1.1 0 1.6-.7 2.9-.7s1.7.7 2.9.7c1.2 0 2-1.1 2.7-2.2.9-1.2 1.2-2.4 1.2-2.5 0 0-2.4-.9-2.4-3.5zM14.2 5.6c.6-.8 1-1.8.9-2.9-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.7-.9 2.8 1 .1 2-.5 2.6-1.3z" />
+    </svg>
+  );
+}
+function IconDesktop() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </svg>
+  );
+}
+function IconDownload() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+    </svg>
+  );
+}
+
+const TABS: { key: Tab; label: string; Icon: () => React.ReactElement }[] = [
+  { key: "android", label: "اندروید", Icon: IconAndroid },
+  { key: "ios", label: "آیفون", Icon: IconApple },
+  { key: "pwa", label: "مرورگر و دسکتاپ", Icon: IconDesktop },
 ];
+
+/** دکمه‌ی فروشگاه — نامِ فروشگاه بزرگ، «دریافت از» کوچک بالایش. */
+function StoreButton({ href, name }: { href: string; name: string }) {
+  return (
+    <a className="dl-store" href={href} target="_blank" rel="noopener">
+      <span className="dl-store__sub">دریافت از</span>
+      <span className="dl-store__name">{name}</span>
+    </a>
+  );
+}
 
 function Steps({ items }: { items: string[] }) {
   return (
@@ -31,11 +84,15 @@ function Steps({ items }: { items: string[] }) {
 
 export default function AppDownload() {
   const [tab, setTab] = useState<Tab>("android");
+  const stores = [
+    { key: "myket", name: "مایکت", href: STORE_URLS.myket },
+    { key: "bazaar", name: "کافه‌بازار", href: STORE_URLS.bazaar },
+  ].filter((s) => s.href);
 
   return (
     <div className="dl-card">
       <div className="dl-head">
-        <h2>وینو را روی دستگاهت داشته باش</h2>
+        <h2>وینو را روی گوشی‌ات داشته باش</h2>
         <p>پاسخ متخصص و یادآوری جلسه‌ها با اعلان به دستت می‌رسد.</p>
       </div>
 
@@ -49,7 +106,7 @@ export default function AppDownload() {
             className={`dl-tab${tab === t.key ? " is-active" : ""}`}
             onClick={() => setTab(t.key)}
           >
-            <span aria-hidden>{t.icon}</span>
+            <t.Icon />
             {t.label}
           </button>
         ))}
@@ -58,16 +115,29 @@ export default function AppDownload() {
       <div className="dl-panel" role="tabpanel">
         {tab === "android" && (
           <>
-            <p className="dl-lead">
-              فایل نصبی مستقیم — بدون نیاز به فروشگاه. حجم حدود ۸۹ مگابایت.
-            </p>
-            <a className="btn btn-thyme" href={APP_DOWNLOAD_URL}>
-              دانلود فایل نصبی اندروید
+            {stores.length > 0 && (
+              <>
+                <div className="dl-stores">
+                  {stores.map((s) => (
+                    <StoreButton key={s.key} href={s.href} name={s.name} />
+                  ))}
+                </div>
+                <div className="dl-or"><span>یا</span></div>
+              </>
+            )}
+
+            <a className="dl-direct" href={APP_DOWNLOAD_URL}>
+              <IconDownload />
+              <span>
+                <b>دانلود مستقیم فایل نصبی</b>
+                <small>حدود ۸۹ مگابایت — بدون نیاز به فروشگاه</small>
+              </span>
             </a>
+
             <Steps
               items={[
                 "فایل را دانلود کن.",
-                "اگر اندروید پرسید، اجازه‌ی «نصب از منابع ناشناس» را برای مرورگرت فعال کن.",
+                "اگر اندروید پرسید، «نصب از منابع ناشناس» را برای مرورگرت اجازه بده.",
                 "روی فایل دانلودشده بزن و نصب را تمام کن.",
               ]}
             />
@@ -77,22 +147,21 @@ export default function AppDownload() {
         {tab === "ios" && (
           <>
             <p className="dl-lead">
-              روی آیفون، {SITE_NAME} به‌صورت <b>وب‌اپ</b> نصب می‌شود: آیکونش کنار بقیه‌ی اپ‌ها
-              می‌نشیند و تمام‌صفحه باز می‌شود.
+              روی آیفون، {SITE_NAME} به‌صورت <b>وب‌اپ</b> نصب می‌شود — آیکونش کنار بقیه‌ی
+              اپ‌ها می‌نشیند و تمام‌صفحه باز می‌شود.
             </p>
             <a className="btn btn-thyme" href={PANEL_URL}>
-              باز کردن وینو در سافاری
+              باز کردن در سافاری
             </a>
             <Steps
               items={[
-                "این صفحه را در مرورگر «سافاری» باز کن (کروم روی آیفون این قابلیت را ندارد).",
-                "دکمه‌ی اشتراک‌گذاری (مربع با فلش رو به بالا) را بزن.",
-                "گزینه‌ی «Add to Home Screen / افزودن به صفحه اصلی» را انتخاب کن.",
-                "روی «Add» بزن — آیکون وینو به صفحه‌ی اصلی اضافه می‌شود.",
+                "این صفحه را در «سافاری» باز کن — کروم روی آیفون این قابلیت را ندارد.",
+                "دکمه‌ی اشتراک‌گذاری (مربع با فلشِ رو به بالا) را بزن.",
+                "«Add to Home Screen» را انتخاب و تایید کن.",
               ]}
             />
             <p className="dl-note">
-              اعلان‌های وب روی iOS فقط بعد از همین نصب کار می‌کنند و به iOS ۱۶٫۴ به بالا نیاز دارند.
+              اعلان‌ها روی iOS فقط بعد از همین نصب کار می‌کنند و به iOS ۱۶٫۴ به بالا نیاز دارند.
             </p>
           </>
         )}
@@ -109,8 +178,8 @@ export default function AppDownload() {
             <Steps
               items={[
                 "پنل را در کروم یا اِج باز کن.",
-                "در نوار آدرس، آیکون نصب (یک صفحه‌نمایش با فلش) را بزن — یا از منوی سه‌نقطه گزینه‌ی «Install» را انتخاب کن.",
-                "روی «نصب» بزن؛ وینو به‌عنوان یک برنامه‌ی جدا باز می‌شود.",
+                "در نوار آدرس، آیکون نصب را بزن — یا از منوی سه‌نقطه «Install» را انتخاب کن.",
+                "روی «نصب» بزن؛ وینو به‌عنوان برنامه‌ی جدا باز می‌شود.",
               ]}
             />
           </>

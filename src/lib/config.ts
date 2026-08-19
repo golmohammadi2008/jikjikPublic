@@ -2,6 +2,18 @@ export const SITE_NAME = "وینو";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://weeno.ir";
 export const APP_DOWNLOAD_URL = "https://weeno.ir/weeno.apk";
 
+/**
+ * فروشگاه‌های اپ.
+ *
+ * رشته‌ی خالی یعنی «هنوز منتشر نشده» و دکمه‌اش اصلاً رندر نمی‌شود — به‌جای
+ * لینکِ مرده یا وعده‌ی «به‌زودی» که کاربر رویش کلیک کند و به هیچ‌جا نرسد.
+ * برای انتشار، فقط همین نشانی پر می‌شود.
+ */
+export const STORE_URLS = {
+  myket: "",
+  bazaar: "",
+} as const;
+
 // تصویر پیش‌فرضِ اشتراک‌گذاری. هر صفحه‌ای که openGraph خودش را تعریف می‌کند
 // باید این را هم بگذارد: Next آبجکتِ openGraph والد را merge نمی‌کند و کاملاً
 // جایگزینش می‌کند، پس بدون این، آن صفحه بی‌تصویر در تلگرام/واتساپ باز می‌شود.
