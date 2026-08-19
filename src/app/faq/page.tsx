@@ -66,12 +66,29 @@ export default function FaqPage() {
         <h1>سوالات متداول {SITE_NAME}</h1>
         <div className="p-text legal">
           <p className="lead">پاسخ سوال‌های پرتکرار درباره‌ی استفاده از {SITE_NAME}. اگر پاسخ سوالتان این‌جا نبود، از <a href="/contact">ارتباط با ما</a> بپرسید.</p>
-          {FAQS.map((f) => (
-            <div key={f.q}>
-              <h2>{f.q}</h2>
-              <p>{f.a}</p>
-            </div>
-          ))}
+          {/* آکاردئون با <details> بومی، نه جاوااسکریپت: بدون آن صفحه یک
+              دیوارِ تختِ متن بود که همه‌ی سوال‌ها در آن هم‌وزن دیده می‌شدند
+              و پیداکردنِ یکی، اسکرولِ همه بود.
+
+              چرا <details> و نه کامپوننت کلاینتی: بدون جاوااسکریپت هم باز
+              می‌شود، صفحه‌خوان آن را می‌شناسد، و Ctrl+F مرورگر داخلِ
+              بسته‌ها هم پیدا می‌کند. `name` ندارد تا چند سوال هم‌زمان باز
+              بمانند — مقایسه‌ی دو پاسخ کارِ رایجی است. */}
+          <div className="faq-list">
+            {FAQS.map((f, i) => (
+              <details className="faq-item" key={f.q} open={i === 0}>
+                <summary>
+                  <span>{f.q}</span>
+                  <svg className="faq-caret" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                       aria-hidden="true">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </article>
       {/* داده‌ی ساختاریافته‌ی FAQ برای سئو */}

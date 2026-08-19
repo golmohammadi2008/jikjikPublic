@@ -1405,3 +1405,48 @@ img, video { max-width: 100%; display: block; }
   100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
 @media (prefers-reduced-motion: reduce) { .sp-live-dot { animation: none; } }
+
+/* ─── سوالات متداول: آکاردئون ─────────────────────────────── */
+.faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.faq-item[open] { border-color: color-mix(in srgb, var(--thyme) 35%, var(--line)); }
+
+.faq-item > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 18px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.8;
+  /* مثلثِ پیش‌فرضِ مرورگر حذف می‌شود چون جهتش در RTL برعکس می‌افتد؛
+     جایش یک آیکون که خودمان می‌چرخانیمش */
+  list-style: none;
+}
+.faq-item > summary::-webkit-details-marker { display: none; }
+.faq-item > summary:hover { color: var(--thyme); }
+
+.faq-caret { flex: none; color: var(--ink-3); transition: transform .2s; }
+.faq-item[open] .faq-caret { transform: rotate(180deg); color: var(--thyme); }
+
+.faq-item > p {
+  margin: 0;
+  padding: 0 18px 16px;
+  color: var(--ink-2);
+  line-height: 2.1;
+  font-size: 14.5px;
+}
+
+/* فاصله‌ی ارثیِ .legal h2 این‌جا لازم نیست — summary خودش تیتر است */
+.legal .faq-list p { margin: 0; }

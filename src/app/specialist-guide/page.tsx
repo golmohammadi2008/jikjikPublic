@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { SITE_NAME, PANEL_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -8,8 +9,16 @@ export const metadata: Metadata = {
 };
 
 export default function SpecialistGuidePage() {
+  const jsonLd = webPageLd({
+    path: "/specialist-guide",
+    name: "آیین‌نامه متخصص",
+    description: "قواعد فعالیت متخصص‌ها در وینو.",
+    crumbs: [{ name: "آیین‌نامه متخصص" }],
+  });
+
   return (
     <main className="wrap post-page">
+      <script {...jsonLdProps(jsonLd)} />
       <article>
         <h1>آیین‌نامه و رفتار حرفه‌ای متخصص</h1>
         <div className="p-text legal">

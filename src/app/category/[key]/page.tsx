@@ -5,6 +5,7 @@ import { getCategory } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME } from "@/lib/config";
 import { formatCount } from "@/lib/format";
+import { collectionLd, jsonLdProps } from "@/lib/jsonLd";
 
 type Props = { params: Promise<{ key: string }> };
 
@@ -41,8 +42,20 @@ export default async function CategoryPage({ params }: Props) {
 
   const { category, questions } = data;
 
+  // صفحه‌ی فهرست بود ولی هیچ داده‌ی ساختاریافته‌ای نداشت: نه مسیر راهنما
+  // (که گوگل در خودِ نتیجه نشان می‌دهد) و نه ItemList که مسیرِ خزش به
+  // سوال‌ها را صریح کند.
+  const jsonLd = collectionLd({
+    path: `/category/${key}`,
+    name: `سوال‌های ${category.label}`,
+    description: `سوال‌های حوزه ${category.label} با پاسخ هوش مصنوعی و متخصص در ${SITE_NAME}.`,
+    crumbs: [{ name: "سوال‌ها", path: "/questions" }, { name: category.label }],
+    items: questions.map((q) => ({ name: q.text, path: `/questions/${buildSlug(q.text, q.id)}` })),
+  });
+
   return (
     <main className="wrap">
+      <script {...jsonLdProps(jsonLd)} />
       <nav className="breadcrumb" aria-label="مسیر صفحه">
         <Link href="/">{SITE_NAME}</Link> › <Link href="/questions">سوال‌ها</Link> › {category.label}
       </nav>

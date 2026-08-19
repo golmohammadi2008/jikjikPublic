@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -8,8 +9,16 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
+  const jsonLd = webPageLd({
+    path: "/terms",
+    name: "شرایط و قوانین استفاده",
+    description: "شرایط و قوانین استفاده از وینو؛ تعهدات کاربر و متخصص، رزرو و پرداخت، انصراف و بازپرداخت.",
+    crumbs: [{ name: "شرایط و قوانین استفاده" }],
+  });
+
   return (
     <main className="wrap post-page">
+      <script {...jsonLdProps(jsonLd)} />
       <article>
         <h1>شرایط و قوانین استفاده از {SITE_NAME}</h1>
 

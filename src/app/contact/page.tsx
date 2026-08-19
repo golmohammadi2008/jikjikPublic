@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import { SITE_NAME } from "@/lib/config";
@@ -10,8 +11,16 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const jsonLd = webPageLd({
+    path: "/contact",
+    name: "ارتباط با ما",
+    description: "راه‌های تماس با پشتیبانی وینو.",
+    crumbs: [{ name: "ارتباط با ما" }],
+  });
+
   return (
     <main className="wrap contact-page">
+      <script {...jsonLdProps(jsonLd)} />
       <nav className="breadcrumb" aria-label="مسیر صفحه">
         <Link href="/">{SITE_NAME}</Link> › ارتباط با ما
       </nav>

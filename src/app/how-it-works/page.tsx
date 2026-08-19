@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { SITE_NAME, PANEL_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -8,8 +9,16 @@ export const metadata: Metadata = {
 };
 
 export default function HowItWorksPage() {
+  const jsonLd = webPageLd({
+    path: "/how-it-works",
+    name: "وینو چطور کار می‌کند",
+    description: "راهنمای گام‌به‌گام پرسیدن سوال، رزرو جلسه و کار با کیف پول در وینو.",
+    crumbs: [{ name: "وینو چطور کار می‌کند" }],
+  });
+
   return (
     <main className="wrap post-page">
+      <script {...jsonLdProps(jsonLd)} />
       <article>
         <h1>{SITE_NAME} چطور کار می‌کند؟</h1>
         <div className="p-text legal">
