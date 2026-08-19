@@ -147,7 +147,10 @@ export default async function SpecialistPage({ params }: Props) {
           ? {
               offers: {
                 "@type": "Offer",
-                price: specialist.hourlyRate,
+                // نرخ در دیتابیس تومان است ولی ISO 4217 واحدی به اسم تومان
+                // ندارد — فقط ریال (IRR). پس عدد به ریال تبدیل می‌شود، وگرنه
+                // گوگل قیمت را ده برابر کمتر از واقعیت می‌خواند.
+                price: specialist.hourlyRate * 10,
                 priceCurrency: "IRR",
                 url,
                 // وقتی وقتِ خالی داریم واقعاً در دسترس است؛ وگرنه ادعایش
