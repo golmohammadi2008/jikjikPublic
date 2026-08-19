@@ -133,8 +133,20 @@ export type SpecialistReview = {
   client: { name: string; avatar: string | null };
 };
 
+/** متخصص در صفحه‌ی پروفایل — چند فیلد بیشتر از کارتِ فهرست دارد */
+export type SpecialistProfile = SpecialistListItem & {
+  /** نرخِ هر جلسه (تومان). صفر = هنوز نرخی تعیین نشده */
+  hourlyRate: number;
+  sessionDurationMinutes: number;
+  currency: string;
+  /** آخرین تولید محتوا — برای نشانِ «فعال» */
+  lastActivityAt: string | null;
+  /** نزدیک‌ترین وقتِ خالی، ISO؛ null یعنی فعلاً وقتی باز نیست */
+  nextSlotAt: string | null;
+};
+
 export type SpecialistDetail = {
-  specialist: SpecialistListItem;
+  specialist: SpecialistProfile;
   posts: SpecialistPost[];
   /** فقط نظرهای متن‌دار؛ سرور نظرهای بی‌متن را فیلتر می‌کند */
   reviews: SpecialistReview[];

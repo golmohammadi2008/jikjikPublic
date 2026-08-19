@@ -4,12 +4,13 @@ import { notFound, redirect } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
 import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
-import { excerpt, formatCount, formatJalali, formatRating } from "@/lib/format";
+import { excerpt, formatCount, formatJalali, formatRating, isRecentlyActive } from "@/lib/format";
 import { captionPlainText } from "@/lib/caption";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
 import PostThumb from "@/components/PostThumb";
 import Stars from "@/components/Stars";
+import BookingCard from "@/components/BookingCard";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -79,19 +80,29 @@ export default async function SpecialistPage({ params }: Props) {
   }));
 
   /**
-   * امتیاز روی ProfessionalService سوار می‌شود، نه روی Person.
+   * امتیاز روی Product سوار می‌شود — نه Person، نه ProfessionalService.
    *
-   * گوگل ستاره‌ی نتیجه (review snippet) را فقط برای مجموعه‌ی مشخصی از تایپ‌ها
-   * نشان می‌دهد — LocalBusiness و زیرشاخه‌هایش، Organization، Product و چند
-   * تای دیگر. Person در آن فهرست نیست، پس aggregateRating روی Person معتبر
-   * پارس می‌شد ولی هیچ‌وقت به ستاره‌ی نتایج تبدیل نمی‌شد.
+   * دو بار جای اشتباهی بود و هر بار به دلیلِ متفاوتی ستاره نمی‌گرفت:
    *
-   * ProfessionalService ادعای نادرستی هم نمی‌سازد: متخصص واقعاً خدمتِ حرفه‌ای
-   * ارائه می‌دهد و provider همان شخص است. هویت شخص در همان Person می‌ماند و
-   * دو گره با @id به هم وصل‌اند.
+   *   • Person اصلاً در فهرستِ تایپ‌های واجدِ شرایطِ گوگل نیست، پس
+   *     aggregateRating معتبر پارس می‌شد ولی هیچ‌وقت ستاره نمی‌شد.
+   *
+   *   • ProfessionalService زیرشاخه‌ی LocalBusiness است و سیاستِ صریحِ گوگل
+   *     این است: «اگر موجودیتی که نقد می‌شود خودش نقدها را کنترل کند، صفحه‌های
+   *     LocalBusiness یا هر Organization دیگری واجدِ شرایطِ ستاره نیستند» —
+   *     یعنی نقدِ درون‌سایتی self-serving حساب می‌شود و ستاره نمی‌گیرد.
+   *     دقیقاً همین‌جا بودیم: مارک‌آپ درست بود ولی سیاست اجازه نمی‌داد.
+   *
+   * Product در فهرستِ واجدِ شرایط هست و مشمولِ آن محدودیت نیست. ادعای
+   * نادرستی هم نمی‌سازد: چیزی که این‌جا فروخته می‌شود یک جلسه‌ی مشاوره‌ی
+   * قیمت‌دار است، با مدت و نرخِ مشخص — یک آیتمِ خریدنیِ واقعی. نقدها هم
+   * شخصِ ثالث‌اند (مراجع درباره‌ی متخصص)، نه سایت درباره‌ی خودش.
+   *
+   * offers بدونِ قیمت فرستاده نمی‌شود: نرخِ صفر یعنی متخصص هنوز تعیین نکرده و
+   * ساختنِ عددِ الکی، هم داده‌ی جعلی است هم گوگل رد می‌کند.
    */
   const personId = `${url}#person`;
-  const serviceId = `${url}#service`;
+  const productId = `${url}#session`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -120,17 +131,35 @@ export default async function SpecialistPage({ params }: Props) {
         worksFor: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
       },
       {
-        "@type": "ProfessionalService",
-        "@id": serviceId,
-        name: `${specialist.name} — ${jobTitle}`,
+        "@type": "Product",
+        "@id": productId,
+        name: `جلسه‌ی آنلاین ${jobTitle} با ${specialist.name}`,
         url,
         ...(specialist.avatar ? { image: specialist.avatar } : {}),
-        ...(specialist.bio ? { description: excerpt(specialist.bio, 300) } : {}),
-        provider: { "@id": personId },
-        areaServed: { "@type": "Country", name: "ایران" },
-        // جلسه‌ها آنلاین‌اند؛ نشانی فیزیکی نداریم و ساختنش داده‌ی جعلی می‌شد
-        serviceType: jobTitle,
-        parentOrganization: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
+        description: excerpt(
+          specialist.bio
+            || `جلسه‌ی آنلاین ${specialist.sessionDurationMinutes} دقیقه‌ای با ${specialist.name}، ${jobTitle}.`,
+          300,
+        ),
+        category: specialist.categoryLabel || jobTitle,
+        brand: { "@type": "Brand", name: SITE_NAME },
+        ...(specialist.hourlyRate > 0
+          ? {
+              offers: {
+                "@type": "Offer",
+                price: specialist.hourlyRate,
+                priceCurrency: "IRR",
+                url,
+                // وقتی وقتِ خالی داریم واقعاً در دسترس است؛ وگرنه ادعایش
+                // نمی‌کنیم. تاریخِ نزدیک‌ترین وقت هم همراهش می‌رود.
+                availability: specialist.nextSlotAt
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/PreOrder",
+                ...(specialist.nextSlotAt ? { availabilityStarts: specialist.nextSlotAt } : {}),
+                seller: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
+              },
+            }
+          : {}),
         // بدون ratingCount، گوگل aggregateRating را نادیده می‌گیرد
         ...(aggregateRating ? { aggregateRating } : {}),
         ...(reviewNodes.length ? { review: reviewNodes } : {}),
@@ -149,58 +178,79 @@ export default async function SpecialistPage({ params }: Props) {
       </nav>
 
       <article>
-        <div className="p-head" style={{ padding: "0 0 6px" }}>
-          <Avatar name={specialist.name} src={specialist.avatar} size={56} />
-          <div>
-            {/* نامِ متخصص باید h1 باشد: صفحه‌ی پروفایل هیچ h1 نداشت و گوگل
-                موضوعِ صفحه را فقط از تایتل حدس می‌زد. block می‌ماند تا مثل
-                قبل، خطِ تخصص زیرش بیفتد نه کنارش. */}
-            <h1 style={{ display: "block", fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800, lineHeight: 1.5, color: "var(--ink)" }}>
+        {/* سربرگ: کیست، چقدر خوب است، و چرا می‌شود به او اعتماد کرد.
+            قبلاً آواتار ۵۶ پیکسلی گوشه‌ی بالا بود و اسم هم‌وزنِ متنِ بدنه —
+            صفحه‌ی پروفایل باید با خودِ آدم شروع شود. */}
+        <header className="sp-hero">
+          <div className="sp-hero__avatar">
+            <Avatar name={specialist.name} src={specialist.avatar} size={96} />
+          </div>
+          <div className="sp-hero__main">
+            <h1>
               {specialist.name}
               <VerifiedTick />
             </h1>
-            <small style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-              {specialist.specialty || specialist.categoryLabel || ""}
-              {hasRating && (
-                <>
-                  <span aria-hidden="true">·</span>
-                  <Stars value={specialist.ratingAvg} size={13} />
-                  {formatRating(specialist.ratingAvg)} ({formatCount(specialist.ratingCount)} نظر)
-                </>
-              )}
-            </small>
-          </div>
-        </div>
+            <div className="sp-hero__role">{jobTitle}</div>
 
-        <div className="answer-card" style={{ marginTop: 20 }}>
-          <div className="expert-strip" style={{ border: 0, margin: 0, padding: 0 }}>
-            <div className="who">
-              <span>
-                <b>سوالی داری یا می‌خواهی جلسه رزرو کنی؟</b>
-                <br />
-                <small style={{ color: "var(--ink-2)" }}>از {specialist.name} بپرس یا وقت آنلاین بگیر</small>
-              </span>
-            </div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <a className="btn btn-ghost btn-sm" href={panelAskUrl()}>
-                سوال بپرس
-              </a>
-              <a className="btn btn-saffron btn-sm" href={panelUserUrl(specialist.username)}>
-                رزرو جلسه
-              </a>
+            {hasRating ? (
+              <div className="sp-hero__rating">
+                <Stars value={specialist.ratingAvg} size={15} />
+                <b>{formatRating(specialist.ratingAvg)}</b>
+                <span>از {formatCount(specialist.ratingCount)} نظر</span>
+              </div>
+            ) : (
+              <div className="sp-hero__rating">
+                <span>هنوز نظری ثبت نشده</span>
+              </div>
+            )}
+
+            <div className="sp-trust">
+              <span className="sp-chip">هویت تاییدشده</span>
+              {isRecentlyActive(specialist.lastActivityAt) && (
+                <span className="sp-chip">این هفته فعال بوده</span>
+              )}
+              {specialist.categoryLabel && (
+                <span className="sp-chip sp-chip--muted">{specialist.categoryLabel}</span>
+              )}
             </div>
           </div>
-        </div>
+
+          {/* نیمه‌ی خالیِ سربرگ با عددهای واقعی پر می‌شود، نه تزیین: اینها
+              همان چیزهایی‌اند که بازدیدکننده پیش از رزرو می‌سنجد. */}
+          <dl className="sp-stats">
+            <div>
+              <dt>نظر</dt>
+              <dd>{formatCount(specialist.ratingCount)}</dd>
+            </div>
+            <div>
+              <dt>پست</dt>
+              <dd>{formatCount(posts.length)}</dd>
+            </div>
+            <div>
+              <dt>امتیاز</dt>
+              <dd>{hasRating ? formatRating(specialist.ratingAvg) : "—"}</dd>
+            </div>
+          </dl>
+        </header>
+
+        <div className="sp-layout">
+          <div>
+            {specialist.bio && (
+              <section className="sp-section" aria-labelledby="about-title">
+                <h2 id="about-title">درباره‌ی {specialist.name}</h2>
+                <div className="sp-about">{specialist.bio}</div>
+              </section>
+            )}
 
         {/* نظرها بالای پست‌ها می‌آیند: کسی که پروفایل متخصص را باز می‌کند اول
             می‌خواهد بداند تجربه‌ی بقیه چه بوده، بعد محتوایش را ببیند */}
         {reviews.length > 0 && (
-          <section className="reviews" aria-labelledby="reviews-title">
+          <section className="reviews sp-section" aria-labelledby="reviews-title">
             <h2 id="reviews-title">نظر کاربران</h2>
 
             {hasRating && (
-              <div className="review-summary">
-                <strong>{formatRating(specialist.ratingAvg)}</strong>
+              <div className="sp-rating-bar">
+                <b>{formatRating(specialist.ratingAvg)}</b>
                 <div>
                   <Stars value={specialist.ratingAvg} />
                   <small>بر پایه‌ی {formatCount(specialist.ratingCount)} نظرِ ثبت‌شده پس از جلسه</small>
@@ -227,10 +277,8 @@ export default async function SpecialistPage({ params }: Props) {
         )}
 
         {posts.length > 0 && (
-          <section style={{ marginTop: 36 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 800, marginBottom: 14 }}>
-              پست‌های {specialist.name}
-            </h2>
+          <section className="sp-section">
+            <h2>پست‌های {specialist.name}</h2>
             <div className="post-grid">
               {posts.map((p) => {
                 // مثل صفحه‌ی اصلی: کارت متنِ ساده، صفحه‌ی پست نشانه‌گذاری
@@ -263,7 +311,7 @@ export default async function SpecialistPage({ params }: Props) {
         )}
 
         {related.length > 0 && (
-          <section className="related" aria-label="سوال‌های مرتبط">
+          <section className="related sp-section" aria-label="سوال‌های مرتبط">
             <h2>سوال‌های حوزه {specialist.categoryLabel}</h2>
             <ul>
               {related.map((r) => (
@@ -277,7 +325,21 @@ export default async function SpecialistPage({ params }: Props) {
             </ul>
           </section>
         )}
+
+            {!specialist.bio && posts.length === 0 && reviews.length === 0 && (
+              <div className="sp-empty sp-section">
+                {specialist.name} هنوز محتوایی منتشر نکرده. می‌توانی مستقیم سوالت را بپرسی یا وقت بگیری.
+              </div>
+            )}
+          </div>
+
+          {/* ستونِ چسبان در دسکتاپ */}
+          <BookingCard specialist={specialist} variant="column" />
+        </div>
       </article>
+
+      {/* موبایل: همان کارت به‌صورتِ نوارِ چسبانِ پایین */}
+      <BookingCard specialist={specialist} variant="bar" />
     </main>
   );
 }

@@ -43,3 +43,55 @@ export function formatCount(n: number): string {
 export function formatRating(n: number): string {
   return new Intl.NumberFormat("fa-IR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
 }
+
+/**
+ * قیمتِ تومان با جداکننده‌ی فارسی: `۴۵۰٬۰۰۰ تومان`.
+ * صفر یعنی متخصص هنوز نرخی نگذاشته — عدد نشان نمی‌دهیم، چون «۰ تومان»
+ * به بازدیدکننده می‌گوید رایگان است.
+ */
+export function formatToman(n: number): string | null {
+  if (!n || n <= 0) return null;
+  return `${n.toLocaleString("fa-IR")} تومان`;
+}
+
+/** «۳۰ دقیقه» / «۱ ساعت» / «۱ ساعت و ۳۰ دقیقه» */
+export function formatDuration(minutes: number): string {
+  const m = Math.max(0, Math.round(minutes || 0));
+  if (m < 60) return `${m.toLocaleString("fa-IR")} دقیقه`;
+  const h = Math.floor(m / 60);
+  const rest = m % 60;
+  const hp = `${h.toLocaleString("fa-IR")} ساعت`;
+  return rest ? `${hp} و ${rest.toLocaleString("fa-IR")} دقیقه` : hp;
+}
+
+/**
+ * فاصله تا یک لحظه‌ی آینده، به زبان آدمیزاد: «امروز»، «فردا»، «۳ روز دیگر».
+ * برای «نزدیک‌ترین وقتِ خالی» — تاریخِ دقیق به بازدیدکننده چیزی نمی‌گوید،
+ * ولی «فردا» تصمیم را راحت می‌کند.
+ *
+ * مقایسه روی مرزِ *روز* انجام می‌شود نه اختلافِ ساعت: وقتی ساعتِ ۲۳ است،
+ * جلسه‌ی ساعتِ ۹ صبحِ فردا ۱۰ ساعت فاصله دارد ولی «فردا»ست، نه «امروز».
+ */
+export function formatWhenFuture(iso: string): string | null {
+  const t = new Date(iso).getTime();
+  if (!Number.isFinite(t)) return null;
+
+  const startOfDay = (ms: number) => {
+    const d = new Date(ms);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+  const days = Math.round((startOfDay(t) - startOfDay(Date.now())) / 86_400_000);
+
+  if (days <= 0) return "امروز";
+  if (days === 1) return "فردا";
+  if (days < 7) return `${days.toLocaleString("fa-IR")} روز دیگر`;
+  return formatJalali(iso);
+}
+
+/** آیا در هفت روز گذشته فعال بوده؟ — نشانِ «فعال» کنارِ دکمه‌ی رزرو */
+export function isRecentlyActive(iso: string | null): boolean {
+  if (!iso) return false;
+  const t = new Date(iso).getTime();
+  return Number.isFinite(t) && Date.now() - t < 7 * 86_400_000;
+}

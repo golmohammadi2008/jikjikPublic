@@ -1053,3 +1053,285 @@ img, video { max-width: 100%; display: block; }
   cursor: pointer; transition: background .15s ease, color .15s ease;
 }
 .code-copy:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+
+/* ============================================================
+   صفحه‌ی متخصص — بازطراحی
+   ------------------------------------------------------------
+   مسئله‌ای که حل می‌کند: صفحه یک ستونِ باریک از کارت‌های تمام‌عرض بود.
+   آواتار ۵۶ پیکسلی گوشه‌ی بالا، اسم هم‌وزنِ بقیه‌ی متن، و مهم‌ترین کنشِ
+   صفحه — رزرو — داخل یک نوارِ کم‌کنتراست وسطِ صفحه گم شده بود. قیمت
+   هیچ‌جا نبود، یعنی بازدیدکننده بدون کلیک نمی‌فهمید رزرو چقدر خرج دارد.
+
+   ساختار تازه: دو ستون در دسکتاپ (محتوا + کارتِ رزروِ چسبان)، و در موبایل
+   یک ستون با نوارِ رزروِ چسبان به پایین. ترتیبِ سوال‌های کاربر:
+   کیست؟ → چقدر خوب است؟ → چقدر می‌گیرد و کِی آزاد است؟
+   ============================================================ */
+
+.sp-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 28px;
+  align-items: start;
+  margin-top: 18px;
+}
+@media (max-width: 900px) {
+  /* موبایل: تک‌ستون. کارتِ رزرو به نوارِ چسبانِ پایین تبدیل می‌شود، پس
+     نسخه‌ی ستونی‌اش پنهان می‌شود و جای خالی نمی‌گذارد. */
+  .sp-layout { grid-template-columns: 1fr; gap: 20px; }
+}
+
+/* ─── سربرگ ───────────────────────────────────────────────── */
+.sp-hero {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.sp-hero__avatar { flex: none; }
+.sp-hero__main { min-width: 0; }
+.sp-hero h1 {
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.sp-hero__role {
+  color: var(--ink-2);
+  font-size: 14.5px;
+  margin-top: 3px;
+}
+.sp-hero__rating {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.sp-hero__rating b { color: var(--ink); font-size: 15px; }
+@media (max-width: 560px) {
+  .sp-hero { flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px; }
+  .sp-hero h1 { font-size: 21px; }
+}
+
+/* نشان‌های اعتماد — کنارِ اسم، نه پایینِ صفحه: کسی که تصمیم می‌گیرد
+   رزرو کند همان‌جا باید ببیندشان */
+.sp-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.sp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--thyme-tint);
+  color: var(--thyme-deep);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+}
+.sp-chip svg { flex: none; }
+.sp-chip--muted { background: #F1F5F9; color: var(--ink-2); }
+
+/* ─── کارت رزرو ───────────────────────────────────────────── */
+.sp-book {
+  position: sticky;
+  /* هدر ثابت است؛ بدون این فاصله، کارت زیرش می‌رود */
+  top: 84px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.sp-book__price {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--font-display);
+}
+.sp-book__price b { font-size: 27px; font-weight: 800; color: var(--ink); }
+.sp-book__price span { font-size: 14px; color: var(--ink-2); font-family: var(--font-body); }
+.sp-book__meta {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.sp-book__rows {
+  margin: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 4px 0;
+}
+.sp-book__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.sp-book__row b { color: var(--ink); font-weight: 600; }
+.sp-book .btn { width: 100%; justify-content: center; }
+.sp-book__note {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.85;
+  text-align: center;
+}
+
+/* موبایل: کارت از جریان صفحه درمی‌آید و به نوارِ پایین می‌چسبد.
+   دکمه‌ی رزرو در دسترسِ شست می‌ماند بدون اینکه کاربر تا ته صفحه برود. */
+.sp-book--bar { display: none; }
+@media (max-width: 900px) {
+  .sp-book--col { display: none; }
+  .sp-book--bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    padding: 10px 16px;
+    /* گوشی‌های دارای نوارِ خانه: دکمه نباید زیرش بیفتد */
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    box-shadow: 0 -6px 20px -12px rgba(30, 43, 41, .25);
+  }
+  .sp-book--bar .sp-book__price b { font-size: 19px; }
+  .sp-book--bar .btn { width: auto; flex: 1; }
+  /* فوتر نباید زیرِ نوار پنهان بماند */
+  body:has(.sp-book--bar) footer { padding-bottom: 84px; }
+}
+
+/* ─── درباره ──────────────────────────────────────────────── */
+.sp-section { margin-top: 30px; }
+.sp-section > h2 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.sp-about {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 2.1;
+  white-space: pre-line;
+}
+
+/* ─── خلاصه‌ی امتیاز ──────────────────────────────────────── */
+/* نسخه‌ی قبلی یک عددِ بزرگ در کارتی تقریباً خالی بود. حالا عدد، ستاره و
+   تعداد در یک ردیفِ فشرده می‌نشینند و بقیه‌ی عرض به خودِ نظرها می‌رسد. */
+.sp-rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+}
+.sp-rating-bar > b {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+}
+.sp-rating-bar small { display: block; color: var(--ink-3); font-size: 12.5px; margin-top: 4px; }
+
+/* ─── حالت خالی ───────────────────────────────────────────── */
+.sp-empty {
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 26px 18px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 13.5px;
+}
+
+/* ============================================================
+   اسکلت بارگذاری
+   ------------------------------------------------------------
+   ابعادِ هر تکه عمداً با همتای واقعی‌اش یکی است. اسکلتی که اندازه‌اش فرق
+   کند، خودش باعثِ همان پرشِ چیدمانی می‌شود که قرار بود جلویش را بگیرد
+   (CLS). به همین دلیل این‌ها کنارِ استایلِ خودِ اجزا زندگی می‌کنند.
+   ============================================================ */
+.sk {
+  background: linear-gradient(90deg, #EEF1F5 25%, #E3E8EF 37%, #EEF1F5 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes sk-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+/* کاربری که حرکت را کم کرده، درخششِ بی‌پایان برایش آزاردهنده است —
+   اسکلت ساکن می‌ماند ولی همچنان جای محتوا را نگه می‌دارد */
+@media (prefers-reduced-motion: reduce) {
+  .sk { animation: none; }
+}
+.sk-line { height: 12px; }
+.sk-line--lg { height: 18px; }
+.sk-circle { border-radius: 50%; }
+.sk-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+/* آمارِ سربرگ — سمتِ خالیِ کارت. در موبایل زیرِ اسم می‌آید و کشیده می‌شود. */
+.sp-stats {
+  display: flex;
+  gap: 26px;
+  margin-inline-start: auto;
+  padding-inline-start: 26px;
+  border-inline-start: 1px solid var(--line);
+  flex: none;
+}
+.sp-stats dt { font-size: 12.5px; color: var(--ink-3); margin-bottom: 5px; }
+.sp-stats dd {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+}
+@media (max-width: 760px) {
+  .sp-stats {
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+    border-inline-start: 0;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    margin-top: 4px;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
