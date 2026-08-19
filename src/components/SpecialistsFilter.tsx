@@ -8,6 +8,7 @@ import { formatRating } from "@/lib/format";
 import type { SpecialistListItem } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
+import { useOnlineStatus } from "@/lib/useOnlineStatus";
 
 type Sort = "top" | "rating";
 
@@ -19,6 +20,10 @@ export default function SpecialistsFilter({ specialists }: { specialists: Specia
     }
     return Array.from(map, ([key, label]) => ({ key, label }));
   }, [specialists]);
+
+  // وضعیت آنلاین از خودِ صفحه نمی‌آید: صفحه کش می‌شود و نقطه‌ی سبز تا
+  // انقضای کش دروغ می‌گفت. این هوک آن را زنده می‌گیرد (lib/useOnlineStatus).
+  const onlineIds = useOnlineStatus(useMemo(() => specialists.map((s) => s.id), [specialists]));
 
   const [category, setCategory] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -92,14 +97,14 @@ export default function SpecialistsFilter({ specialists }: { specialists: Specia
               <article className="spec-card" key={s.id}>
                 <Link className="spec-link" href={`/specialists/${slug}`}>
                   <div className="spec-top">
-                    <span className={`avatar-wrap${s.online ? " is-online" : ""}`}>
+                    <span className={`avatar-wrap${onlineIds.has(s.id) ? " is-online" : ""}`}>
                       <Avatar name={s.name} src={s.avatar} />
                     </span>
                     <div className="spec-id">
                       <div className="spec-name">
                         {s.name}
                         <VerifiedTick />
-                        {s.online && <span className="online-badge">آنلاین</span>}
+                        {onlineIds.has(s.id) && <span className="online-badge">آنلاین</span>}
                       </div>
                       <div className="spec-role">{s.specialty || s.categoryLabel || ""}</div>
                     </div>

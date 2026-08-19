@@ -11,6 +11,7 @@ import VerifiedTick from "@/components/VerifiedTick";
 import PostThumb from "@/components/PostThumb";
 import Stars from "@/components/Stars";
 import BookingCard from "@/components/BookingCard";
+import OnlineChip from "@/components/OnlineChip";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -208,6 +209,8 @@ export default async function SpecialistPage({ params }: Props) {
             )}
 
             <div className="sp-trust">
+              {/* زنده — بقیه‌ی این نشان‌ها ثابت‌اند ولی این یکی نه */}
+              <OnlineChip specialistId={specialist.id} />
               <span className="sp-chip">هویت تاییدشده</span>
               {isRecentlyActive(specialist.lastActivityAt) && (
                 <span className="sp-chip">این هفته فعال بوده</span>

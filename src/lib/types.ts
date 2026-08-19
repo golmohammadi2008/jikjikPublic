@@ -104,7 +104,13 @@ export type SpecialistListItem = {
   bio: string | null;
   ratingAvg: number;
   ratingCount: number;
-  online?: boolean;
+  /**
+   * ⚠️ سرور دیگر این را نمی‌فرستد و نباید به آن تکیه کرد.
+   * وضعیت آنلاین ثانیه‌ای عوض می‌شود و این پاسخ کش می‌شود، پس مقدارش
+   * تا انقضای کش دروغ می‌گفت. زنده‌اش از lib/useOnlineStatus می‌آید.
+   * @deprecated
+   */
+  online?: never;
 };
 
 export type SpecialistsList = { specialists: SpecialistListItem[] };
