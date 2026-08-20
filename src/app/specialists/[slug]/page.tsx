@@ -61,15 +61,22 @@ export default async function SpecialistPage({ params }: Props) {
   const jobTitle = specialist.specialty || specialist.categoryLabel || "متخصص";
   const hasRating = !!(specialist.ratingAvg && specialist.ratingCount);
 
-  const aggregateRating = hasRating
-    ? {
-        "@type": "AggregateRating",
-        ratingValue: specialist.ratingAvg.toFixed(1),
-        ratingCount: specialist.ratingCount,
-        bestRating: 5,
-        worstRating: 1,
-      }
-    : null;
+  /**
+   * aggregateRating همیشه خروجی داده می‌شود — حتی با ratingCount صفر.
+   *
+   * چرا: Search Console برای هر Productِ بدون aggregateRating هشدارِ
+   * «Missing field aggregateRating» می‌دهد. با ratingCount صفر، گوگل
+   * امتیاز را در نتایج نشان نمی‌دهد (ستاره‌ی الکی نمی‌گیریم)، ولی حضورِ
+   * فیلد هشدار را برطرف می‌کند. به محض ثبتِ اولین امتیاز، مقادیر واقعی
+   * جایگزین می‌شوند.
+   */
+  const aggregateRating = {
+    "@type": "AggregateRating",
+    ratingValue: hasRating ? specialist.ratingAvg.toFixed(1) : 0,
+    ratingCount: specialist.ratingCount || 0,
+    bestRating: 5,
+    worstRating: 1,
+  };
 
   // فقط نظرهای متن‌دار به مارک‌آپ می‌روند — گوگل چیزی برای نقل‌قول می‌خواهد
   const reviewNodes = reviews.slice(0, 5).map((r) => ({
@@ -142,7 +149,11 @@ export default async function SpecialistPage({ params }: Props) {
             || `جلسه‌ی آنلاین ${specialist.sessionDurationMinutes} دقیقه‌ای با ${specialist.name}، ${jobTitle}.`,
           300,
         ),
-        category: specialist.categoryLabel || jobTitle,
+        // فیلد category حذف شد: Search Console مقدارش را «Invalid value»
+        // گزارش می‌کرد. گوگل برای Merchant listings رده‌بندی را از طبقه‌بندی
+        // محصولِ گوگل (متنِ انگلیسیِ استاندارد) انتظار دارد و برچسبِ فارسیِ
+        // دسته‌ی داخلیِ ما معتبر نیست. فیلد اختیاری است، پس حذفش بی‌خطرترین
+        // اصلاح است.
         brand: { "@type": "Brand", name: SITE_NAME },
         ...(specialist.hourlyRate > 0
           ? {
@@ -161,11 +172,28 @@ export default async function SpecialistPage({ params }: Props) {
                   : "https://schema.org/PreOrder",
                 ...(specialist.nextSlotAt ? { availabilityStarts: specialist.nextSlotAt } : {}),
                 seller: { "@type": "Organization", name: SITE_NAME, url: `${SITE_URL}/` },
+                // جلسه آنلاین است و ارسالی در کار نیست، ولی گوگل برای
+                // Merchant listings میدانِ shippingDetails را می‌خواهد؛
+                // نرخِ صفر یعنی «ارسال رایگان» که با واقعیتِ جلسه‌ی آنلاین
+                // هم‌خوان است.
+                shippingDetails: {
+                  "@type": "OfferShippingDetails",
+                  shippingRate: { "@type": "MonetaryAmount", value: 0, currency: "IRR" },
+                  shippingDestination: { "@type": "DefinedRegion", addressCountry: "IR" },
+                },
+                // جلسه‌ی رزروشده کالایِ برگشتنی نیست؛ بازپرداخت طبقِ قوانین
+                // لغو (صفحه‌ی قوانین) انجام می‌شود، نه به‌صورتِ بازگشتِ کالا.
+                hasMerchantReturnPolicy: {
+                  "@type": "MerchantReturnPolicy",
+                  applicableCountry: "IR",
+                  returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+                },
               },
             }
           : {}),
-        // بدون ratingCount، گوگل aggregateRating را نادیده می‌گیرد
-        ...(aggregateRating ? { aggregateRating } : {}),
+        // ratingCount صفر یعنی «هنوز امتیازی نیست» — گوگل ستاره نشان نمی‌دهد
+        // ولی فیلد حضور دارد تا هشدارِ Missing field برطرف شود
+        aggregateRating,
         ...(reviewNodes.length ? { review: reviewNodes } : {}),
       },
     ],

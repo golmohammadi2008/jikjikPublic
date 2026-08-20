@@ -1207,6 +1207,13 @@ img, video { max-width: 100%; display: block; }
     position: fixed;
     inset-inline: 0;
     bottom: 0;
+    /* ⚠️ لازم است: قاعده‌ی پایه‌ی .sp-book برای حالتِ چسبانِ دسکتاپ
+       `top: 84px` می‌گذارد. در position:fixed داشتنِ هم‌زمانِ top و bottom
+       عنصر را از بالا تا پایینِ صفحه کش می‌دهد — نوار تبدیل می‌شد به یک
+       بلوکِ ماتِ تمام‌صفحه که کلِ محتوای صفحه را می‌پوشاند. */
+    top: auto;
+    /* ارتفاع هم از حالتِ کارت آزاد شود */
+    border-radius: 0;
     z-index: 40;
     background: var(--surface);
     border-top: 1px solid var(--line);
