@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { SITE_NAME, PANEL_URL } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "آیین‌نامه و رفتار حرفه‌ای متخصص",
   description: `آیین‌نامه‌ی متخصص‌های ${SITE_NAME}: شرایط عضویت، مدارک لازم، اصول رفتار حرفه‌ای، کارمزد و تسویه، و موارد تخلف.`,
-  alternates: { canonical: "/specialist-guide" },
-};
+  path: "/specialist-guide",
+});
 
 export default function SpecialistGuidePage() {
   const jsonLd = webPageLd({

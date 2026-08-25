@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 import { jsonLdProps, webPageLd } from "@/lib/jsonLd";
 import FaqBrowser from "@/components/FaqBrowser";
 import { FAQS } from "@/lib/faqs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "سوالات متداول",
   description: `پاسخ سوال‌های پرتکرار درباره‌ی ${SITE_NAME}: پرسیدن سوال، رزرو جلسه، کیف پول، عضویت متخصص و پشتیبانی.`,
-  alternates: { canonical: "/faq" },
-};
+  path: "/faq",
+});
 
 export default function FaqPage() {
   // FAQPage باید *همه‌ی* پرسش‌ها را داشته باشد، مستقل از اینکه کاربر کدام

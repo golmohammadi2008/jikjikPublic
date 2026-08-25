@@ -3,12 +3,13 @@ import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import { SITE_NAME } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "ارتباط با ما",
   description: `راه‌های ارتباط با تیم ${SITE_NAME} — پشتیبانی تلفنی و فرم تماس.`,
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   const jsonLd = webPageLd({

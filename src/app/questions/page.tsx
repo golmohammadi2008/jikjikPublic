@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getQuestionsArchive } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
 import { SITE_NAME, SITE_URL } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 import { formatCount } from "@/lib/format";
 
 type Props = { searchParams: Promise<{ page?: string; category?: string; sort?: string }> };
@@ -32,11 +33,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     ? `سوال‌های حوزه ${category}${page > 1 ? ` — صفحه ${page}` : ""}`
     : `همه سوال‌ها${page > 1 ? ` — صفحه ${page}` : ""}`;
 
-  return {
+  // og:url هم از همان `canonical` می‌آید. تا پیش از این تعریف نمی‌شد و
+  // نسخه‌ی layout ریشه (که SITE_URL ثابت بود) به ارث می‌رسید — یعنی این
+  // صفحه هم‌زمان می‌گفت کانونیکالش «/questions?page=۲» است و og:urlش
+  // صفحه‌ی اصلی، که دقیقاً همان تناقضی است که چند خط بالاتر رفعش کردیم.
+  return pageMeta({
     title,
     description: `مرور سوال‌های کاربران ${SITE_NAME} با پاسخ فوری هوش مصنوعی و پاسخ متخصص تاییدشده.`,
-    alternates: { canonical },
-  };
+    path: canonical,
+  });
 }
 
 export default async function QuestionsArchivePage({ searchParams }: Props) {

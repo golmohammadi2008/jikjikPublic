@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSpecialists } from "@/lib/api";
 import { SITE_NAME, SITE_URL } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 import SpecialistsFilter from "@/components/SpecialistsFilter";
 import { buildSlug } from "@/lib/slug";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "متخصص‌ها",
   description: `فهرست متخصص‌های تاییدشده ${SITE_NAME} — پزشکی، حقوقی، ورزشی و بیشتر.`,
-  alternates: { canonical: "/specialists" },
-};
+  path: "/specialists",
+});
 
 export default async function SpecialistsPage() {
   const data = await getSpecialists();

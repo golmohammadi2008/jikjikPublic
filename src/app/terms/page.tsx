@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "شرایط و قوانین استفاده",
   description: `شرایط و قوانین کامل استفاده از ${SITE_NAME}؛ تعهدات کاربر و متخصص، رزرو و پرداخت، انصراف و بازپرداخت، و قوانین محتوا.`,
-  alternates: { canonical: "/terms" },
-};
+  path: "/terms",
+});
 
 export default function TermsPage() {
   const jsonLd = webPageLd({

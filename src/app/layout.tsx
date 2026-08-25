@@ -27,7 +27,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE_NAME,
     locale: "fa_IR",
-    url: SITE_URL,
+    // ⚠️ عمداً بدون `url`. این‌جا مقدارِ ثابتِ SITE_URL بود و هر صفحه‌ای که
+    // openGraph خودش را تعریف نمی‌کرد آن را به ارث می‌برد — نتیجه اینکه ۹
+    // صفحه‌ی ثابت به گوگل می‌گفتند «آدرس من صفحه‌ی اصلی است» در حالی که تگ
+    // canonicalشان درست بود. سیگنالِ متناقض، و همان چیزی که در Search
+    // Console «Duplicate without user-selected canonical» می‌شود.
+    //
+    // آدرسِ هر صفحه از lib/pageMeta.ts می‌آید که canonical و og:url را با هم
+    // از یک مسیر می‌سازد. صفحه‌ی اصلی هم مالِ خودش را همان‌جا می‌دهد.
     images: [{ url: "/assets/og-cover.png", width: 1200, height: 630, alt: SITE_NAME }],
   },
   twitter: { card: "summary_large_image", images: ["/assets/og-cover.png"] },

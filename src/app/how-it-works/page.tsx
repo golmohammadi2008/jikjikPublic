@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { SITE_NAME, PANEL_URL } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "چطور کار می‌کند و چطور ثبت‌نام کنم",
   description: `راهنمای کامل ${SITE_NAME}: نحوه‌ی ثبت‌نام کاربر و متخصص، پرسیدن سوال، رزرو جلسه‌ی آنلاین، کیف پول و پرداخت.`,
-  alternates: { canonical: "/how-it-works" },
-};
+  path: "/how-it-works",
+});
 
 export default function HowItWorksPage() {
   const jsonLd = webPageLd({

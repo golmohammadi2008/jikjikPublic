@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 
 // دکمه‌ها باید به مسیر واقعیِ احراز هویتِ پنل بروند. مسیر قبلی
 // `${PANEL_URL}/specialist-signup` در پنل اصلاً وجود ندارد و ۴۰۴ می‌داد —
 // یعنی تنها راهِ ورودِ متخصص‌ها از سایت عمومی، به بن‌بست می‌خورد.
 const SIGNUP_URL = `${PANEL_URL}/verify`;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "متخصص شو — شرایط، مدارک و مراحل",
   description: `شرایط کامل عضویت متخصص در ${SITE_NAME}: مدارک لازم، مراحل احراز هویت، کارمزد و تسویه، و قوانین فعالیت. پس از تایید مدارک، پاسخ به سوال و رزرو جلسه‌ی آنلاین را شروع کنید.`,
-  alternates: { canonical: "/specialist-signup" },
-};
+  path: "/specialist-signup",
+});
 
 const STEPS = [
   {

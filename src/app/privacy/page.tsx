@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import Link from "next/link";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
+import { pageMeta } from "@/lib/pageMeta";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "حریم خصوصی",
   description: `سیاست حریم خصوصی ${SITE_NAME} — چه داده‌ای جمع می‌شود، کجا می‌رود، چقدر می‌ماند و چطور می‌توانید حذفش کنید.`,
-  alternates: { canonical: "/privacy" },
-};
+  path: "/privacy",
+});
 
 /**
  * سیاست حریم خصوصی.
