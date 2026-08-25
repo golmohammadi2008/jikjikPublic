@@ -78,8 +78,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // فقط حوزه‌هایی که واقعاً سوال دارند. حوزه‌ی خالی صفحه‌ی خالی است و صفحه‌ی
   // خالی در سایت‌مپ یعنی به گوگل آدرسی داده‌ایم که خودمان noindexش کرده‌ایم —
   // دقیقاً همان تناقضی که «Crawled - currently not indexed» می‌سازد.
+  // «حوزه‌ای که واقعاً چیزی دارد» یعنی سوال **یا** متخصص — همان تعریفی که
+  // خودِ صفحه برای noindex استفاده می‌کند. اگر این دو با هم نخوانند، یا
+  // آدرسی به سایت‌مپ می‌دهیم که خودمان noindexش کرده‌ایم، یا صفحه‌ی
+  // ایندکس‌پذیری را از سایت‌مپ جا می‌گذاریم.
+  const specialistCategories = new Set(
+    (specialistsData?.specialists ?? []).map((s) => s.category).filter(Boolean),
+  );
   for (const c of home?.categories ?? []) {
-    if (!c.count) continue;
+    if (!c.count && !specialistCategories.has(c.key)) continue;
     push({ url: `${SITE_URL}/category/${c.key}`, lastModified: now, changeFrequency: "daily", priority: 0.7 });
   }
 

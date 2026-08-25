@@ -62,21 +62,29 @@ export default async function SpecialistPage({ params }: Props) {
   const hasRating = !!(specialist.ratingAvg && specialist.ratingCount);
 
   /**
-   * aggregateRating همیشه خروجی داده می‌شود — حتی با ratingCount صفر.
+   * aggregateRating فقط وقتی می‌آید که واقعاً امتیازی ثبت شده باشد.
    *
-   * چرا: Search Console برای هر Productِ بدون aggregateRating هشدارِ
-   * «Missing field aggregateRating» می‌دهد. با ratingCount صفر، گوگل
-   * امتیاز را در نتایج نشان نمی‌دهد (ستاره‌ی الکی نمی‌گیریم)، ولی حضورِ
-   * فیلد هشدار را برطرف می‌کند. به محض ثبتِ اولین امتیاز، مقادیر واقعی
-   * جایگزین می‌شوند.
+   * پیش‌تر همیشه فرستاده می‌شد — با `ratingValue: 0` و `ratingCount: 0` —
+   * تا هشدارِ «Missing field aggregateRating» در سرچ‌کنسول ساکت شود. آن
+   * معامله برعکس داد: نبودِ فیلد فقط یک **هشدار** است (فیلد اختیاری است)،
+   * ولی مقدارِ صفر دو **خطا** می‌سازد، چون بازه‌ی مجاز ۱ تا ۵ است و
+   * ratingCount باید مثبت باشد:
+   *
+   *   «Rating value is out of range»
+   *   «Value in property "ratingCount" must be positive»
+   *
+   * و خطا کلِ rich result را باطل می‌کند، نه فقط ستاره‌ها را. یعنی برای
+   * فرار از یک هشدار، نتیجه‌ی غنیِ آن صفحه کلاً از دست می‌رفت.
    */
-  const aggregateRating = {
-    "@type": "AggregateRating",
-    ratingValue: hasRating ? specialist.ratingAvg.toFixed(1) : 0,
-    ratingCount: specialist.ratingCount || 0,
-    bestRating: 5,
-    worstRating: 1,
-  };
+  const aggregateRating = hasRating
+    ? {
+        "@type": "AggregateRating",
+        ratingValue: specialist.ratingAvg.toFixed(1),
+        ratingCount: specialist.ratingCount,
+        bestRating: 5,
+        worstRating: 1,
+      }
+    : null;
 
   // فقط نظرهای متن‌دار به مارک‌آپ می‌روند — گوگل چیزی برای نقل‌قول می‌خواهد
   const reviewNodes = reviews.slice(0, 5).map((r) => ({
@@ -191,9 +199,9 @@ export default async function SpecialistPage({ params }: Props) {
               },
             }
           : {}),
-        // ratingCount صفر یعنی «هنوز امتیازی نیست» — گوگل ستاره نشان نمی‌دهد
-        // ولی فیلد حضور دارد تا هشدارِ Missing field برطرف شود
-        aggregateRating,
+        // متخصصِ بدون امتیاز اصلاً این فیلد را نمی‌گیرد — مقدارِ صفر خطای
+        // «out of range» می‌ساخت و rich result را باطل می‌کرد.
+        ...(aggregateRating ? { aggregateRating } : {}),
         ...(reviewNodes.length ? { review: reviewNodes } : {}),
       },
     ],
