@@ -119,9 +119,33 @@ export default function AppDownload() {
 
   return (
     <div className="dl-card">
-      <div className="dl-head">
-        <h2>وینو را روی گوشی‌ات داشته باش</h2>
-        <p>پاسخ متخصص و یادآوری جلسه‌ها با اعلان به دستت می‌رسد.</p>
+      {/* ── نوارِ بالا: عنوان و کارِ اصلی در یک سو، QR در سوی دیگر ──
+          QR روی موبایل عمداً رندر نمی‌شود (`dl-hero__scan` زیر ۷۲۰px
+          حذف است): کسی که با گوشی این صفحه را باز کرده، خودش همان‌جاست
+          که QR می‌خواهد ببردش. آن‌جا دکمه‌ها تمام‌عرض می‌شوند. */}
+      <div className="dl-hero">
+        <div className="dl-hero__copy">
+          <h2>وینو را روی گوشی‌ات داشته باش</h2>
+          <p>پاسخ متخصص و یادآوری جلسه‌ها با اعلان به دستت می‌رسد.</p>
+
+          <div className="dl-hero__cta">
+            {STORE_URLS.bazaar && (
+              <StoreButton href={STORE_URLS.bazaar} name="کافه‌بازار" storeKey="bazaar" />
+            )}
+            <a className="dl-hero__apk" href={APP_DOWNLOAD_URL}>
+              <IconDownload />
+              دانلود مستقیم فایل نصبی
+            </a>
+          </div>
+        </div>
+
+        <div className="dl-hero__scan" aria-hidden="false">
+          <div className="dl-qr">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/qr-weeno.svg" alt="کد QR برای باز کردن وینو روی گوشی" width={200} height={200} />
+          </div>
+          <p className="dl-qr__cap">با دوربین گوشی اسکن کن</p>
+        </div>
       </div>
 
       <div className="dl-tabs" role="tablist" aria-label="روش نصب">
@@ -143,24 +167,23 @@ export default function AppDownload() {
       <div className="dl-panel" role="tabpanel">
         {tab === "android" && (
           <>
-            {stores.length > 0 && (
-              <>
-                <div className="dl-stores">
-                  {stores.map((s) => (
+            {/* دکمه‌ها بالا در نوارِ hero هستند و این‌جا تکرار نمی‌شوند.
+                فروشگاهی که badge ندارد (مثلاً مایکت وقتی منتشر شود) این‌جا
+                می‌آید، چون در hero فقط راهِ اول جا می‌شود. */}
+            {stores.filter((s) => s.key !== "bazaar").length > 0 && (
+              <div className="dl-stores">
+                {stores
+                  .filter((s) => s.key !== "bazaar")
+                  .map((s) => (
                     <StoreButton key={s.key} href={s.href} name={s.name} storeKey={s.key} />
                   ))}
-                </div>
-                <div className="dl-or"><span>یا</span></div>
-              </>
+              </div>
             )}
 
-            <a className="dl-direct" href={APP_DOWNLOAD_URL}>
-              <IconDownload />
-              <span>
-                <b>دانلود مستقیم فایل نصبی</b>
-                <small>حدود ۸۹ مگابایت — بدون نیاز به فروشگاه</small>
-              </span>
-            </a>
+            <p className="dl-lead">
+              از <b>کافه‌بازار</b> نصب کن تا به‌روزرسانی‌ها خودکار بیاید. اگر بازار نداری،
+              فایل نصبی را مستقیم بگیر — حدود ۸۹ مگابایت.
+            </p>
 
             <Steps
               items={[

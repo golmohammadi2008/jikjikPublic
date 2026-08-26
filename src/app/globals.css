@@ -873,6 +873,87 @@ img, video { max-width: 100%; display: block; }
 .dl-head h2 { font-family: var(--font-display); font-size: 20px; font-weight: 800; }
 .dl-head p { font-size: 14px; color: var(--ink-2); margin-top: 6px; }
 
+/* ── نوارِ بالای کارتِ دانلود ─────────────────────────────────
+   دو ستون: کارِ اصلی سمتِ شروع، QR سمتِ پایان. QR ستونِ ثابت دارد تا
+   با عوض‌شدنِ طولِ متن جابه‌جا نشود. */
+.dl-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+}
+.dl-hero__copy h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+.dl-hero__copy p {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-top: 8px;
+  line-height: 2;
+}
+.dl-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+/* لینکِ ثانویه: کنارِ نشانِ سیاهِ بازار باید عقب‌تر بنشیند، نه هم‌وزنِ آن —
+   فروشگاه راهِ اول است و فایلِ نصبی راهِ دوم. */
+.dl-hero__apk {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: 700 13.5px var(--font-body);
+  transition: border-color .15s, color .15s, background .15s;
+}
+.dl-hero__apk:hover { border-color: var(--thyme); color: var(--thyme); background: var(--thyme-tint); }
+.dl-hero__apk svg { flex: none; }
+
+/* پنلِ اسکن: زمینه‌ی برند، QR روی یک کارتِ سفید.
+   QR باید تیره روی سفید بماند — این تنها ترکیبی است که همه‌ی دوربین‌ها
+   مطمئن می‌خوانند — پس کارتِ سفید حتی روی زمینه‌ی رنگی هم می‌ماند. */
+.dl-hero__scan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--thyme) 0%, var(--thyme-deep) 100%);
+}
+.dl-qr {
+  background: #fff;
+  padding: 10px;
+  border-radius: 14px;
+  line-height: 0;
+}
+.dl-qr img { display: block; width: 148px; height: 148px; }
+.dl-qr__cap {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  opacity: .92;
+  margin: 0;
+}
+
+@media (max-width: 719px) {
+  /* روی گوشی، QR بی‌معنی است: کاربر همان‌جاست که QR می‌خواست ببردش. */
+  .dl-hero { grid-template-columns: minmax(0, 1fr); }
+  .dl-hero__scan { display: none; }
+  .dl-hero__cta > * { width: 100%; justify-content: center; }
+  .dl-hero__copy h2 { font-size: 19px; }
+}
+
 .dl-tabs {
   display: flex;
   gap: 8px;
