@@ -10,8 +10,9 @@ export const APP_DOWNLOAD_URL = "https://weeno.ir/weeno.apk";
  * برای انتشار، فقط همین نشانی پر می‌شود.
  */
 export const STORE_URLS = {
+  // مایکت هنوز منتشر نشده؛ خالی می‌ماند تا دکمه‌اش رندر نشود.
   myket: "",
-  bazaar: "",
+  bazaar: "https://cafebazaar.ir/app/ir.minicook.jikjik.mobile",
 } as const;
 
 // تصویر پیش‌فرضِ اشتراک‌گذاری. هر صفحه‌ای که openGraph خودش را تعریف می‌کند
