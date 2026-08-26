@@ -60,7 +60,35 @@ const TABS: { key: Tab; label: string; Icon: () => React.ReactElement }[] = [
 ];
 
 /** دکمه‌ی فروشگاه — نامِ فروشگاه بزرگ، «دریافت از» کوچک بالایش. */
-function StoreButton({ href, name }: { href: string; name: string }) {
+/**
+ * فروشگاهی که نشانِ رسمی دارد با همان نشان نشان داده می‌شود، نه با دکمه‌ی
+ * دست‌سازِ ما.
+ *
+ * راهنمای بازار (cafebazaar.ir/badge) صریح است: پس‌زمینه‌ی سیاه، متن سفید،
+ * آرم با رنگ اصلی، و «در رنگ، متن، آرم و گرافیک آن هیچ تغییری ندهید».
+ * حداقل ارتفاعِ مجاز برای وب ۴۰ پیکسل است و نشان نباید کشیده یا فشرده شود،
+ * پس `width: auto` می‌ماند تا نسبتِ ۴۲۱×۱۲۵ دست‌نخورده بماند.
+ *
+ * فایل را خودمان میزبانی می‌کنیم نه از s.cafebazaar.ir: تصویرِ بیرونی یعنی
+ * دکمه‌ی دانلود به دسترس‌بودنِ CDN شخصِ دیگری وابسته شود. کپیِ بدون تغییر
+ * است، پس با قواعد نمی‌خواند.
+ */
+const STORE_BADGES: Record<string, { src: string; alt: string }> = {
+  bazaar: { src: "/assets/bazaar-badge.png", alt: "دریافت از بازار" },
+};
+
+function StoreButton({ href, name, storeKey }: { href: string; name: string; storeKey: string }) {
+  const badge = STORE_BADGES[storeKey];
+
+  if (badge) {
+    return (
+      <a className="dl-badge" href={href} target="_blank" rel="noopener">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={badge.src} alt={badge.alt} width={421} height={125} />
+      </a>
+    );
+  }
+
   return (
     <a className="dl-store" href={href} target="_blank" rel="noopener">
       <span className="dl-store__sub">دریافت از</span>
@@ -119,7 +147,7 @@ export default function AppDownload() {
               <>
                 <div className="dl-stores">
                   {stores.map((s) => (
-                    <StoreButton key={s.key} href={s.href} name={s.name} />
+                    <StoreButton key={s.key} href={s.href} name={s.name} storeKey={s.key} />
                   ))}
                 </div>
                 <div className="dl-or"><span>یا</span></div>
