@@ -1,4 +1,4 @@
-import { CategoryDetail, HomeData, PostDetail, QuestionDetail, QuestionsArchive, SpecialistDetail, SpecialistsList } from "./types";
+import { CategoryDetail, HomeData, PostDetail, PostsArchive, QuestionDetail, QuestionsArchive, SpecialistDetail, SpecialistsList } from "./types";
 
 // این‌جا Server Component است — مستقیم سمت سرور به بک‌اند وصل می‌شود (نه از
 // طریق rewrite که برای فراخوانی‌های کلاینتی/مرورگر است). روی خودِ سرور،
@@ -80,3 +80,7 @@ export const getQuestionsArchive = (params: { page?: number; category?: string; 
   const suffix = qs.toString() ? `?${qs.toString()}` : "";
   return get<QuestionsArchive>(`/questions${suffix}`, 120);
 };
+
+// آرشیو کامل پست‌ها — فقط سایت‌مپ از آن استفاده می‌کند
+export const getPostsArchive = (page = 1) =>
+  get<PostsArchive>(`/posts${page > 1 ? `?page=${page}` : ""}`, 300, [CACHE_TAGS.home]);

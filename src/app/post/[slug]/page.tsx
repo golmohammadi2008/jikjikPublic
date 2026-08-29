@@ -140,9 +140,46 @@ export default async function PostPage({ params }: Props) {
   // مسیری روزی متادیتا نداشت، صفحه‌ی تکراری رندر نشود.
   if (slug !== canonicalSlug) permanentRedirect(`/post/${canonicalSlug}`);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
+  const pageUrl = `${SITE_URL}/post/${canonicalSlug}`;
+
+  /**
+   * پستِ ویدیویی: VideoObject باید **موجودیتِ اصلیِ صفحه** باشد، نه یک شاخه
+   * زیر Article.
+   *
+   * سرچ‌کنسول روی این صفحه‌ها می‌گفت «Video isn't on a watch page». نشانه‌ها
+   * همه سالم بودند — پلیر در HTMLِ سروری هست، گوگل‌بات هم فایل ویدیو و هم
+   * کاور را می‌گیرد (۲۰۶ با Range)، و پلیر روی موبایل ۳۷۲×۴۹۲ و بالای خط
+   * تاست. چیزی که می‌ماند خودِ ساختار بود: صفحه اعلام می‌کرد موجودیتش یک
+   * Article است که اتفاقاً ویدیویی هم دارد. «صفحه‌ی تماشا» یعنی صفحه‌ای که
+   * موجودیتِ اصلی‌اش همان ویدیوست، و این را باید صریح گفت.
+   *
+   * پس برای پستِ ویدیویی، VideoObject یک گرهِ مستقل در @graph می‌شود و
+   * WebPage با `mainEntity` به آن اشاره می‌کند. Article هم می‌ماند (متن و
+   * نویسنده هنوز معنا دارند) ولی دیگر مالکِ ویدیو نیست.
+   */
+  const videoNode = post.isVideo && post.videoUrl
+    ? {
+        "@type": "VideoObject",
+        "@id": `${pageUrl}#video`,
+        name: title,
+        description: excerpt(plain, 200) || title,
+        uploadDate: post.createdAt,
+        contentUrl: post.videoUrl,
+        // خودِ صفحه‌ی تماشا. embedUrl عمداً نیست: این نشانی پلیرِ قابلِ
+        // جاسازی نیست و embedUrlِ نادرست گوگل را دنبالِ پلیری می‌فرستد که
+        // وجود ندارد.
+        url: pageUrl,
+        mainEntityOfPage: pageUrl,
+        ...(post.durationSec ? { duration: isoDuration(post.durationSec) } : {}),
+        // thumbnailUrl الزامی است. بک‌اند برای پستِ ویدیویی کاور را در
+        // imageUrl می‌گذارد و خودِ فایل را در videoUrl.
+        ...(post.imageUrl ? { thumbnailUrl: [post.imageUrl] } : {}),
+      }
+    : null;
+
+  const articleNode = {
     "@type": "Article",
+    "@id": `${pageUrl}#article`,
     headline: title,
     datePublished: post.createdAt,
     image: post.imageUrl || undefined,
@@ -157,34 +194,28 @@ export default async function PostPage({ params }: Props) {
       name: SITE_NAME,
       logo: { "@type": "ImageObject", url: `${SITE_URL}/assets/logo-512.png` },
     },
-    mainEntityOfPage: `${SITE_URL}/post/${canonicalSlug}`,
-    /**
-     * پستِ ویدیویی باید VideoObject داشته باشد.
-     *
-     * سرچ‌کنسول می‌گفت «Video isn't on a watch page»: ویدیو روی صفحه پخش
-     * می‌شد ولی هیچ داده‌ی ساختاریافته‌ای نمی‌گفت این صفحه، صفحه‌ی تماشای
-     * همان ویدیوست. بدون آن، گوگل نتیجه‌ی ویدیویی نمی‌سازد.
-     *
-     * thumbnailUrl الزامی است و imageUrl همان کاورِ ویدیوست (بک‌اند برای
-     * پستِ ویدیویی کاور را در imageUrl می‌گذارد و خودِ فایل را در videoUrl).
-     */
-    ...(post.isVideo && post.videoUrl
-      ? {
-          video: {
-            "@type": "VideoObject",
-            name: title,
-            description: excerpt(plain, 200) || title,
-            uploadDate: post.createdAt,
-            contentUrl: post.videoUrl,
-            // embedUrl حذف شد: این نشانی یک پلیرِ قابل‌جاسازی نیست، خودِ صفحه‌ی
-            // تماشاست. mainEntityOfPage/url همان را می‌گوید و embedUrlِ نادرست
-            // فقط گوگل را به دنبال پلیری می‌فرستد که وجود ندارد.
-            url: `${SITE_URL}/post/${canonicalSlug}`,
-            ...(post.durationSec ? { duration: isoDuration(post.durationSec) } : {}),
-            ...(post.imageUrl ? { thumbnailUrl: [post.imageUrl] } : {}),
-          },
-        }
-      : {}),
+    mainEntityOfPage: pageUrl,
+    ...(videoNode ? { video: { "@id": videoNode["@id"] } } : {}),
+  };
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      ...(videoNode
+        ? [
+            videoNode,
+            {
+              "@type": "WebPage",
+              "@id": pageUrl,
+              url: pageUrl,
+              name: title,
+              // این یک جمله همان چیزی است که «صفحه‌ی تماشا» را می‌سازد
+              mainEntity: { "@id": videoNode["@id"] },
+            },
+          ]
+        : []),
+      articleNode,
+    ],
   };
 
   return (

@@ -181,3 +181,16 @@ export type QuestionsArchive = {
   total: number;
   categories: { key: string; label: string; count: number }[];
 };
+
+/**
+ * آرشیو پست‌ها — فقط برای سایت‌مپ.
+ *
+ * سایت‌مپ پست‌ها را از `home.posts` می‌گرفت که روی ۶ تا محدود است، پس با هر
+ * پستِ تازه قدیمی‌ترین از سایت‌مپ بیرون می‌افتاد. این آرشیو همه را می‌دهد.
+ */
+export type PostsArchive = {
+  posts: { id: string; title: string; caption: string; createdAt: string }[];
+  page: number;
+  totalPages: number;
+  total: number;
+};

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getHome, getQuestionsArchive, getSpecialists } from "@/lib/api";
+import { getHome, getPostsArchive, getQuestionsArchive, getSpecialists } from "@/lib/api";
 import { buildPostSlug, buildSlug } from "@/lib/slug";
 import { SITE_URL } from "@/lib/config";
 
@@ -8,6 +8,9 @@ import { SITE_URL } from "@/lib/config";
 // می‌پیماییم تا همه‌ی سوال‌ها به گوگل معرفی شوند. سقف دارد چون sitemap در
 // زمان build/ISR ساخته می‌شود و نباید به یک کراول طولانی تبدیل شود.
 const MAX_ARCHIVE_PAGES = 40;
+
+// همان سقف برای آرشیو پست‌ها؛ ۳۰ پست در هر صفحه
+const MAX_POST_PAGES = 40;
 
 /**
  * تاریخِ آخرین تغییرِ **محتوای صفحه‌های ثابت**.
@@ -27,10 +30,11 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const [home, specialistsData, firstArchive] = await Promise.all([
+  const [home, specialistsData, firstArchive, firstPosts] = await Promise.all([
     getHome().catch(() => null),
     getSpecialists().catch(() => null),
     getQuestionsArchive().catch(() => null),
+    getPostsArchive().catch(() => null),
   ]);
 
   // ⚠️ اگر منبعِ اصلیِ آدرس‌ها در دسترس نبود، **هیچ سایت‌مپی منتشر نمی‌کنیم**.
@@ -123,16 +127,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // پستِ بی‌کپشن در صفحه‌ی خودش noindex است (post/[slug]/page.tsx) — پس اینجا
-  // هم نباید بیاید.
-  for (const p of home?.posts ?? []) {
-    if (!p.caption?.trim() && !p.title?.trim()) continue;
-    push({
-      url: `${SITE_URL}/post/${buildPostSlug(p)}`,
-      lastModified: p.createdAt,
-      changeFrequency: "weekly",
-      priority: 0.6,
-    });
+  // ⚠️ پست‌ها از **آرشیو** می‌آیند، نه از `home.posts`.
+  //
+  // `home.posts` عمداً ۶ تاست. وقتی تنها منبعِ سایت‌مپ بود، انتشارِ هر پستِ
+  // تازه قدیمی‌ترین را از سایت‌مپ بیرون می‌انداخت — بی‌آنکه صفحه‌اش حذف یا
+  // noindex شده باشد. از دید گوگل یعنی آن آدرس دیگر معرفی نمی‌شود، و تعداد
+  // صفحه‌های ایندکس‌شده به‌مرور آب می‌رفت. (۱۷ پست روی سرور، ۶ تا در سایت‌مپ.)
+  const postPages = Math.min(firstPosts?.totalPages ?? 1, MAX_POST_PAGES);
+  const restPosts = postPages > 1
+    ? await Promise.all(
+        Array.from({ length: postPages - 1 }, (_, i) => getPostsArchive(i + 2).catch(() => null)),
+      )
+    : [];
+
+  for (const archive of [firstPosts, ...restPosts]) {
+    for (const p of archive?.posts ?? []) {
+      // پستِ بی‌متن در صفحه‌ی خودش noindex است (post/[slug]/page.tsx) — پس
+      // این‌جا هم نباید بیاید، وگرنه آدرسی به گوگل داده‌ایم که خودمان
+      // noindexش کرده‌ایم.
+      if (!p.caption?.trim() && !p.title?.trim()) continue;
+      push({
+        url: `${SITE_URL}/post/${buildPostSlug({ ...p, id: p.id })}`,
+        lastModified: p.createdAt,
+        changeFrequency: "weekly",
+        priority: 0.6,
+      });
+    }
   }
 
   // ⚠️ عمداً بدونِ lastModified: API تاریخِ به‌روزرسانیِ متخصص را نمی‌دهد و
