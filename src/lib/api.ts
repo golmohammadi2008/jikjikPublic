@@ -63,7 +63,9 @@ export const getHome = () => get<HomeData>("/home", 120, [CACHE_TAGS.home]);
 // سوال/پست تکی: کمتر تغییر می‌کند، کش بلندتر — ولی هیچ‌وقت دیتای مالی/رزرو
 // اینجا رد نمی‌شود (اصلاً از این API برنمی‌گردد)
 export const getQuestion = (id: string) => get<QuestionDetail>(`/questions/${id}`, 300);
-export const getPost = (id: string) => get<PostDetail>(`/posts/${id}`, 300);
+// برچسبِ پست تا ویرایشِ کپشن/عنوان همان لحظه در صفحه دیده شود؛ بک‌اند
+// در هوکِ UserPost همین برچسب را باطل می‌کند
+export const getPost = (id: string) => get<PostDetail>(`/posts/${id}`, 300, [`post:${id}`]);
 // کش کوتاه‌تر چون شامل وضعیت آنلاین است (نباید خیلی کهنه باشد)
 export const getSpecialists = () => get<SpecialistsList>("/specialists", 60, [CACHE_TAGS.specialists]);
 export const getSpecialist = (id: string) => get<SpecialistDetail>(`/specialists/${id}`, 300, [CACHE_TAGS.specialists, `specialist:${id}`]);
