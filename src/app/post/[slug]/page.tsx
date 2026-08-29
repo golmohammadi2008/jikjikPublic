@@ -63,7 +63,13 @@ async function loadPost(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = await loadPost(slug);
-  if (!data) return {};
+  // ⚠️ `notFound()` هم مثل ریدایرکت باید *این‌جا* باشد. این مسیر
+  // `loading.tsx` دارد، پس رندرش استریم می‌شود و `notFound()`ِ داخلِ کامپوننت
+  // دیگر نمی‌تواند کدِ وضعیت بدهد: صفحه‌ی «پیدا نشد» را با **۲۰۰** سرو
+  // می‌کرد. برای گوگل این یک soft 404 است — آدرسی که وجود ندارد ولی می‌گوید
+  // سالم است. بدتر: `/post/garbage` متادیتای پیش‌فرض می‌گرفت و
+  // `index, follow` می‌شد، یعنی بی‌نهایت آدرسِ الکیِ ایندکس‌پذیر.
+  if (!data) notFound();
 
   const { post } = data;
   const canonicalSlug = buildPostSlug(post);

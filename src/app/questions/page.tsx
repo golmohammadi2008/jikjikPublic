@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getQuestionsArchive } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
 import { SITE_NAME, SITE_URL } from "@/lib/config";
@@ -17,11 +18,37 @@ function buildUrl(params: { page?: number; category?: string; sort?: string }) {
   return `/questions${s ? `?${s}` : ""}`;
 }
 
+/**
+ * پارامترهای این صفحه فضای خزشِ بی‌پایان می‌ساختند.
+ *
+ * `?page=99` و `?category=notacategory` هر دو ۲۰۰ و `index, follow`
+ * برمی‌گشتند و خودشان را کانونیکال اعلام می‌کردند. بدتر: بک‌اند دسته‌ی
+ * ناشناخته را نادیده می‌گیرد و **همه‌ی** سوال‌ها را می‌دهد، پس هر رشته‌ی
+ * دلخواهی یک کپیِ کاملِ `/questions` زیر نشانیِ تازه بود — همان چیزی که در
+ * سرچ‌کنسول «Duplicate without user-selected canonical» می‌شود. و
+ * `?page=<هرچه>` صفحه‌ی خالیِ ایندکس‌پذیر می‌ساخت.
+ *
+ * حالا پارامترِ نامعتبر ۴۰۴ می‌گیرد و صفحه‌ی معتبر ولی خالی noindex می‌شود.
+ */
+async function resolveParams(sp: { page?: string; category?: string; sort?: string }) {
+  const page = Math.max(1, parseInt(sp.page || "1") || 1);
+  const sort = sp.sort === "top" ? "top" : "newest";
+  const category = sp.category;
+
+  const data = await getQuestionsArchive({ page, category, sort });
+
+  // دسته‌ای که وجود ندارد یعنی نشانی وجود ندارد
+  if (category && !(data?.categories ?? []).some((c) => c.key === category)) notFound();
+  // شماره‌ی صفحه‌ی بیرون از بازه هم همین‌طور
+  if (page > 1 && page > (data?.totalPages ?? 1)) notFound();
+
+  return { page, category, sort, data };
+}
+
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const sp = await searchParams;
-  const page = Math.max(1, parseInt(sp.page || "1") || 1);
-  const category = sp.category;
-  const sort = sp.sort === "top" ? "top" : "newest";
+  const { page, category, sort, data } = await resolveParams(sp);
+  const categoryLabel = (data?.categories ?? []).find((c) => c.key === category)?.label ?? category;
   // ترتیب در کانونیکال نمی‌آید. `?sort=top` همان مجموعه‌ی سوال‌هاست با چیدمانِ
   // دیگر، نه صفحه‌ی تازه‌ای؛ وقتی هر ترکیب خودش را کانونیکال اعلام می‌کرد،
   // گوگل آن‌ها را تکراری می‌دید و خودش کانونیکالِ دیگری انتخاب می‌کرد
@@ -29,28 +56,30 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   // می‌مانند چون واقعاً محتوای متفاوتی نشان می‌دهند.
   const canonical = buildUrl({ page, category, sort: "newest" });
 
+  // برچسبِ فارسی، نه کلیدِ لاتین: عنوان تا امروز «سوال‌های حوزه doctor» بود
   const title = category
-    ? `سوال‌های حوزه ${category}${page > 1 ? ` — صفحه ${page}` : ""}`
+    ? `سوال‌های حوزه ${categoryLabel}${page > 1 ? ` — صفحه ${page}` : ""}`
     : `همه سوال‌ها${page > 1 ? ` — صفحه ${page}` : ""}`;
 
   // og:url هم از همان `canonical` می‌آید. تا پیش از این تعریف نمی‌شد و
   // نسخه‌ی layout ریشه (که SITE_URL ثابت بود) به ارث می‌رسید — یعنی این
   // صفحه هم‌زمان می‌گفت کانونیکالش «/questions?page=۲» است و og:urlش
   // صفحه‌ی اصلی، که دقیقاً همان تناقضی است که چند خط بالاتر رفعش کردیم.
-  return pageMeta({
-    title,
-    description: `مرور سوال‌های کاربران ${SITE_NAME} با پاسخ فوری هوش مصنوعی و پاسخ متخصص تاییدشده.`,
-    path: canonical,
-  });
+  return {
+    ...pageMeta({
+      title,
+      description: `مرور سوال‌های کاربران ${SITE_NAME} با پاسخ فوری هوش مصنوعی و پاسخ متخصص تاییدشده.`,
+      path: canonical,
+    }),
+    // دسته‌ی معتبر ولی بی‌سوال، صفحه‌ی خالی است و صفحه‌ی خالی ایندکس نمی‌شود.
+    // follow می‌ماند تا لینک‌های داخلی‌اش دنبال شوند.
+    ...((data?.questions ?? []).length === 0 ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 export default async function QuestionsArchivePage({ searchParams }: Props) {
   const sp = await searchParams;
-  const page = Math.max(1, parseInt(sp.page || "1") || 1);
-  const category = sp.category;
-  const sort = sp.sort === "top" ? "top" : "newest";
-
-  const data = await getQuestionsArchive({ page, category, sort });
+  const { page, category, sort, data } = await resolveParams(sp);
   const questions = data?.questions ?? [];
   const categories = data?.categories ?? [];
   const totalPages = data?.totalPages ?? 1;

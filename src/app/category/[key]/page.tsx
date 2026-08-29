@@ -34,7 +34,11 @@ async function loadCategory(key: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { key } = await params;
   const data = await loadCategory(key);
-  if (!data) return {};
+  // ⚠️ `notFound()` باید *این‌جا* باشد نه در کامپوننت صفحه: رندرِ کامپوننت
+  // استریم می‌شود و آن‌جا دیگر کدِ وضعیت ممکن نیست، پس صفحه‌ی «پیدا نشد» با
+  // **۲۰۰** سرو می‌شد — برای گوگل یعنی soft 404: آدرسی که وجود ندارد ولی
+  // می‌گوید سالم است. generateMetadata پیش از باز شدنِ استریم تمام می‌شود.
+  if (!data) notFound();
 
   const title = `سوال‌های ${data.category.label}`;
   const description = `سوال‌های حوزه ${data.category.label} با پاسخ هوش مصنوعی و متخصص در ${SITE_NAME}.`;

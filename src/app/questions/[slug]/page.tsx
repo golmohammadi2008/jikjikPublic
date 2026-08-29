@@ -20,7 +20,11 @@ async function loadQuestion(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = await loadQuestion(slug);
-  if (!data) return {};
+  // ⚠️ `notFound()` باید *این‌جا* باشد نه در کامپوننت صفحه: رندرِ کامپوننت
+  // استریم می‌شود و آن‌جا دیگر کدِ وضعیت ممکن نیست، پس صفحه‌ی «پیدا نشد» با
+  // **۲۰۰** سرو می‌شد — برای گوگل یعنی soft 404: آدرسی که وجود ندارد ولی
+  // می‌گوید سالم است. generateMetadata پیش از باز شدنِ استریم تمام می‌شود.
+  if (!data) notFound();
 
   const { question, answers } = data;
   const title = deriveTitle(question.text, 90);

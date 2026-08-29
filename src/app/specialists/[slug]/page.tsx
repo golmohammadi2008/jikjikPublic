@@ -24,7 +24,11 @@ async function loadSpecialist(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = await loadSpecialist(slug);
-  if (!data) return {};
+  // ⚠️ `notFound()` باید *این‌جا* باشد نه در کامپوننت صفحه: رندرِ کامپوننت
+  // استریم می‌شود و آن‌جا دیگر کدِ وضعیت ممکن نیست، پس صفحه‌ی «پیدا نشد» با
+  // **۲۰۰** سرو می‌شد — برای گوگل یعنی soft 404: آدرسی که وجود ندارد ولی
+  // می‌گوید سالم است. generateMetadata پیش از باز شدنِ استریم تمام می‌شود.
+  if (!data) notFound();
   const { specialist } = data;
   const canonicalSlug = buildSlug(specialist.name, specialist.id);
   // ریدایرکت باید *در متادیتا* باشد نه در کامپوننت صفحه: این مسیر
