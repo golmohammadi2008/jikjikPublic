@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getPost } from "@/lib/api";
 import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
@@ -66,9 +66,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!data) return {};
 
   const { post } = data;
+  const canonicalSlug = buildPostSlug(post);
+  // ⚠️ ریدایرکت باید *این‌جا* باشد نه در کامپوننت صفحه. صفحه `loading.tsx`
+  // دارد، یعنی رندرش استریم می‌شود؛ و `redirect()` در بستر استریم — طبق
+  // مستندات خودِ Next — دیگر نمی‌تواند کدِ وضعیت بدهد و به‌جایش یک متاتگِ
+  // سمتِ کلاینت می‌گذارد. نتیجه‌اش ۲۰۰ بود روی نشانیِ غیرکانونیکال، با
+  // محتوای کاملِ صفحه: دقیقاً یک صفحه‌ی تکراری برای گوگل.
+  // generateMetadata پیش از شروعِ استریم تمام می‌شود، پس این‌جا واقعاً ۳۰۸
+  // سرو می‌شود. (`fetch` بینِ متادیتا و صفحه dedupe می‌شود، پس درخواستِ
+  // دومی به بک‌اند نمی‌رود.)
+  if (slug !== canonicalSlug) permanentRedirect(`/post/${canonicalSlug}`);
+
   const plain = captionPlainText(post.caption);
   const title = postTitle(post, plain, post.author.name);
-  const canonicalSlug = buildPostSlug(post);
 
   return {
     // پستِ بی‌کپشن عنوانش خودش نامِ متخصص را دارد؛ دوباره چسباندنش می‌شد
@@ -125,10 +135,10 @@ export default async function PostPage({ params }: Props) {
       ? [{ url: post.imageUrl, isVideo: post.isVideo, videoUrl: post.videoUrl }]
       : [];
 
-  // اسلاگِ غیرکانونیکال ۳۰۸ می‌خورد. این باید در *کامپوننت صفحه* باشد نه در
-  // generateMetadata: آن‌جا redirect نه ریدایرکتِ HTTP می‌سازد و نه متادیتا
-  // را تولید می‌کند، یعنی صفحه بدون canonical و بدون og سرو می‌شد.
-  if (slug !== canonicalSlug) redirect(`/post/${canonicalSlug}`);
+  // تورِ ایمنی: ریدایرکتِ واقعی در generateMetadata انجام می‌شود (آن‌جا هنوز
+  // استریم شروع نشده و ۳۰۸ِ واقعی ممکن است). این‌جا فقط برای آن است که اگر
+  // مسیری روزی متادیتا نداشت، صفحه‌ی تکراری رندر نشود.
+  if (slug !== canonicalSlug) permanentRedirect(`/post/${canonicalSlug}`);
 
   const jsonLd = {
     "@context": "https://schema.org",

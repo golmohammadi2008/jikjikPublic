@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
 import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
@@ -27,6 +27,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!data) return {};
   const { specialist } = data;
   const canonicalSlug = buildSlug(specialist.name, specialist.id);
+  // ریدایرکت باید *در متادیتا* باشد نه در کامپوننت صفحه: این مسیر
+  // `loading.tsx` دارد، یعنی رندرش استریم می‌شود، و `redirect()` در بستر
+  // استریم — طبق مستندات Next — کدِ وضعیت نمی‌دهد و صفحه را کامل رندر
+  // می‌کند. نتیجه‌اش ۲۰۰ روی نشانیِ غیرکانونیکال با محتوای کامل بود: دقیقاً
+  // همان صفحه‌ی تکراری که می‌خواستیم حذفش کنیم. این‌جا رندر اصلاً شروع
+  // نمی‌شود و فقط ریدایرکت می‌رود.
+  if (slug !== canonicalSlug) permanentRedirect(`/specialists/${canonicalSlug}`);
+
   return {
     title: `${specialist.name} | ${specialist.specialty || specialist.categoryLabel || "متخصص"}`,
     description: `پروفایل ${specialist.name}${specialist.specialty ? ` — ${specialist.specialty}` : ""} در ${SITE_NAME}. سوال بپرس یا جلسه آنلاین رزرو کن.`,
@@ -54,7 +62,8 @@ export default async function SpecialistPage({ params }: Props) {
   // متن، نشانیِ قدیمی هم زنده می‌ماند و گوگل آن را «Alternate page with proper
   // canonical tag» ثبت می‌کرد — بودجه‌ی خزش صرفِ تکراری‌ها می‌شد. ریدایرکت،
   // سیگنال‌ها را روی یک نشانی جمع می‌کند.
-  if (slug !== canonicalSlug) redirect(`/specialists/${canonicalSlug}`);
+  // تورِ ایمنی — ریدایرکتِ واقعی در generateMetadata بالا انجام شده
+  if (slug !== canonicalSlug) permanentRedirect(`/specialists/${canonicalSlug}`);
 
   const url = `${SITE_URL}/specialists/${canonicalSlug}`;
 

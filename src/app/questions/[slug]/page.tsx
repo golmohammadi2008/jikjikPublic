@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getQuestion } from "@/lib/api";
 import { buildSlug, extractObjectId } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
@@ -32,6 +32,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const topAnswer = withText.find((a) => !a.isAi) ?? withText[0];
   const description = excerpt(topAnswer?.body || question.text, 155);
   const canonicalSlug = buildSlug(question.text, question.id);
+  // ریدایرکت باید *در متادیتا* باشد نه در کامپوننت صفحه: این مسیر
+  // `loading.tsx` دارد، یعنی رندرش استریم می‌شود، و `redirect()` در بستر
+  // استریم — طبق مستندات Next — کدِ وضعیت نمی‌دهد و صفحه را کامل رندر
+  // می‌کند. نتیجه‌اش ۲۰۰ روی نشانیِ غیرکانونیکال با محتوای کامل بود: دقیقاً
+  // همان صفحه‌ی تکراری که می‌خواستیم حذفش کنیم. این‌جا رندر اصلاً شروع
+  // نمی‌شود و فقط ریدایرکت می‌رود.
+  if (slug !== canonicalSlug) permanentRedirect(`/questions/${canonicalSlug}`);
 
   return {
     title: `${title} | پاسخ متخصص و هوش مصنوعی`,
@@ -59,7 +66,8 @@ export default async function QuestionPage({ params }: Props) {
   // canonical tag» ثبت می‌کرد — بودجه‌ی خزش صرفِ تکراری‌ها می‌شد. ریدایرکت،
   // سیگنال‌ها را روی یک نشانی جمع می‌کند.
   const canonicalSlug = buildSlug(question.text, question.id);
-  if (slug !== canonicalSlug) redirect(`/questions/${canonicalSlug}`);
+  // تورِ ایمنی — ریدایرکتِ واقعی در generateMetadata بالا انجام شده
+  if (slug !== canonicalSlug) permanentRedirect(`/questions/${canonicalSlug}`);
 
   const aiAnswers = answers.filter((a) => a.isAi);
   const expertAnswers = answers

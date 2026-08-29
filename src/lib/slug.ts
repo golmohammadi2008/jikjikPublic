@@ -10,10 +10,21 @@ const FA_TO_LATIN: Record<string, string> = {
   ل: "l", م: "m", ن: "n", و: "v", ه: "h", ی: "y", ئ: "y", ء: "",
 };
 
+/**
+ * رقم‌های فارسی (۰-۹) و عربی (٠-٩) به رقمِ لاتین.
+ *
+ * بدون این، فیلترِ `[^a-z0-9\s-]` پایین‌تر رقم‌ها را دور می‌ریخت و عنوانی مثل
+ * «اعداد اصلی و ترتیبی در عربی از ۱ تا ۱۲» اسلاگش می‌شد `...az-ta` — یعنی
+ * دقیقاً همان دو عددی که عنوان را معنادار می‌کنند از نشانی حذف می‌شدند.
+ */
+const DIGITS: Record<string, string> = Object.fromEntries(
+  [..."۰۱۲۳۴۵۶۷۸۹"].flatMap((fa, i) => [[fa, String(i)], [String.fromCharCode(0x0660 + i), String(i)]]),
+);
+
 export function slugify(text: string): string {
   const transliterated = text
     .split("")
-    .map((ch) => FA_TO_LATIN[ch] ?? ch)
+    .map((ch) => FA_TO_LATIN[ch] ?? DIGITS[ch] ?? ch)
     .join("");
 
   return transliterated
