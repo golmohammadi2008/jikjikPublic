@@ -175,7 +175,7 @@ export default async function PostPage({ params }: Props) {
         // جاسازی نیست و embedUrlِ نادرست گوگل را دنبالِ پلیری می‌فرستد که
         // وجود ندارد.
         url: pageUrl,
-        mainEntityOfPage: pageUrl,
+        mainEntityOfPage: { "@id": pageUrl },
         ...(post.durationSec ? { duration: isoDuration(post.durationSec) } : {}),
         // thumbnailUrl الزامی است. بک‌اند برای پستِ ویدیویی کاور را در
         // imageUrl می‌گذارد و خودِ فایل را در videoUrl.
@@ -183,6 +183,16 @@ export default async function PostPage({ params }: Props) {
       }
     : null;
 
+  /**
+   * روی پستِ ویدیویی، Article دیگر `mainEntityOfPage` نمی‌گیرد.
+   *
+   * این همان تناقضی بود که با افزودنِ `mainEntity` رفع نشد: صفحه هم‌زمان دو
+   * ادعای رقیب می‌کرد — WebPage می‌گفت موجودیتِ اصلی‌ام ویدیوست، و Article
+   * با `mainEntityOfPage` همان نشانی را برای خودش برمی‌داشت. گوگل یکی را
+   * باید انتخاب می‌کرد و Article (با headline و author و publisher) سیگنالِ
+   * قوی‌تری داشت؛ نتیجه‌اش «صفحه‌ی مقاله‌ای که ویدیو هم دارد» بود، نه صفحه‌ی
+   * تماشا. حالا فقط یک ادعا در صفحه هست.
+   */
   const articleNode = {
     "@type": "Article",
     "@id": `${pageUrl}#article`,
@@ -200,8 +210,9 @@ export default async function PostPage({ params }: Props) {
       name: SITE_NAME,
       logo: { "@type": "ImageObject", url: `${SITE_URL}/assets/logo-512.png` },
     },
-    mainEntityOfPage: pageUrl,
-    ...(videoNode ? { video: { "@id": videoNode["@id"] } } : {}),
+    ...(videoNode
+      ? { video: { "@id": videoNode["@id"] }, isPartOf: { "@id": pageUrl } }
+      : { mainEntityOfPage: pageUrl }),
   };
 
   const jsonLd = {

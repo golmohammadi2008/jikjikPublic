@@ -188,8 +188,20 @@ export type QuestionsArchive = {
  * سایت‌مپ پست‌ها را از `home.posts` می‌گرفت که روی ۶ تا محدود است، پس با هر
  * پستِ تازه قدیمی‌ترین از سایت‌مپ بیرون می‌افتاد. این آرشیو همه را می‌دهد.
  */
+export type PostsArchiveItem = {
+  id: string;
+  title: string;
+  caption: string;
+  createdAt: string;
+  /** فقط پستِ ویدیویی این‌ها را دارد — برای /video-sitemap.xml */
+  isVideo?: boolean;
+  videoUrl?: string | null;
+  thumbnailUrl?: string | null;
+  durationSec?: number;
+};
+
 export type PostsArchive = {
-  posts: { id: string; title: string; caption: string; createdAt: string }[];
+  posts: PostsArchiveItem[];
   page: number;
   totalPages: number;
   total: number;
