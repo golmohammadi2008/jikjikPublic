@@ -93,76 +93,93 @@ export default async function QuestionPage({ params }: Props) {
    * پاسخِ بعدی می‌رویم به‌جای فرستادنِ یک acceptedAnswerِ بی‌متن.
    */
   const accepted = expertAnswers.find((a) => answerText(a).length > 0);
+  /**
+   * پاسخ‌های هوش مصنوعی هم وارد داده‌ی ساختاریافته می‌شوند (به‌عنوانِ
+   * suggestedAnswer، نه acceptedAnswer).
+   *
+   * چرا: آرشیو هر سوالِ تأییدشده را برمی‌گرداند، حتی سوالی که هنوز هیچ
+   * متخصصی جوابش نداده. تا پیش از این فقط expertAnswers به JSON-LD می‌رفت،
+   * پس آن صفحه‌ها یک QAPage می‌شدند که Question‌اش نه acceptedAnswer داشت
+   * نه suggestedAnswer — همان خطای بحرانیِ سرچ‌کنسول
+   * («Either "acceptedAnswer" or "suggestedAnswer" should be specified»)
+   * که کلِ صفحه را از نتایج غنی بیرون می‌انداخت.
+   */
+  const anchorFor = (id: string) =>
+    `${SITE_URL}/questions/${canonicalSlug}#answer-${id}`;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "QAPage",
-    mainEntity: {
-      "@type": "Question",
-      name: deriveTitle(question.text, 110),
-      text: question.text,
-      dateCreated: question.createdAt,
-      answerCount: question.answerCount,
-      // پرسش‌ها ناشناس‌اند و صفحه‌ی پروفایلِ عمومی ندارند؛ url به خودِ سایت
-      // اشاره می‌کند تا فیلدِ پیشنهادیِ گوگل خالی نماند
-      author: { "@type": "Person", name: "کاربر وینو", url: `${SITE_URL}/` },
-      ...(accepted
-        ? {
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: answerText(accepted),
-              dateCreated: accepted.createdAt,
-              upvoteCount: accepted.likeCount,
-              url: `${SITE_URL}/questions/${buildSlug(question.text, question.id)}#answer-${accepted.id}`,
-              author: {
-                "@type": "Person",
-                name: accepted.responder?.name ?? "متخصص وینو",
-                url: accepted.responder
-                  ? `${SITE_URL}/specialists/${buildSlug(accepted.responder.name, accepted.responder.id)}`
-                  : `${SITE_URL}/specialists`,
-              },
-            },
-          }
-        : {}),
-      // بقیه‌ی پاسخ‌ها هم اعلام می‌شوند: answerCount بدونِ suggestedAnswer یعنی
-      // گوگل عددی می‌بیند که پشتش داده‌ای نیست
-      ...(() => {
-        const others = expertAnswers.filter((a) => a !== accepted && answerText(a).length > 0);
-        return others.length
-          ? {
-              suggestedAnswer: others.map((a) => ({
-                "@type": "Answer",
-                text: answerText(a),
-                dateCreated: a.createdAt,
-                upvoteCount: a.likeCount,
-                url: `${SITE_URL}/questions/${buildSlug(question.text, question.id)}#answer-${a.id}`,
-                author: {
-                  "@type": "Person",
-                  name: a.responder?.name ?? "متخصص وینو",
-                  url: a.responder
-                    ? `${SITE_URL}/specialists/${buildSlug(a.responder.name, a.responder.id)}`
-                    : `${SITE_URL}/specialists`,
-                },
-              })),
-            }
-          : {};
-      })(),
-    },
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: SITE_NAME, item: `${SITE_URL}/` },
-        { "@type": "ListItem", position: 2, name: "سوال‌ها", item: `${SITE_URL}/questions` },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: question.categoryLabel,
-          item: `${SITE_URL}/category/${question.category}`,
+  const answerNode = (a: (typeof answers)[number]) => ({
+    "@type": "Answer",
+    text: answerText(a),
+    dateCreated: a.createdAt,
+    upvoteCount: a.likeCount,
+    url: anchorFor(a.id),
+    author: a.isAi
+      ? { "@type": "Organization", name: `هوش مصنوعی ${SITE_NAME}`, url: `${SITE_URL}/` }
+      : {
+          "@type": "Person",
+          name: a.responder?.name ?? `متخصص ${SITE_NAME}`,
+          url: a.responder
+            ? `${SITE_URL}/specialists/${buildSlug(a.responder.name, a.responder.id)}`
+            : `${SITE_URL}/specialists`,
         },
-        { "@type": "ListItem", position: 4, name: deriveTitle(question.text, 110) },
-      ],
-    },
+  });
+
+  const suggested = [...expertAnswers, ...aiAnswers].filter(
+    (a) => a !== accepted && answerText(a).length > 0
+  );
+
+  /**
+   * سوالِ بی‌پاسخ اصلاً QAPage نیست.
+   *
+   * اگر هیچ پاسخِ متن‌داری نمانده باشد، به‌جای فرستادنِ یک QAPageِ ناقص،
+   * صفحه را WebPage اعلام می‌کنیم. بردکرامب سرِ جایش می‌ماند تا صفحه بدونِ
+   * داده‌ی ساختاریافته نماند.
+   */
+  const hasAnswerData = Boolean(accepted) || suggested.length > 0;
+
+  const breadcrumb = {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: SITE_NAME, item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "سوال‌ها", item: `${SITE_URL}/questions` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: question.categoryLabel,
+        item: `${SITE_URL}/category/${question.category}`,
+      },
+      { "@type": "ListItem", position: 4, name: deriveTitle(question.text, 110) },
+    ],
   };
+
+  const jsonLd = hasAnswerData
+    ? {
+        "@context": "https://schema.org",
+        "@type": "QAPage",
+        mainEntity: {
+          "@type": "Question",
+          name: deriveTitle(question.text, 110),
+          text: question.text,
+          dateCreated: question.createdAt,
+          // answerCount باید با تعدادِ پاسخ‌هایی که واقعاً اعلام می‌کنیم بخواند،
+          // نه با شمارنده‌ی سرور که پاسخِ بی‌متن را هم می‌شمارد.
+          answerCount: (accepted ? 1 : 0) + suggested.length,
+          // پرسش‌ها ناشناس‌اند و صفحه‌ی پروفایلِ عمومی ندارند؛ url به خودِ سایت
+          // اشاره می‌کند تا فیلدِ پیشنهادیِ گوگل خالی نماند
+          author: { "@type": "Person", name: `کاربر ${SITE_NAME}`, url: `${SITE_URL}/` },
+          ...(accepted ? { acceptedAnswer: answerNode(accepted) } : {}),
+          ...(suggested.length ? { suggestedAnswer: suggested.map(answerNode) } : {}),
+        },
+        breadcrumb,
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: deriveTitle(question.text, 110),
+        url: `${SITE_URL}/questions/${canonicalSlug}`,
+        datePublished: question.createdAt,
+        breadcrumb,
+      };
 
   return (
     <main className="wrap q-page">
@@ -187,7 +204,7 @@ export default async function QuestionPage({ params }: Props) {
 
         <div className="thread" style={{ marginTop: 26 }}>
           {aiAnswers.map((a) => (
-            <div className="thread-item ai" key={a.id}>
+            <div className="thread-item ai" id={`answer-${a.id}`} key={a.id}>
               <div className="answer-card ai-card">
                 <div className="a-head">
                   <span className="chip chip-ai">✦ پاسخ هوش مصنوعی وینو</span>
