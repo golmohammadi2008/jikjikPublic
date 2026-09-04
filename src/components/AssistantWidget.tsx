@@ -30,6 +30,9 @@ export default function AssistantWidget({ models, freeAsks }: { models: Assistan
   const [specialists, setSpecialists] = useState<AssistantSpecialist[]>([]);
   const [error, setError] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  // سوالی که کاربر همین حالا نوشته یا آخرین چیزی که پرسیده — همان با او به
+  // پنل می‌رود
+  const lastQuestion = input.trim() || turns[turns.length - 1]?.q || "";
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [turns, asking]);
 
@@ -124,7 +127,15 @@ export default function AssistantWidget({ models, freeAsks }: { models: Assistan
                 برای ادامه‌ی گفتگو وارد حساب شو — آن‌جا هر روز سهمیه‌ی تازه داری و
                 می‌توانی گفتگو را ادامه بدهی.
               </p>
-              <a className="btn btn-saffron" href={`${PANEL_URL}/assistant`}>ورود و ادامه‌ی گفتگو</a>
+              {/* آخرین سوالِ کاربر همراهش می‌رود: بعد از ورود، جوابِ *همان*
+                  سوال را می‌بیند نه یک صفحه‌ی خالی که باید دوباره تایپش کند.
+                  آن دوباره‌نوشتن دقیقاً جایی است که کاربرِ تازه رها می‌کند. */}
+              <a
+                className="btn btn-saffron"
+                href={`${PANEL_URL}/assistant${lastQuestion ? `?q=${encodeURIComponent(lastQuestion)}` : ''}`}
+              >
+                ورود و ادامه‌ی گفتگو
+              </a>
             </div>
           )}
         </div>
