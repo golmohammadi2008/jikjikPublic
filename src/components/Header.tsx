@@ -14,7 +14,6 @@ export default function Header() {
         </Link>
         <nav className="main-nav" aria-label="ناوبری اصلی">
           <Link href="/">صفحه اصلی</Link>
-          <Link href="/questions">پرسش و پاسخ</Link>
           <Link href="/specialists">متخصصان</Link>
           <a href={`${PANEL_URL}/sessions`}>جلسات من</a>
         </nav>

@@ -1,4 +1,4 @@
-import { CategoryDetail, HomeData, PostDetail, PostsArchive, QuestionDetail, QuestionsArchive, SpecialistDetail, SpecialistsList } from "./types";
+import { CategoryDetail, HomeData, PostDetail, PostsArchive, SpecialistDetail, SpecialistsList } from "./types";
 
 // این‌جا Server Component است — مستقیم سمت سرور به بک‌اند وصل می‌شود (نه از
 // طریق rewrite که برای فراخوانی‌های کلاینتی/مرورگر است). روی خودِ سرور،
@@ -62,7 +62,6 @@ export const getHome = () => get<HomeData>("/home", 120, [CACHE_TAGS.home]);
 
 // سوال/پست تکی: کمتر تغییر می‌کند، کش بلندتر — ولی هیچ‌وقت دیتای مالی/رزرو
 // اینجا رد نمی‌شود (اصلاً از این API برنمی‌گردد)
-export const getQuestion = (id: string) => get<QuestionDetail>(`/questions/${id}`, 300);
 // برچسبِ پست تا ویرایشِ کپشن/عنوان همان لحظه در صفحه دیده شود؛ بک‌اند
 // در هوکِ UserPost همین برچسب را باطل می‌کند
 export const getPost = (id: string) => get<PostDetail>(`/posts/${id}`, 300, [`post:${id}`]);
@@ -72,14 +71,6 @@ export const getSpecialist = (id: string) => get<SpecialistDetail>(`/specialists
 export const getCategory = (key: string) => get<CategoryDetail>(`/category/${key}`, 300);
 
 // آرشیو کامل سوال‌ها — بخش اصلی سئو؛ صفحه‌بندی‌شده + فیلتر دسته + مرتب‌سازی
-export const getQuestionsArchive = (params: { page?: number; category?: string; sort?: "newest" | "top" } = {}) => {
-  const qs = new URLSearchParams();
-  if (params.page && params.page > 1) qs.set("page", String(params.page));
-  if (params.category) qs.set("category", params.category);
-  if (params.sort) qs.set("sort", params.sort);
-  const suffix = qs.toString() ? `?${qs.toString()}` : "";
-  return get<QuestionsArchive>(`/questions${suffix}`, 120);
-};
 
 // آرشیو کامل پست‌ها — فقط سایت‌مپ از آن استفاده می‌کند
 export const getPostsArchive = (page = 1) =>

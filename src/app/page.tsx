@@ -23,7 +23,6 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const data = await getHome();
-  const hotQuestions = data?.hotQuestions ?? [];
   const posts = data?.posts ?? [];
   const categories = data?.categories ?? [];
 
@@ -42,9 +41,9 @@ export default async function HomePage() {
         url: `${SITE_URL}/`,
         name: SITE_NAME,
         publisher: { "@id": `${SITE_URL}/#org` },
-        // SearchAction عمداً حذف شد: `/questions` اصلاً پارامتر `query` ندارد
+        // SearchAction عمداً حذف شد: هیچ صفحه‌ی جستجویی با پارامتر `query` نداریم
         // (فقط page/category/sort). گوگل خودِ الگو را به‌عنوان یک نشانی خزید و
-        // `/questions?query={search_term_string}` در سرچ‌کنسول ثبت شد. تا وقتی
+        // و آدرسِ ساختگی در سرچ‌کنسول ثبت می‌شد. تا وقتی
         // جست‌وجوی واقعی روی سایت نداریم، اعلامش فقط خطا می‌سازد.
       },
     ],
@@ -161,58 +160,6 @@ export default async function HomePage() {
         </svg>
       </section>
 
-      {hotQuestions.length > 0 && (
-        <section className="section" id="hot-questions">
-          <div className="wrap">
-            <div className="section-head">
-              <h2>داغ‌ترین سوال‌های این هفته</h2>
-              <Link className="more" href="/questions">
-                همه سوال‌ها ←
-              </Link>
-            </div>
-
-            <div className="q-grid">
-              {hotQuestions.map((q) => {
-                const aiAnswer = q.preview.find((a) => a.isAi);
-                const expertAnswer = q.preview.find((a) => !a.isAi);
-                const slug = buildSlug(q.text, q.id);
-                return (
-                  <article className="q-card" key={q.id}>
-                    <span className="chip">{q.categoryLabel}</span>
-                    <h3 className="q-title">
-                      <Link href={`/questions/${slug}`}>{q.text}</Link>
-                    </h3>
-                    <div className="thread">
-                      {aiAnswer && (
-                        <div className="thread-item ai">
-                          <span className="chip chip-ai">✦ پاسخ هوش مصنوعی</span>
-                          <p className="answer-peek">{aiAnswer.body}</p>
-                        </div>
-                      )}
-                      {expertAnswer && (
-                        <div className="thread-item expert">
-                          <p className="answer-peek">
-                            <b>{expertAnswer.responder?.name}:</b> {expertAnswer.body}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    <footer>
-                      <span className="meta-ic">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ verticalAlign: "-1px" }}>
-                          <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.6-.8L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        {formatCount(q.specialistAnswerCount)} پاسخ متخصص
-                      </span>
-                      <span>{formatCount(q.answerCount)} پاسخ در مجموع</span>
-                    </footer>
-                  </article>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
 
       {posts.length > 0 && (
         <section className="section" id="posts">

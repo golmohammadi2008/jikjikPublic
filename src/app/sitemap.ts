@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getHome, getPostsArchive, getQuestionsArchive, getSpecialists } from "@/lib/api";
+import { getHome, getPostsArchive, getSpecialists } from "@/lib/api";
 import { buildPostSlug, buildSlug } from "@/lib/slug";
 import { SITE_URL } from "@/lib/config";
 
@@ -7,7 +7,6 @@ import { SITE_URL } from "@/lib/config";
 // اصلی در sitemap می‌آمد (۸ آدرس در کل). حالا تا این تعداد صفحه‌ی آرشیو را
 // می‌پیماییم تا همه‌ی سوال‌ها به گوگل معرفی شوند. سقف دارد چون sitemap در
 // زمان build/ISR ساخته می‌شود و نباید به یک کراول طولانی تبدیل شود.
-const MAX_ARCHIVE_PAGES = 40;
 
 // همان سقف برای آرشیو پست‌ها؛ ۳۰ پست در هر صفحه
 const MAX_POST_PAGES = 40;
@@ -30,10 +29,9 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const [home, specialistsData, firstArchive, firstPosts] = await Promise.all([
+  const [home, specialistsData, firstPosts] = await Promise.all([
     getHome().catch(() => null),
     getSpecialists().catch(() => null),
-    getQuestionsArchive().catch(() => null),
     getPostsArchive().catch(() => null),
   ]);
 
@@ -42,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // قبلاً هر خطای API بی‌صدا به null تبدیل می‌شد و نتیجه یک سایت‌مپِ ده‌آدرسیِ
   // فقط-صفحه‌های-ثابت بود که یک ساعت کش می‌شد. یک بار واقعاً همین شد: درست
   // در لحظه‌ی ری‌استارتِ سرویس بازتولید شد و از ۲۳ آدرس به ۱۰ افتاد — یعنی
-  // به گوگل گفتیم همه‌ی صفحه‌های سوال از سایت‌مپ حذف شده‌اند.
+  // به گوگل گفتیم همه‌ی صفحه‌های محتوایی از سایت‌مپ حذف شده‌اند.
   //
   // با throw، Next نسخه‌ی سالمِ قبلی را نگه می‌دارد و در بازتولیدِ بعدی
   // دوباره تلاش می‌کند. نبودِ به‌روزرسانی خیلی بهتر از انتشارِ یک سایت‌مپِ
@@ -52,7 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // prerender-manifest.json اصلاً ساخته نشد). فقط در بازتولیدِ زمانِ اجرا
   // throw می‌کنیم؛ آن‌جاست که Next نسخه‌ی سالمِ قبلی را نگه می‌دارد.
   const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
-  if (!isBuild && !firstArchive && !home) {
+  if (!isBuild && !firstPosts && !home) {
     throw new Error('sitemap: منبع داده در دسترس نیست — نسخه‌ی قبلی حفظ می‌شود');
   }
 
@@ -61,7 +59,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // بدون اسلشِ آخر — دقیقاً همان رشته‌ای که تگ canonical صفحه‌ی اصلی می‌دهد.
     // (Next برای `canonical: "/"` آدرس را بدون اسلش می‌سازد.)
     { url: SITE_URL, lastModified: now, changeFrequency: "daily", priority: 1 },
-    { url: `${SITE_URL}/questions`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/specialists`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${SITE_URL}/how-it-works`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/faq`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.7 },
@@ -95,37 +92,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // آرشیو کامل سوال‌ها: هم صفحه‌های صفحه‌بندی، هم تک‌تک سوال‌ها
-  const totalPages = Math.min(firstArchive?.totalPages ?? 1, MAX_ARCHIVE_PAGES);
-  const rest = totalPages > 1
-    ? await Promise.all(
-        Array.from({ length: totalPages - 1 }, (_, i) =>
-          getQuestionsArchive({ page: i + 2 }).catch(() => null)),
-      )
-    : [];
-
-  for (const [i, archive] of [firstArchive, ...rest].entries()) {
-    if (!archive) continue;
-    if (i > 0) {
-      push({ url: `${SITE_URL}/questions?page=${i + 1}`, lastModified: now, changeFrequency: "daily", priority: 0.5 });
-    }
-    for (const q of archive.questions ?? []) {
-      push({
-        url: `${SITE_URL}/questions/${buildSlug(q.text, q.id)}`,
-        lastModified: q.createdAt,
-        changeFrequency: "weekly",
-        priority: 0.7,
-      });
-    }
-  }
-
-  for (const q of home?.hotQuestions ?? []) {
-    push({
-      url: `${SITE_URL}/questions/${buildSlug(q.text, q.id)}`,
-      lastModified: q.createdAt,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    });
-  }
 
   // ⚠️ پست‌ها از **آرشیو** می‌آیند، نه از `home.posts`.
   //

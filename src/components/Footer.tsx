@@ -23,7 +23,6 @@ export default function Footer() {
           </div>
           <nav aria-label="لینک‌های فوتر">
             <Link href="/how-it-works">چطور کار می‌کند</Link>
-            <Link href="/questions">سوال‌ها</Link>
             <Link href="/specialists">متخصص‌ها</Link>
             <Link href="/faq">سوالات متداول</Link>
             <Link href="/contact">ارتباط با ما</Link>

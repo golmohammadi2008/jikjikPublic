@@ -28,7 +28,10 @@ async function loadCategory(key: string) {
   if (!data) return null;
 
   const specialists = (specialistsData?.specialists ?? []).filter((s) => s.category === key);
-  return { ...data, specialists };
+  // `posts` را صریح نرمال می‌کنیم: پاسخِ کش‌شده‌ی نسخه‌ی قبلیِ API این کلید را
+  // نداشت و صفحه با «cannot read properties of undefined» ۵۰۰ می‌داد. شکلِ
+  // ورودی از سرویسِ بیرونی می‌آید و نباید رندر را بشکند.
+  return { ...data, posts: data.posts ?? [], specialists };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -40,8 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // می‌گوید سالم است. generateMetadata پیش از باز شدنِ استریم تمام می‌شود.
   if (!data) notFound();
 
-  const title = `سوال‌های ${data.category.label}`;
-  const description = `سوال‌های حوزه ${data.category.label} با پاسخ هوش مصنوعی و متخصص در ${SITE_NAME}.`;
+  const title = `${data.category.label} — مطالب و متخصص‌ها`;
+  const description = `مطالب و متخصص‌های حوزه ${data.category.label} در ${SITE_NAME}.`;
 
   return {
     title,
@@ -52,11 +55,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
      * خزش صرفش می‌شود و در سرچ‌کنسول زیر «Excluded by noindex» می‌نشیند.
      * follow می‌ماند تا لینک‌های داخلی‌اش دنبال شوند.
      *
-     * «خالی» قبلاً فقط یعنی «بدون سوال» بود، و همین `/category/education` را
+     * «خالی» قبلاً فقط یعنی «بدون محتوا» بود، و همین `/category/education` را
      * با چهار متخصصِ واقعی از ایندکس بیرون می‌گذاشت. حالا نبودِ *هر دو*
      * ملاک است — همان چیزی که صفحه در عمل نشان می‌دهد.
      */
-    ...(data.questions.length === 0 && data.specialists.length === 0
+    ...(data.posts.length === 0 && data.specialists.length === 0
       ? { robots: { index: false, follow: true } }
       : {}),
     // بدون این، og:url از لایه‌ی ریشه ارث می‌رسید و همه‌ی صفحه‌های دسته
@@ -70,40 +73,39 @@ export default async function CategoryPage({ params }: Props) {
   const data = await loadCategory(key);
   if (!data) notFound();
 
-  const { category, questions, specialists } = data;
+  const { category, posts, specialists } = data;
 
-  // صفحه‌ی فهرست بود ولی هیچ داده‌ی ساختاریافته‌ای نداشت: نه مسیر راهنما
-  // (که گوگل در خودِ نتیجه نشان می‌دهد) و نه ItemList که مسیرِ خزش به
-  // سوال‌ها را صریح کند.
+  // مسیر راهنما (که گوگل در خودِ نتیجه نشان می‌دهد) و ItemList که مسیرِ خزش
+  // به پست‌های حوزه را صریح می‌کند.
   const jsonLd = collectionLd({
     path: `/category/${key}`,
-    name: `سوال‌های ${category.label}`,
-    description: `سوال‌های حوزه ${category.label} با پاسخ هوش مصنوعی و متخصص در ${SITE_NAME}.`,
-    crumbs: [{ name: "سوال‌ها", path: "/questions" }, { name: category.label }],
-    items: questions.map((q) => ({ name: q.text, path: `/questions/${buildSlug(q.text, q.id)}` })),
+    name: `مطالب ${category.label}`,
+    description: `مطالب و متخصص‌های حوزه ${category.label} در ${SITE_NAME}.`,
+    crumbs: [{ name: "متخصص‌ها", path: "/specialists" }, { name: category.label }],
+    items: posts.map((p) => ({ name: p.title || p.caption, path: `/post/${buildSlug(p.title || p.caption, p.id)}` })),
   });
 
   return (
     <main className="wrap">
       <script {...jsonLdProps(jsonLd)} />
       <nav className="breadcrumb" aria-label="مسیر صفحه">
-        <Link href="/">{SITE_NAME}</Link> › <Link href="/questions">سوال‌ها</Link> › {category.label}
+        <Link href="/">{SITE_NAME}</Link> › <Link href="/specialists">متخصص‌ها</Link> › {category.label}
       </nav>
 
       <div className="section-head">
-        <h2>سوال‌های {category.label}</h2>
+        <h2>مطالب {category.label}</h2>
       </div>
 
-      {questions.length === 0 ? (
-        <p style={{ color: "var(--ink-2)", padding: "20px 0" }}>در حال حاضر سوالی در این حوزه ثبت نشده.</p>
+      {posts.length === 0 ? (
+        <p style={{ color: "var(--ink-2)", padding: "20px 0" }}>در حال حاضر مطلبی در این حوزه منتشر نشده.</p>
       ) : (
         <section className="related" style={{ marginTop: 0, paddingBottom: 40 }}>
           <ul>
-            {questions.map((q) => (
-              <li key={q.id}>
-                <Link href={`/questions/${buildSlug(q.text, q.id)}`}>
-                  <span>{q.text}</span>
-                  <small>{formatCount(q.answerCount)} پاسخ</small>
+            {posts.map((p) => (
+              <li key={p.id}>
+                <Link href={`/post/${buildSlug(p.title || p.caption, p.id)}`}>
+                  <span>{p.title || p.caption}</span>
+                  <small>{formatCount(p.likesCount)} پسند</small>
                 </Link>
               </li>
             ))}
@@ -111,9 +113,9 @@ export default async function CategoryPage({ params }: Props) {
         </section>
       )}
 
-      {/* متخصص‌های همین حوزه. برای حوزه‌ای که هنوز سوالی ندارد، این تنها
+      {/* متخصص‌های همین حوزه. برای حوزه‌ای که هنوز مطلبی ندارد، این تنها
           محتوای واقعی صفحه است — و همان چیزی که از noindex بیرونش می‌آورد.
-          برای کاربر هم مسیرِ بعدی را می‌سازد: سوالی نیست، ولی کسی هست که
+          برای کاربر هم مسیرِ بعدی را می‌سازد: مطلبی نیست، ولی کسی هست که
           بشود از او پرسید. */}
       {specialists.length > 0 && (
         <section className="related" style={{ marginTop: 0, paddingBottom: 40 }}>

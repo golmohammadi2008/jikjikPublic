@@ -32,9 +32,9 @@ export function panelUserUrl(username: string): string {
   return `${PANEL_URL}/user/${username}`;
 }
 
-/** بپرس / سوال جدید — صفحه ثبت سوال در پنل وب */
+/** بپرس — دستیار هوشمند در پنل وب (پیش‌تر فرمِ ثبت سوال بود) */
 export function panelAskUrl(): string {
-  return `${PANEL_URL}/questions/new`;
+  return `${PANEL_URL}/assistant`;
 }
 
 /** پروفایل خودم — تب پروفایل در پنل وب (وقتی لاگین هستم) */

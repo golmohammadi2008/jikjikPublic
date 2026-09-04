@@ -10,16 +10,6 @@ export type PublicAnswer = {
   page?: { name: string; specialty: string | null; category: string | null; ratingAvg: number; ratingCount: number } | null;
 };
 
-export type HotQuestion = {
-  id: string;
-  text: string;
-  category: string;
-  categoryLabel: string;
-  answerCount: number;
-  specialistAnswerCount: number;
-  createdAt: string;
-  preview: PublicAnswer[];
-};
 
 export type PublicPostAuthor = {
   id: string;
@@ -69,24 +59,10 @@ export type PublicPost = {
 };
 
 export type HomeData = {
-  hotQuestions: HotQuestion[];
   posts: PublicPost[];
   categories: { key: string; label: string; count: number }[];
 };
 
-export type QuestionDetail = {
-  question: {
-    id: string;
-    text: string;
-    category: string;
-    categoryLabel: string;
-    specialty: string | null;
-    createdAt: string;
-    answerCount: number;
-  };
-  answers: PublicAnswer[];
-  related: { id: string; text: string; answerCount: number }[];
-};
 
 export type PostDetail = {
   post: PublicPost;
@@ -159,28 +135,27 @@ export type SpecialistDetail = {
   related: { id: string; text: string; answerCount: number }[];
 };
 
-export type CategoryQuestion = {
+
+/** صفحه‌ی حوزه: پست‌های همان حوزه (پیش‌تر سوال‌ها بود؛ پرسش‌وپاسخ حذف شد) */
+export type CategoryPost = {
   id: string;
-  text: string;
-  category: string;
-  categoryLabel: string;
-  answerCount: number;
-  specialistAnswerCount: number;
+  title: string;
+  caption: string;
+  imageUrl: string;
+  isVideo: boolean;
+  videoUrl: string | null;
+  likesCount: number;
+  commentsCount: number;
+  viewsCount: number;
   createdAt: string;
+  author: { id: string; name: string; username: string; avatar: string };
 };
 
 export type CategoryDetail = {
   category: { key: string; label: string };
-  questions: CategoryQuestion[];
+  posts: CategoryPost[];
 };
 
-export type QuestionsArchive = {
-  questions: CategoryQuestion[];
-  page: number;
-  totalPages: number;
-  total: number;
-  categories: { key: string; label: string; count: number }[];
-};
 
 /**
  * آرشیو پست‌ها — فقط برای سایت‌مپ.

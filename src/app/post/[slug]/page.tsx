@@ -124,7 +124,7 @@ export default async function PostPage({ params }: Props) {
   const data = await loadPost(slug);
   if (!data) notFound();
 
-  const { post, related } = data;
+  const { post } = data;
   const plain = captionPlainText(post.caption);
   const title = postTitle(post, plain, post.author.name);
   const authorSlug = buildSlug(post.author.name, post.author.id);
@@ -326,21 +326,6 @@ export default async function PostPage({ params }: Props) {
           </div>
         </div>
 
-        {related.length > 0 && (
-          <section className="related" aria-label="سوال‌های مرتبط">
-            <h2>کاربران وینو درباره همین موضوع پرسیده‌اند</h2>
-            <ul>
-              {related.map((r) => (
-                <li key={r.id}>
-                  <Link href={`/questions/${buildSlug(r.text, r.id)}`}>
-                    <span>{r.text}</span>
-                    <small>{formatCount(r.answerCount)} پاسخ</small>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
       </article>
     </main>
   );

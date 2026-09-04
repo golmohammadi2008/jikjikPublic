@@ -7,7 +7,7 @@ import { OG_IMAGE } from "./config";
  * چرا لازم شد: هر صفحه `alternates.canonical` خودش را می‌داد ولی `og:url` را
  * نه، و `openGraph.url` در layout ریشه روی SITE_URL ثابت بود. Next آبجکتِ
  * openGraph والد را merge نمی‌کند بلکه فقط وقتی صفحه خودش تعریفش کند
- * جایگزین می‌شود — پس هر ۹ صفحه‌ی ثابت (faq، questions، terms، …) به گوگل
+ * جایگزین می‌شود — پس هر صفحه‌ی ثابت (faq، terms، …) به گوگل
  * می‌گفتند «آدرس من صفحه‌ی اصلی است» در حالی که canonicalشان چیز دیگری بود.
  *
  * دو سیگنالِ متناقض روی یک صفحه دقیقاً همان چیزی است که در Search Console

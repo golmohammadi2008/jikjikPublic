@@ -81,7 +81,7 @@ export default function NotFound() {
       </p>
       <div className="err-actions">
         <Link href="/" className="btn btn-saffron">بریم صفحه‌ی اصلی</Link>
-        <Link href="/questions" className="btn btn-ghost">مرور سوال‌ها</Link>
+        <Link href="/specialists" className="btn btn-ghost">مرور متخصص‌ها</Link>
       </div>
     </main>
   );
