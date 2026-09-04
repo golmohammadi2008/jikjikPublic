@@ -181,3 +181,35 @@ export type PostsArchive = {
   totalPages: number;
   total: number;
 };
+
+// ─── دستیار هوشمند (سایت عمومی) ───────────────────────────────
+export type AssistantModel = {
+  key: string;
+  label: string;
+  hint: string;
+  domain: string;
+  pricePerMToken: number;
+};
+
+export type AssistantModels = {
+  models: AssistantModel[];
+  /** چند سوال رایگان بدون حساب */
+  freeAsks: number;
+};
+
+export type AssistantSpecialist = {
+  id: string;
+  name: string;
+  username: string;
+  avatar: string | null;
+  specialty: string | null;
+  categoryLabel: string | null;
+  ratingAvg: number;
+  ratingCount: number;
+};
+
+export type AssistantAnswer = {
+  answer: string;
+  asksLeft: number;
+  specialists: AssistantSpecialist[];
+};

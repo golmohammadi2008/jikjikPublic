@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getHome } from "@/lib/api";
+import { getAssistantModels, getHome } from "@/lib/api";
 import { buildPostSlug, buildSlug } from "@/lib/slug";
+import AssistantWidget from "@/components/AssistantWidget";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import AppDownload from "@/components/AppDownload";
 import { excerpt, formatCount, formatRating } from "@/lib/format";
@@ -22,7 +23,12 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const data = await getHome();
+  // دستیار و خانه با هم گرفته می‌شوند؛ نبودِ دستیار نباید صفحه‌ی اصلی را
+  // بخواباند، پس خطایش به null می‌افتد
+  const [data, assistant] = await Promise.all([
+    getHome(),
+    getAssistantModels().catch(() => null),
+  ]);
   const posts = data?.posts ?? [];
   const categories = data?.categories ?? [];
 
@@ -159,6 +165,13 @@ export default async function HomePage() {
           <path d="M0,32 C240,80 480,0 720,24 C960,48 1200,88 1440,40 L1440,80 L0,80 Z" fill="var(--bg)" />
         </svg>
       </section>
+
+      {/* دستیار — بلافاصله بعد از هیرو. کسی که تازه رسیده باید بتواند بدون
+          هیچ مرحله‌ای یک سوال بپرسد؛ هر چیزی که بین او و اولین پاسخ بایستد
+          همان‌جا از دستش می‌دهیم. */}
+      {assistant && assistant.models.length > 0 && (
+        <AssistantWidget models={assistant.models} freeAsks={assistant.freeAsks} />
+      )}
 
 
       {posts.length > 0 && (

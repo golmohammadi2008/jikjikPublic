@@ -1696,3 +1696,91 @@ img, video { max-width: 100%; display: block; }
   .faq-cta, .faq-cta__actions { flex-direction: column; align-items: stretch; }
   .faq-cta__actions .btn { justify-content: center; }
 }
+
+/* ─── دستیار هوشمند روی سایت عمومی ───────────────────────────
+   سه سوال بدون حساب. طراحی عمداً ساده است: چیزی که بین بازدیدکننده و اولین
+   پاسخ بایستد، همان‌جا از دستش می‌دهیم. */
+.asst-models { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.asst-chip {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--line, #e5e7eb);
+  background: var(--card, #fff);
+  color: var(--ink, #111);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.asst-chip:hover:not(:disabled) { border-color: var(--brand, #2563eb); }
+.asst-chip.on { background: var(--brand, #2563eb); border-color: var(--brand, #2563eb); color: #fff; font-weight: 700; }
+.asst-chip:disabled { opacity: 0.5; cursor: default; }
+
+.asst-box {
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 18px;
+  background: var(--card, #fff);
+  padding: 18px;
+}
+.asst-empty { margin: 0 0 14px; color: var(--ink-2, #6b7280); font-size: 14px; line-height: 2; }
+.asst-turn { margin-bottom: 16px; }
+.asst-q {
+  margin: 0 0 8px;
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--ink, #111);
+  line-height: 1.9;
+}
+.asst-a {
+  margin: 0;
+  font-size: 14px;
+  line-height: 2.1;
+  color: var(--ink-2, #4b5563);
+  white-space: pre-wrap;
+  padding-right: 12px;
+  border-right: 2px solid var(--brand, #2563eb);
+}
+.asst-loading { color: var(--ink-2, #6b7280); border-right-color: var(--line, #e5e7eb); }
+.asst-error { margin: 8px 0 0; color: #b91c1c; font-size: 13px; }
+
+.asst-form { display: flex; gap: 8px; margin-top: 16px; }
+.asst-input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line, #e5e7eb);
+  background: var(--bg, #fff);
+  color: var(--ink, #111);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.asst-input:focus { border-color: var(--brand, #2563eb); }
+
+.asst-locked { margin-top: 6px; text-align: center; }
+.asst-locked b { display: block; font-size: 15px; color: var(--ink, #111); }
+.asst-locked p { margin: 8px 0 14px; font-size: 13.5px; line-height: 2; color: var(--ink-2, #6b7280); }
+
+.asst-pros { margin-top: 18px; }
+.asst-pros h3 { margin: 0 0 10px; font-size: 15px; color: var(--ink, #111); }
+.asst-pros ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.asst-pros a {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 12px;
+  background: var(--card, #fff);
+  text-decoration: none;
+}
+.asst-pros a:hover { border-color: var(--brand, #2563eb); }
+.asst-pros a span { font-size: 14px; font-weight: 600; color: var(--ink, #111); }
+.asst-pros a small { font-size: 12px; color: var(--ink-2, #6b7280); }
+
+@media (max-width: 560px) {
+  .asst-form { flex-direction: column; }
+  .asst-form .btn { width: 100%; }
+}
