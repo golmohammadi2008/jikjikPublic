@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAssistantModels, getHome } from "@/lib/api";
 import { buildPostSlug, buildSlug } from "@/lib/slug";
-import AssistantWidget from "@/components/AssistantWidget";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import AppDownload from "@/components/AppDownload";
 import { excerpt, formatCount, formatRating } from "@/lib/format";
@@ -166,11 +165,22 @@ export default async function HomePage() {
         </svg>
       </section>
 
-      {/* دستیار — بلافاصله بعد از هیرو. کسی که تازه رسیده باید بتواند بدون
-          هیچ مرحله‌ای یک سوال بپرسد؛ هر چیزی که بین او و اولین پاسخ بایستد
-          همان‌جا از دستش می‌دهیم. */}
+      {/* دستیار صفحه‌ی خودش را دارد (`/assistant`).
+          وسطِ صفحه‌ی خانه گم می‌شد — کاربر بین هیرو و فهرستِ پست‌ها از کنارش
+          رد می‌شد — و نشانیِ مستقل هم می‌دهد که بشود مستقیم به آن لینک داد. */}
       {assistant && assistant.models.length > 0 && (
-        <AssistantWidget models={assistant.models} freeAsks={assistant.freeAsks} />
+        <section className="section">
+          <div className="wrap">
+            <div className="assistant-teaser">
+              <h2>سوالی داری؟ همین حالا بپرس</h2>
+              <p>
+                رایگان و بدون ثبت‌نام. برای هر حوزه یک مدل تخصصی — حقوقی، پزشکی،
+                روان‌شناسی و برنامه‌نویسی.
+              </p>
+              <Link className="btn btn-saffron" href="/assistant">پرسیدن از دستیار هوشمند</Link>
+            </div>
+          </div>
+        </section>
       )}
 
 

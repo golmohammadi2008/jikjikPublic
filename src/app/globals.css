@@ -1784,3 +1784,27 @@ img, video { max-width: 100%; display: block; }
   .asst-form { flex-direction: column; }
   .asst-form .btn { width: 100%; }
 }
+
+/* ── دعوت به دستیار در صفحه‌ی اصلی ──
+   ویجت از اینجا به /assistant منتقل شد؛ این فقط دروازه است. */
+.assistant-teaser {
+  text-align: center;
+  padding: 32px 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+}
+.assistant-teaser h2 { margin: 0 0 8px; }
+.assistant-teaser p {
+  margin: 0 auto 18px;
+  max-width: 560px;
+  color: var(--muted);
+  line-height: 2;
+}
+
+/* هیروِ کوتاه برای صفحه‌های داخلی */
+.hero-compact { padding-bottom: 24px; }
+.hero-compact h1 { margin-bottom: 8px; }
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 20px; }
+.section-lead { max-width: 680px; margin: 0 auto 24px; color: var(--muted); line-height: 2; text-align: center; }
