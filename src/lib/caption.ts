@@ -108,3 +108,30 @@ export function captionPlainText(caption: string): string {
     .replace(/[ \t]+/g, " ")
     .trim();
 }
+
+/**
+ * عنوانِ نمایشیِ یک پست.
+ *
+ * پستِ بدونِ عنوان تا امروز کلِ کپشن را به‌عنوان تیتر می‌گرفت — روی پستی که
+ * چند پاراگراف مارک‌داون داشت، کلِ متن (با ستاره و بک‌تیک) در یک ردیفِ فهرست
+ * پخش می‌شد و چیدمان را می‌شکست.
+ *
+ * پس: نشانه‌گذاری پاک می‌شود، اولین جمله/خطِ معنادار برداشته می‌شود، و روی
+ * مرزِ کلمه بریده می‌شود تا وسطِ واژه قطع نشود.
+ */
+export function postTitle(title: string | undefined | null, caption: string, max = 80): string {
+  const t = (title || "").trim();
+  if (t) return t;
+
+  const plain = captionPlainText(caption || "").replace(/\s+/g, " ").trim();
+  if (!plain) return "بدون عنوان";
+
+  // اولین جمله، اگر کوتاه‌تر از سقف باشد
+  const firstSentence = plain.split(/(?<=[.!?؟])\s/)[0] || plain;
+  const base = firstSentence.length <= max ? firstSentence : plain;
+  if (base.length <= max) return base;
+
+  const cut = base.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trim()}…`;
+}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategory, getSpecialists } from "@/lib/api";
 import { buildSlug } from "@/lib/slug";
+import { postTitle } from "@/lib/caption";
 import { OG_IMAGE, SITE_NAME } from "@/lib/config";
 import { formatCount } from "@/lib/format";
 import { collectionLd, jsonLdProps } from "@/lib/jsonLd";
@@ -82,7 +83,7 @@ export default async function CategoryPage({ params }: Props) {
     name: `مطالب ${category.label}`,
     description: `مطالب و متخصص‌های حوزه ${category.label} در ${SITE_NAME}.`,
     crumbs: [{ name: "متخصص‌ها", path: "/specialists" }, { name: category.label }],
-    items: posts.map((p) => ({ name: p.title || p.caption, path: `/post/${buildSlug(p.title || p.caption, p.id)}` })),
+    items: posts.map((p) => ({ name: postTitle(p.title, p.caption), path: `/post/${buildSlug(p.title || p.caption, p.id)}` })),
   });
 
   return (
@@ -104,7 +105,7 @@ export default async function CategoryPage({ params }: Props) {
             {posts.map((p) => (
               <li key={p.id}>
                 <Link href={`/post/${buildSlug(p.title || p.caption, p.id)}`}>
-                  <span>{p.title || p.caption}</span>
+                  <span>{postTitle(p.title, p.caption)}</span>
                   <small>{formatCount(p.likesCount)} پسند</small>
                 </Link>
               </li>

@@ -14,7 +14,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { askAssistant } from "@/lib/api";
-import { PANEL_URL } from "@/lib/config";
+import { PANEL_URL, SESSION_TOKEN_COOKIE } from "@/lib/config";
 import type { AssistantModel, AssistantSpecialist } from "@/lib/types";
 import { buildSlug } from "@/lib/slug";
 
@@ -30,6 +30,18 @@ export default function AssistantWidget({ models, freeAsks }: { models: Assistan
   const [specialists, setSpecialists] = useState<AssistantSpecialist[]>([]);
   const [error, setError] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * کاربر از قبل وارد شده؟
+   *
+   * فقط برای *متنِ* دکمه است، نه دسترسی: کسی که لاگین است باید «ادامه در
+   * پنل» ببیند نه «ورود». خودِ مسیر در هر دو حالت یکی است و اگر توکن نباشد،
+   * پنل خودش به صفحه‌ی ورود می‌فرستد و بعد از ورود به همین‌جا برمی‌گرداند.
+   */
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    setLoggedIn(document.cookie.split("; ").some((c) => c.startsWith(`${SESSION_TOKEN_COOKIE}=`)));
+  }, []);
   // سوالی که کاربر همین حالا نوشته یا آخرین چیزی که پرسیده — همان با او به
   // پنل می‌رود
   const lastQuestion = input.trim() || turns[turns.length - 1]?.q || "";
@@ -122,10 +134,11 @@ export default function AssistantWidget({ models, freeAsks }: { models: Assistan
             </div>
           ) : (
             <div className="asst-locked">
-              <b>سه سوال رایگان امروز تمام شد.</b>
+              <b>سهمیه‌ی امروز تمام شد</b>
               <p>
-                برای ادامه‌ی گفتگو وارد حساب شو — آن‌جا هر روز سهمیه‌ی تازه داری و
-                می‌توانی گفتگو را ادامه بدهی.
+                {loggedIn
+                  ? "گفتگو را در پنل ادامه بده."
+                  : "وارد شو تا گفتگو را همان‌جا ادامه بدهی."}
               </p>
               {/* آخرین سوالِ کاربر همراهش می‌رود: بعد از ورود، جوابِ *همان*
                   سوال را می‌بیند نه یک صفحه‌ی خالی که باید دوباره تایپش کند.
@@ -134,25 +147,35 @@ export default function AssistantWidget({ models, freeAsks }: { models: Assistan
                 className="btn btn-saffron"
                 href={`${PANEL_URL}/assistant${lastQuestion ? `?q=${encodeURIComponent(lastQuestion)}` : ''}`}
               >
-                ورود و ادامه‌ی گفتگو
+                {loggedIn ? "ادامه‌ی گفتگو" : "ورود و ادامه‌ی گفتگو"}
               </a>
             </div>
           )}
         </div>
 
-        {/* متخصص‌های همان حوزه — این لحظه، نه زودتر، جایی است که معرفی معنی دارد */}
+        {/* متخصص‌های همان حوزه — بعد از اولین پاسخ، نه زودتر.
+            حوزه از روی مدلی که کاربر انتخاب کرده تعیین می‌شود، پس برای سوال
+            حقوقی برنامه‌نویس پیشنهاد نمی‌شود؛ و اگر در آن حوزه کسی نباشد،
+            هیچ‌کس نشان داده نمی‌شود — پیشنهادِ بی‌ربط از نبودِ پیشنهاد بدتر است. */}
         {specialists.length > 0 && (
           <div className="asst-pros">
-            <h3>متخصص‌های همین حوزه</h3>
+            <h3>متخصص همین حوزه</h3>
             <ul>
               {specialists.map((s) => (
                 <li key={s.id}>
                   <Link href={`/specialists/${buildSlug(s.name, s.id)}`}>
-                    <span>{s.name}</span>
-                    <small>
-                      {s.specialty || s.categoryLabel || ""}
-                      {s.ratingCount > 0 ? ` · ${s.ratingAvg.toLocaleString("fa-IR")} از ${s.ratingCount.toLocaleString("fa-IR")} نظر` : ""}
-                    </small>
+                    {s.avatar
+                      // eslint-disable-next-line @next/next/no-img-element
+                      ? <img className="pro-avatar" src={s.avatar} alt="" loading="lazy" />
+                      : <span className="pro-avatar pro-avatar-fallback">{(s.name || "؟")[0]}</span>}
+                    <span className="pro-meta">
+                      <b>{s.name}</b>
+                      <small>
+                        {s.specialty || s.categoryLabel || ""}
+                        {s.ratingCount > 0 ? ` · ★ ${s.ratingAvg.toLocaleString("fa-IR")}` : ""}
+                      </small>
+                    </span>
+                    <span className="pro-cta">مشاهده</span>
                   </Link>
                 </li>
               ))}
