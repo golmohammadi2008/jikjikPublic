@@ -20,7 +20,7 @@ import { PANEL_URL, SITE_NAME } from "@/lib/config";
 export const metadata: Metadata = pageMeta({
   title: "دستیار هوشمند — پاسخ فوری به سوال‌های حقوقی، پزشکی و روان‌شناسی",
   description:
-    `بدون ثبت‌نام از دستیار هوشمند ${SITE_NAME} بپرس و همان لحظه پاسخ بگیر. ` +
+    `از دستیار هوشمند ${SITE_NAME} بپرس و همان لحظه پاسخ بگیر — اولین سوال‌ها رایگان. ` +
     "برای هر حوزه یک مدل تخصصی: حقوقی، پزشکی و سلامت، روان‌شناسی و برنامه‌نویسی.",
   path: "/assistant",
 });
@@ -36,6 +36,7 @@ const DOMAINS = [
 
 export default async function AssistantPage() {
   const assistant = await getAssistantModels().catch(() => null);
+  const freeAsks = assistant?.freeAsks ?? 0;
 
   const jsonLd = webPageLd({
     path: "/assistant",
@@ -51,7 +52,12 @@ export default async function AssistantPage() {
       <section className="hero hero-compact">
         <div className="wrap">
           <h1>بپرس، همین حالا جواب بگیر</h1>
-          <p className="hero-sub">رایگان، بدون ثبت‌نام. و هر جا لازم شد، متخصص واقعی همین‌جاست.</p>
+          <p className="hero-sub">
+            {freeAsks > 0
+              ? `${freeAsks.toLocaleString("fa-IR")} سوال رایگان، همین‌جا و همین حالا.`
+              : "همین حالا بپرس."}{" "}
+            و هر جا لازم شد، متخصص واقعی همین‌جاست.
+          </p>
         </div>
       </section>
 

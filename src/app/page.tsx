@@ -174,8 +174,8 @@ export default async function HomePage() {
             <div className="assistant-teaser">
               <h2>سوالی داری؟ همین حالا بپرس</h2>
               <p>
-                رایگان و بدون ثبت‌نام. برای هر حوزه یک مدل تخصصی — حقوقی، پزشکی،
-                روان‌شناسی و برنامه‌نویسی.
+                اولین سوال‌ها رایگان است. برای هر حوزه یک مدل تخصصی — حقوقی،
+                پزشکی، روان‌شناسی و برنامه‌نویسی.
               </p>
               <Link className="btn btn-saffron" href="/assistant">پرسیدن از دستیار هوشمند</Link>
             </div>
