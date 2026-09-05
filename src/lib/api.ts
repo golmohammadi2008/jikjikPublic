@@ -1,4 +1,4 @@
-import { AssistantAnswer, AssistantModels, CategoryDetail, HomeData, PostDetail, PostsArchive, SpecialistDetail, SpecialistsList } from "./types";
+import { CategoryDetail, HomeData, PostDetail, PostsArchive, SpecialistDetail, SpecialistsList } from "./types";
 
 // این‌جا Server Component است — مستقیم سمت سرور به بک‌اند وصل می‌شود (نه از
 // طریق rewrite که برای فراخوانی‌های کلاینتی/مرورگر است). روی خودِ سرور،
@@ -76,27 +76,3 @@ export const getCategory = (key: string) => get<CategoryDetail>(`/category/${key
 export const getPostsArchive = (page = 1) =>
   get<PostsArchive>(`/posts${page > 1 ? `?page=${page}` : ""}`, 300, [CACHE_TAGS.home]);
 
-// ─── دستیار هوشمند (بدون لاگین) ───────────────────────────────
-// کش نمی‌شود: پاسخ به متنِ کاربر بند است و سهمیه هم روی سرور شمرده می‌شود.
-export const getAssistantModels = () => get<AssistantModels>("/assistant/models", 300);
-
-/**
- * پرسش از دستیار — از **مرورگر** فراخوانی می‌شود، پس BACKEND_URL (که
- * ۱۲۷.۰.۰.۱ است و فقط روی خودِ سرور معنی دارد) به کارش نمی‌آید. آدرسِ عمومیِ
- * API را از config می‌گیرد.
- */
-export async function askAssistant(text: string, model?: string): Promise<AssistantAnswer> {
-  const { API_BASE_URL } = await import("./config");
-  const res = await fetch(`${API_BASE_URL}/api/public/assistant/ask`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, model }),
-    cache: "no-store",
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const err = Object.assign(new Error(data.error || "خطا"), { code: data.code, data });
-    throw err;
-  }
-  return data as AssistantAnswer;
-}

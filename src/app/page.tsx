@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getAssistantModels, getHome } from "@/lib/api";
+import { getHome } from "@/lib/api";
 import { buildPostSlug, buildSlug } from "@/lib/slug";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
 import AppDownload from "@/components/AppDownload";
@@ -22,12 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // دستیار و خانه با هم گرفته می‌شوند؛ نبودِ دستیار نباید صفحه‌ی اصلی را
-  // بخواباند، پس خطایش به null می‌افتد
-  const [data, assistant] = await Promise.all([
-    getHome(),
-    getAssistantModels().catch(() => null),
-  ]);
+  const data = await getHome();
   const posts = data?.posts ?? [];
   const categories = data?.categories ?? [];
 
@@ -168,21 +163,18 @@ export default async function HomePage() {
       {/* دستیار صفحه‌ی خودش را دارد (`/assistant`).
           وسطِ صفحه‌ی خانه گم می‌شد — کاربر بین هیرو و فهرستِ پست‌ها از کنارش
           رد می‌شد — و نشانیِ مستقل هم می‌دهد که بشود مستقیم به آن لینک داد. */}
-      {assistant && assistant.models.length > 0 && (
-        <section className="section">
-          <div className="wrap">
-            <div className="assistant-teaser">
-              <h2>سوالی داری؟ همین حالا بپرس</h2>
-              <p>
-                اولین سوال‌ها رایگان است. برای هر حوزه یک مدل تخصصی — حقوقی،
-                پزشکی، روان‌شناسی و برنامه‌نویسی.
-              </p>
-              <Link className="btn btn-saffron" href="/assistant">پرسیدن از دستیار هوشمند</Link>
-            </div>
+      <section className="section">
+        <div className="wrap">
+          <div className="assistant-teaser">
+            <h2>سوالی داری؟ همین حالا بپرس</h2>
+            <p>
+              برای هر حوزه یک مدل تخصصی — حقوقی، پزشکی، روان‌شناسی و
+              برنامه‌نویسی.
+            </p>
+            <Link className="btn btn-saffron" href="/assistant">پرسیدن از دستیار هوشمند</Link>
           </div>
-        </section>
-      )}
-
+        </div>
+      </section>
 
       {posts.length > 0 && (
         <section className="section" id="posts">
