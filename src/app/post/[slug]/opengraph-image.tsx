@@ -46,7 +46,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
   // فونت فارسی باید به‌صورت بافر داده شود؛ satori از woff2 پشتیبانی نمی‌کند،
   // برای همین نسخه‌ی ttf کنار بقیه‌ی فونت‌ها نگه داشته شده است
-  const font = await readFile(path.join(process.cwd(), "public/fonts/Estedad-Bold.ttf"));
+  const font = await readFile(path.join(process.cwd(), "public/fonts/Shabnam-Bold.ttf"));
 
   const caption = excerpt(captionPlainText(post?.caption || ""), 90);
   const author = post?.author?.name || SITE_NAME;
@@ -87,7 +87,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           justifyContent: "flex-end",
           position: "relative",
           background: "#0F172A",
-          fontFamily: "Estedad",
+          fontFamily: "Shabnam",
           direction: "rtl",
         }}
       >
@@ -154,7 +154,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     ),
     {
       ...size,
-      fonts: [{ name: "Estedad", data: font, style: "normal", weight: 700 }],
+      fonts: [{ name: "Shabnam", data: font, style: "normal", weight: 700 }],
       headers: {
         /**
          * این یک تصویر است، نه صفحه. گوگل آن را می‌خزید (چون در og:image

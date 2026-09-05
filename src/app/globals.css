@@ -1,35 +1,26 @@
 /* ============================================================
    وینو — استایل بخش عمومی (بدون لاگین)
    پالت: سپید نعنایی / سبز آویشن / زعفرانی (فقط اکشن پولی) / بنفش AI
-   فونت: IRANYekanX FaNum (واحد کل محصول)
+   فونت: Shabnam (واحد کل محصول — اپ، پنل، سایت، ادمین)
    امضای طراحی: «نخ پاسخ» — خط عمودی که سوال را به پاسخ و رزرو وصل می‌کند
    ============================================================ */
 
-/* --- فونت‌ها: سلف‌هاست از همین سرور (public/fonts) — نه CDN خارجی.
-   سیستم دو-فونتی: Estedad (تیتر/اعداد مهم) + Vazirmatn (متن/UI). فونت سومی نباشد. --- */
+/* --- فونت: سلف‌هاست از همین سرور (public/fonts) — نه CDN خارجی.
+   یک فونت برای کل محصول: Shabnam. همانی که اپ و پنل استفاده می‌کنند، پس
+   سایت و اپ یک چیز به نظر می‌رسند. مجوز SIL OFL. --- */
 @font-face {
-  font-family: "Estedad";
-  src: url("/fonts/Estedad-Bold.woff2") format("woff2");
-  font-weight: 700; font-display: swap;
-}
-@font-face {
-  font-family: "Estedad";
-  src: url("/fonts/Estedad-ExtraBold.woff2") format("woff2");
-  font-weight: 800; font-display: swap;
-}
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("/fonts/Vazirmatn-Regular.woff2") format("woff2");
+  font-family: "Shabnam";
+  src: url("/fonts/Shabnam.woff2") format("woff2");
   font-weight: 400; font-display: swap;
 }
 @font-face {
-  font-family: "Vazirmatn";
-  src: url("/fonts/Vazirmatn-Medium.woff2") format("woff2");
+  font-family: "Shabnam";
+  src: url("/fonts/Shabnam-Medium.woff2") format("woff2");
   font-weight: 500; font-display: swap;
 }
 @font-face {
-  font-family: "Vazirmatn";
-  src: url("/fonts/Vazirmatn-Bold.woff2") format("woff2");
+  font-family: "Shabnam";
+  src: url("/fonts/Shabnam-Bold.woff2") format("woff2");
   font-weight: 700; font-display: swap;
 }
 
@@ -54,8 +45,8 @@
   --radius: 14px;
   --radius-lg: 22px;
   --shadow: 0 1px 2px rgba(30, 43, 41, .05), 0 8px 24px -12px rgba(30, 43, 41, .12);
-  --font-display: "Estedad", "Vazirmatn", system-ui, sans-serif;
-  --font-body: "Vazirmatn", system-ui, sans-serif;
+  --font-display: "Shabnam", system-ui, sans-serif;
+  --font-body: "Shabnam", system-ui, sans-serif;
   --wrap: 1080px;
 }
 

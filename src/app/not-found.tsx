@@ -25,7 +25,7 @@ function NotFoundArt() {
 
       {/* علامت سوال شناور از داخل جعبه */}
       <g className="float-late">
-        <text x="164" y="128" textAnchor="middle" fontFamily="IRANYekanXFaNum, sans-serif" fontWeight="800" fontSize="34" fill="#7C5CFF">؟</text>
+        <text x="164" y="128" textAnchor="middle" fontFamily="Shabnam, sans-serif" fontWeight="800" fontSize="34" fill="#7C5CFF">؟</text>
       </g>
 
       {/* پرنده‌ی وینو با چراغ‌قوه */}
