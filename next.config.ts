@@ -40,6 +40,20 @@ function assertBuildEnv(phase: string) {
 }
 
 const nextConfig: NextConfig = {
+  /**
+   * پیش‌نمایشِ کنارِ نسخه‌ی زنده.
+   *
+   * خالی بودنش یعنی بیلدِ پروداکشن، دقیقاً مثل قبل. مقدار گرفتنش یعنی کلِ اپ
+   * زیرِ یک پیشوند سرو می‌شود تا بشود همزمان با سایتِ اصلی روی همان دامنه
+   * بالا باشد.
+   *
+   * ⚠️ چرا basePath و نه فقط یک location در nginx: بدونِ آن، اپ دارایی‌هایش
+   * را از /_next/ می‌خواهد که نشانیِ نسخه‌ی *زنده* است — پیش‌نمایش با CSS و
+   * JS سایتِ اصلی بالا می‌آمد و هیچ‌وقت شبیهِ خودش نمی‌شد.
+   */
+  ...(process.env.PREVIEW_BASE_PATH
+    ? { basePath: process.env.PREVIEW_BASE_PATH, assetPrefix: process.env.PREVIEW_BASE_PATH }
+    : {}),
   // فشرده‌سازی پاسخ‌ها (gzip) — کاهش حجم HTML/JS برای سرعت و سئو
   compress: true,
   // هدر افشاگر نسخه‌ی Next حذف شود
