@@ -68,19 +68,10 @@ img, video { max-width: 100%; display: block; }
 .breadcrumb { margin: 22px 0 14px; }
 
 /* ============ هدر ============ */
-.site-header {
-  position: sticky; top: 0; z-index: 50;
-  background: #fff;
-  border-bottom: 1px solid var(--line);
-}
+.site-header.ant-layout-header { position: sticky; top: 0; z-index: 50; height: 64px; padding: 0; line-height: 64px; background: #fff; border-bottom: 1px solid var(--line); }
 .site-header-bar { display: flex; align-items: center; gap: 20px; height: 64px; }
 .logo { display: inline-flex; align-items: center; gap: 9px; font-weight: 800; font-size: 22px; color: var(--ink); }
-.logo-mark {
-  width: 32px; height: 32px; border-radius: 6px;
-  background: var(--brand);
-  color: #fff; font-size: 20px; font-weight: 800; line-height: 1;
-  display: inline-flex; align-items: center; justify-content: center;
-}
+.logo-mark.ant-avatar { background: var(--brand); font-weight: 800; }
 .main-nav.ant-menu { flex: 1; min-width: 0; background: transparent; border-bottom: 0; line-height: 62px; }
 .header-actions { margin-inline-start: auto; display: flex; align-items: center; gap: 8px; }
 .nav-burger { display: none; }
@@ -112,16 +103,17 @@ img, video { max-width: 100%; display: block; }
 /* ============ کارت پست ============ */
 .post-card { border-radius: var(--radius-lg); overflow: hidden; height: 100%; }
 .post-card .ant-card-cover { margin: 0; }
-.p-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
-.p-head b { display: block; font-size: 15px; line-height: 1.5; }
-.p-head small { color: var(--ink-2); font-size: 12.5px; }
+.post-card-body { padding: 4px 0; }
+
+
+
 .p-media { position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; overflow: hidden; background: var(--brand-tint); color: var(--brand-deep); font-size: 13px; }
 .p-media img, .p-media video { width: 100%; height: 100%; object-fit: cover; }
 .play-badge { position: absolute; inset-inline-start: 50%; top: 50%; translate: 50% -50%; font-size: 48px; color: rgba(255, 255, 255, .92); filter: drop-shadow(0 2px 8px rgba(0, 0, 0, .35)); pointer-events: none; }
 html[dir="rtl"] .play-badge { translate: 50% -50%; }
-.p-body.ant-typography { margin: 0; padding: 4px 16px 10px; font-size: 13.5px; }
-.p-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 0 16px 16px; }
-.p-foot .stats { font-size: 12.5px; color: var(--ink-3); }
+
+
+
 .cat.ant-card { text-align: center; border-radius: var(--radius); }
 .cat b, .cat small { display: block; }
 .cat small { color: var(--ink-3); }
@@ -135,15 +127,15 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 .filter-tools .ant-select { min-width: 150px; }
 .filter-count { display: block; margin-bottom: 14px; font-size: 13px; }
 .spec-card { height: 100%; border-radius: var(--radius-lg); }
-.spec-card .ant-card-body { display: flex; flex-direction: column; height: 100%; }
-.spec-link { flex: 1; }
-.spec-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
-.spec-top { display: flex; align-items: center; gap: 12px; }
-.spec-id { flex: 1; min-width: 0; }
-.spec-name { font-weight: 700; line-height: 1.6; }
-.spec-role { color: var(--ink-2); font-size: 13px; }
-.spec-rate { color: #D97706; font-weight: 700; font-size: 13px; white-space: nowrap; }
-.spec-rate small { color: var(--ink-3); font-weight: 400; margin-inline-start: 3px; }
+
+
+
+
+
+
+
+
+
 .spec-bio.ant-typography { margin: 10px 0 0; font-size: 13.5px; }
 .online-badge { margin-inline-start: 8px; }
 .related.ant-list { background: var(--surface); }
@@ -161,10 +153,10 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 .sp-rating-bar .ant-card-body { display: flex; align-items: center; gap: 16px; }
 .sp-rating-bar > .ant-card-body > b { font-size: 34px; line-height: 1; }
 .sp-rating-bar small { display: block; color: var(--ink-3); font-size: 12.5px; }
-.review-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.review-card .r-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.review-card .r-who { display: flex; flex-direction: column; min-width: 0; }
-.review-card time { margin-inline-start: auto; align-self: flex-start; font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+
+
+
+
 .sp-empty.ant-card { color: var(--ink-2); }
 
 .sp-book--col.ant-card { position: sticky; top: 84px; }
@@ -245,11 +237,11 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 .faq-cta__actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .contact-page { padding-bottom: 24px; }
-.contact-info.ant-card, .contact-form.ant-card { border-radius: var(--radius-lg); }
-.contact-info-item { display: flex; gap: 12px; align-items: flex-start; }
-.contact-info-item + .contact-info-item { margin-top: 18px; }
-.ci-icon { font-size: 20px; color: var(--brand); margin-top: 4px; }
-.contact-info-item b { display: block; }
+
+
+
+
+
 .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
 @media (max-width: 640px) { .cf-row { grid-template-columns: 1fr; } }
 
@@ -280,8 +272,8 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 }
 
 /* ============ فوتر ============ */
-.site-footer { border-top: 1px solid var(--line); margin-top: 56px; padding: 34px 0 44px; font-size: 13.5px; color: var(--ink-2); background: var(--surface); }
-.footer-phone { font-weight: 600; direction: ltr; unicode-bidi: plaintext; }
+.site-footer.ant-layout-footer { margin-top: 56px; padding: 34px 0 44px; background: #fff; border-top: 1px solid var(--line); }
+
 .footer-links { display: flex; gap: 10px 22px; flex-wrap: wrap; }
 .footer-links a:hover { color: var(--brand); }
 .footer-badges a { display: inline-flex; padding: 8px; line-height: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); transition: border-color .15s ease, transform .15s ease; }
@@ -290,18 +282,8 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 .legal-note { margin: 0; font-size: 12px; color: var(--ink-3); max-width: 640px; }
 
 /* ============ نوار نصب اپ ============ */
-.install-bar {
-  position: fixed; z-index: 60; bottom: 12px; inset-inline: 12px;
-  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-  border-radius: 14px; background: #fff; border: 1px solid var(--line);
-  box-shadow: 0 12px 32px -12px rgb(0 0 0 / 28%);
-  animation: installBarIn .22s cubic-bezier(.2, .7, .3, 1) both;
-}
-@keyframes installBarIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.install-bar-texts { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-.install-bar-title { font-size: 13px; font-weight: 700; line-height: 1.5; }
-.install-bar-sub { font-size: 11.5px; opacity: .7; }
-@media (min-width: 1024px) { .install-bar { inset-inline-end: auto; inset-inline-start: 24px; bottom: 24px; max-width: 380px; } }
+.install-bar.ant-alert { position: fixed; z-index: 60; bottom: 12px; inset-inline: 12px; box-shadow: 0 6px 16px rgba(0, 0, 0, .12); }
+@media (min-width: 1024px) { .install-bar.ant-alert { inset-inline-end: auto; inset-inline-start: 24px; bottom: 24px; max-width: 420px; } }
 
 /* ============ خطا / ۴۰۴ ============ */
 .err-page { padding-block: 24px 16px; }

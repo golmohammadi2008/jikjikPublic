@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
-import { Card, Col, Row } from "antd";
+import { Card, Col, Descriptions, Row } from "antd";
 import { SITE_NAME } from "@/lib/config";
 import { MailOutlined, PhoneOutlined } from "@/components/icons";
 import PageCrumbs from "@/components/PageCrumbs";
@@ -34,21 +34,14 @@ export default function ContactPage() {
 
       <Row gutter={[24, 24]}>
         <Col xs={24} md={8}>
-          <Card variant="borderless" className="contact-info">
-            <div className="contact-info-item">
-              <PhoneOutlined className="ci-icon" />
-              <div>
-                <b>پشتیبانی تلفنی</b>
-                <TypoLink href="tel:+982191550953" style={{ direction: "ltr", display: "block" }}>۰۲۱۹۱۵۵۰۹۵۳</TypoLink>
-              </div>
-            </div>
-            <div className="contact-info-item">
-              <MailOutlined className="ci-icon" />
-              <div>
-                <b>ایمیل</b>
-                <TypoLink href="mailto:info@weeno.ir" style={{ direction: "ltr", display: "block" }}>info@weeno.ir</TypoLink>
-              </div>
-            </div>
+          <Card variant="borderless">
+            <Descriptions
+              column={1}
+              items={[
+                { key: "tel", label: <><PhoneOutlined /> پشتیبانی تلفنی</>, children: <TypoLink href="tel:+982191550953" style={{ direction: "ltr" }}>۰۲۱۹۱۵۵۰۹۵۳</TypoLink> },
+                { key: "mail", label: <><MailOutlined /> ایمیل</>, children: <TypoLink href="mailto:info@weeno.ir" style={{ direction: "ltr" }}>info@weeno.ir</TypoLink> },
+              ]}
+            />
           </Card>
         </Col>
         <Col xs={24} md={16}>

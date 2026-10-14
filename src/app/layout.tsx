@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AntdProvider from "@/components/AntdProvider";
+import AppShell from "@/components/AppShell";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InstallAppBar from "@/components/InstallAppBar";
@@ -72,9 +73,9 @@ export default function RootLayout({
     <html lang="fa" dir="rtl">
       <body>
         <AntdProvider>
-          <Header />
-          {children}
-          <Footer />
+          <AppShell header={<Header />} footer={<Footer />}>
+            {children}
+          </AppShell>
           <InstallAppBar />
         </AntdProvider>
       </body>

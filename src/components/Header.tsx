@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button, Drawer, Menu } from "antd";
+import { Avatar, Button, Drawer, Layout, Menu } from "antd";
 import { MenuOutlined } from "@/components/icons";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
 import HeaderAuth from "@/components/HeaderAuth";
@@ -31,10 +31,10 @@ export default function Header() {
   const selected = [activeKey(pathname)];
 
   return (
-    <header className="site-header">
+    <Layout.Header className="site-header">
       <div className="wrap site-header-bar">
         <Link className="logo" href="/">
-          <span className="logo-mark" aria-hidden="true">و</span>
+          <Avatar shape="square" className="logo-mark" aria-hidden="true">و</Avatar>
           {SITE_NAME}
         </Link>
 
@@ -74,6 +74,6 @@ export default function Header() {
           style={{ border: 0 }}
         />
       </Drawer>
-    </header>
+    </Layout.Header>
   );
 }

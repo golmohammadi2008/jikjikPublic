@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Badge, Button, Card, Col, Empty, Input, Row, Segmented, Select, Tag, Typography } from "antd";
+import { Badge, Button, Card, Col, Divider, Empty, Flex, Input, Row, Segmented, Select, Tag, Typography } from "antd";
 import { CalendarOutlined, SearchOutlined, StarFilled } from "@/components/icons";
 import { panelUserUrl } from "@/lib/config";
 import { buildSlug } from "@/lib/slug";
@@ -92,38 +92,42 @@ export default function SpecialistsFilter({ specialists }: { specialists: Specia
                   className="spec-card"
                   hoverable
                 >
-                  <Link className="spec-link" href={`/specialists/${slug}`}>
-                    <div className="spec-top">
-                      <Badge dot={online} color="green" offset={[-4, 40]}>
-                        <Avatar name={s.name} src={s.avatar} />
-                      </Badge>
-                      <div className="spec-id">
-                        <div className="spec-name">
-                          {s.name}
-                          <VerifiedTick />
-                          {online && <Tag color="success" className="online-badge">آنلاین</Tag>}
-                        </div>
-                        <div className="spec-role">{s.specialty || s.categoryLabel || ""}</div>
-                      </div>
-                      {s.ratingAvg > 0 && (
-                        <span className="spec-rate" title={`${s.ratingCount} نظر`}>
-                          <StarFilled /> {formatRating(s.ratingAvg)}
-                          <small>({s.ratingCount.toLocaleString("fa-IR")})</small>
-                        </span>
-                      )}
-                    </div>
+                  <Link href={`/specialists/${slug}`}>
+                    <Card.Meta
+                      avatar={
+                        <Badge dot={online} color="green" offset={[-4, 36]}>
+                          <Avatar name={s.name} src={s.avatar} />
+                        </Badge>
+                      }
+                      title={
+                        <Flex justify="space-between" align="center" gap={8}>
+                          <span>
+                            {s.name}
+                            <VerifiedTick />
+                            {online && <Tag color="success" className="online-badge">آنلاین</Tag>}
+                          </span>
+                          {s.ratingAvg > 0 && (
+                            <Typography.Text type="warning" title={`${s.ratingCount} نظر`}>
+                              <StarFilled /> {formatRating(s.ratingAvg)}
+                            </Typography.Text>
+                          )}
+                        </Flex>
+                      }
+                      description={s.specialty || s.categoryLabel || ""}
+                    />
                     {s.bio && (
                       <Typography.Paragraph type="secondary" className="spec-bio" ellipsis={{ rows: 2 }}>
                         {s.bio}
                       </Typography.Paragraph>
                     )}
                   </Link>
-                  <div className="spec-foot">
+                  <Divider style={{ margin: "12px 0" }} />
+                  <Flex justify="space-between" align="center">
                     {s.categoryLabel ? <Tag color="blue">{s.categoryLabel}</Tag> : <span />}
                     <Button type="primary" size="small" icon={<CalendarOutlined />} href={panelUserUrl(s.username)}>
                       رزرو جلسه
                     </Button>
-                  </div>
+                  </Flex>
                 </Card>
               </Col>
             );

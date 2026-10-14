@@ -1,17 +1,17 @@
 import Link from "next/link";
-import { Col, Divider, Row } from "antd";
+import { Avatar, Col, Divider, Row } from "antd";
 import { PhoneOutlined } from "@/components/icons";
 import { SITE_NAME } from "@/lib/config";
 import { Paragraph, TypoLink } from "@/components/ui";
 
 export default function Footer() {
   return (
-    <footer className="site-footer">
+    <>
       <div className="wrap">
         <Row gutter={[32, 28]}>
           <Col xs={24} md={9}>
             <Link className="logo" href="/">
-              <span className="logo-mark" aria-hidden="true">و</span>
+              <Avatar shape="square" className="logo-mark" aria-hidden="true">و</Avatar>
               {SITE_NAME}
             </Link>
             <Paragraph type="secondary" style={{ marginTop: 10, maxWidth: 320 }}>
@@ -60,6 +60,6 @@ export default function Footer() {
           اضطراری با اورژانس (۱۱۵) یا اورژانس اجتماعی (۱۲۳) تماس بگیرید.
         </p>
       </div>
-    </footer>
+    </>
   );
 }

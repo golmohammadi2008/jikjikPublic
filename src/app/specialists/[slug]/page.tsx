@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Card, Col, Row, Statistic, Tag } from "antd";
 import { CheckCircleOutlined, FireOutlined } from "@/components/icons";
+import ReviewList from "@/components/ReviewList";
 import PageCrumbs from "@/components/PageCrumbs";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
@@ -305,23 +306,17 @@ export default async function SpecialistPage({ params }: Props) {
                   </Card>
                 )}
 
-                <ul className="review-list">
-                  {reviews.map((r) => (
-                    <li key={r.id}>
-                      <Card className="review-card" size="small">
-                        <div className="r-head">
-                          <Avatar name={r.client.name} src={r.client.avatar} size={40} />
-                          <div className="r-who">
-                            <b>{r.client.name}</b>
-                            <Stars value={r.rating} />
-                          </div>
-                          <time dateTime={r.createdAt}>{formatJalali(r.createdAt)}</time>
-                        </div>
-                        <Paragraph style={{ marginBottom: 0 }}>{r.text}</Paragraph>
-                      </Card>
-                    </li>
-                  ))}
-                </ul>
+                <ReviewList
+                  items={reviews.map((r) => ({
+                    id: r.id,
+                    name: r.client.name,
+                    avatar: r.client.avatar,
+                    rating: r.rating,
+                    text: r.text,
+                    dateISO: r.createdAt,
+                    dateLabel: formatJalali(r.createdAt),
+                  }))}
+                />
               </section>
             )}
 

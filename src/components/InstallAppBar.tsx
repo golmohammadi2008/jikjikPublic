@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "antd";
-import { CloseOutlined } from "@/components/icons";
+import { Alert, Button } from "antd";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -74,28 +73,28 @@ export default function InstallAppBar() {
   if (hidden || (!isAndroid && !deferred)) return null;
 
   return (
-    <div className="install-bar" role="region" aria-label="نصب اپ وینو">
-      <span className="install-bar-texts">
-        <span className="install-bar-title">وینو را روی گوشی‌تان داشته باشید</span>
-        <span className="install-bar-sub">
-          {isAndroid ? "دریافت نسخه‌ی اندروید" : "نصب سریع، بدون فروشگاه"}
-        </span>
-      </span>
-
-      {isAndroid ? (
-        <Button type="primary" href={APK_URL} download>
-          دانلود اپ
-        </Button>
-      ) : (
-        <Button
-          type="primary"
-          onClick={() => void deferred?.prompt().then(() => { setDeferred(null); setHidden(true); })}
-        >
-          نصب
-        </Button>
-      )}
-
-      <Button type="text" shape="circle" icon={<CloseOutlined />} onClick={dismiss} aria-label="بستن" />
-    </div>
+    <Alert
+      className="install-bar"
+      role="region"
+      aria-label="نصب اپ وینو"
+      showIcon
+      closable={{ onClose: dismiss, "aria-label": "بستن" }}
+      title="وینو را روی گوشی‌تان داشته باشید"
+      description={isAndroid ? "دریافت نسخه‌ی اندروید" : "نصب سریع، بدون فروشگاه"}
+      action={
+        isAndroid ? (
+          <Button type="primary" href={APK_URL} download>
+            دانلود اپ
+          </Button>
+        ) : (
+          <Button
+            type="primary"
+            onClick={() => void deferred?.prompt().then(() => { setDeferred(null); setHidden(true); })}
+          >
+            نصب
+          </Button>
+        )
+      }
+    />
   );
 }
