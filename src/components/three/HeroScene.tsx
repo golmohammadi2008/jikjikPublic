@@ -38,9 +38,9 @@ import {
  * - همه‌ی geometry/materialها موقع unmount آزاد می‌شوند.
  */
 
-const BLUE = 0x2563eb;
-const VIOLET = 0x7c5cff;
-const TEAL = 0x0ea5a4;
+const BLUE = 0x93c5fd; // روی زمینه‌ی آبیِ هیرو: رنگ‌ها روشن‌اند تا از زمینه جدا شوند
+const VIOLET = 0xc4b5fd;
+const TEAL = 0x67e8f9;
 const SAT_COLORS = [BLUE, VIOLET, TEAL, VIOLET, BLUE, TEAL, BLUE, VIOLET, TEAL];
 
 type Sat = { mesh: Mesh; ring: number; angle: number; speed: number };
@@ -85,7 +85,7 @@ export default function HeroScene() {
     // --- هسته
     const coreGeo = track(new IcosahedronGeometry(1.15, 1));
     const coreMat = track(
-      new MeshStandardMaterial({ color: BLUE, flatShading: true, roughness: 0.35, metalness: 0.2 }),
+      new MeshStandardMaterial({ color: 0x3b82f6, flatShading: true, roughness: 0.35, metalness: 0.2, transparent: true, opacity: 0.9 }),
     );
     const core = new Mesh(coreGeo, coreMat);
     world.add(core);
@@ -104,7 +104,7 @@ export default function HeroScene() {
       const g = new Group();
       g.rotation.set(TILTS[i][0], TILTS[i][1], 0);
       const geo = track(new TorusGeometry(r, 0.008, 6, 160));
-      const ringMat = track(new MeshStandardMaterial({ color: BLUE, transparent: true, opacity: 0.28, roughness: 1 }));
+      const ringMat = track(new MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.3, roughness: 1 }));
       g.add(new Mesh(geo, ringMat));
       world.add(g);
       return g;
@@ -124,7 +124,7 @@ export default function HeroScene() {
     const linePos = new Float32Array(sats.length * 6);
     const lineGeo = track(new BufferGeometry());
     lineGeo.setAttribute("position", new BufferAttribute(linePos, 3));
-    const lineMat = track(new LineBasicMaterial({ color: new Color(VIOLET), transparent: true, opacity: 0.35 }));
+    const lineMat = track(new LineBasicMaterial({ color: new Color(0xffffff), transparent: true, opacity: 0.35 }));
     world.add(new LineSegments(lineGeo, lineMat));
 
     // --- گرد و غبار ستاره‌ای
@@ -139,7 +139,7 @@ export default function HeroScene() {
     }
     const dustGeo = track(new BufferGeometry());
     dustGeo.setAttribute("position", new BufferAttribute(dust, 3));
-    const dustMat = track(new PointsMaterial({ color: BLUE, size: 0.045, transparent: true, opacity: 0.55 }));
+    const dustMat = track(new PointsMaterial({ color: 0xffffff, size: 0.045, transparent: true, opacity: 0.6 }));
     const points = new Points(dustGeo, dustMat);
     world.add(points);
 
@@ -153,6 +153,9 @@ export default function HeroScene() {
       // بزرگ‌ترین مدار (شعاع ≈ ۳٫۴) باید در کوچک‌ترین بُعدِ قاب جا شود؛ در قابِ
       // باریک (موبایل) دوربین عقب‌تر می‌رود تا مدار بیرون نزند
       camera.position.z = Math.min(16, 10 / Math.min(1, camera.aspect));
+      // قابِ پهن (هیروی تمام‌عرض): صحنه به چپِ قاب می‌رود تا زیرِ متنِ وسط نیفتد
+      const visibleW = 2 * camera.position.z * Math.tan((42 / 2) * (Math.PI / 180)) * camera.aspect;
+      world.position.x = camera.aspect > 1.3 ? -visibleW * 0.3 : 0;
       camera.updateProjectionMatrix();
     };
     const ro = new ResizeObserver(() => {

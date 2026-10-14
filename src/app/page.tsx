@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button, Card, Col, Flex, Row, Statistic, Steps } from "antd";
+import { Button, Card, Col, Row } from "antd";
 import {
   ArrowLeftOutlined,
   CalendarOutlined,
   RobotOutlined,
-  SearchOutlined,
-  VideoCameraOutlined,
+  SafetyCertificateOutlined,
+  TeamOutlined,
 } from "@/components/icons";
 import { getHome, getSpecialists } from "@/lib/api";
 import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl } from "@/lib/config";
@@ -16,7 +16,9 @@ import PostCard from "@/components/PostCard";
 import HeroStage from "@/components/three/HeroStage";
 import { Paragraph, Title } from "@/components/ui";
 import HeroAsk from "@/components/HeroAsk";
-import TopSpecialists from "@/components/TopSpecialists";
+import Avatar from "@/components/Avatar";
+import Stars from "@/components/Stars";
+import VerifiedTick from "@/components/VerifiedTick";
 import { buildSlug } from "@/lib/slug";
 
 export const metadata: Metadata = {
@@ -60,6 +62,13 @@ export default async function HomePage() {
     ],
   };
 
+  const services = [
+    { icon: <RobotOutlined />, title: "پرسش از دستیار هوشمند", desc: "پاسخ اولیه، همان لحظه", href: "/assistant" },
+    { icon: <CalendarOutlined />, title: "رزرو جلسه آنلاین", desc: "با متخصص تاییدشده", href: "/specialists" },
+    { icon: <SafetyCertificateOutlined />, title: "متخصص‌های تاییدشده", desc: "احراز هویت و مدارک", href: "/specialists" },
+    { icon: <TeamOutlined />, title: "متخصص شو", desc: "پاسخ بده و درآمد کسب کن", href: "/specialist-signup" },
+  ];
+
   return (
     <main>
       <script
@@ -67,74 +76,101 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* هیرو: عنوان، جعبه‌ی سوال (کارِ اصلیِ سایت) و عددهای واقعی؛ صحنه‌ی
-          سه‌بعدی فقط تزئین است و در کارتی کنارش می‌نشیند. */}
+      {/* هیرو (الهام از دکترتو/پذیرش۲۴): زمینه‌ی آبیِ تمام‌عرض، عنوانِ وسط، یک
+          جعبه‌ی جست‌وجوی بزرگ و عددهای واقعی. صحنه‌ی سه‌بعدی فقط پس‌زمینه است. */}
       <section className="hero">
-        <div className="wrap">
-          <Row gutter={[32, 24]} align="middle">
-            <Col xs={24} md={14}>
-              <Title level={1} className="hero-title">
-                هر سوال، <em>متخصص</em> خودش را دارد
-              </Title>
-              <Paragraph type="secondary" className="lead">
-                سوالت را بپرس، همان لحظه پاسخ اولیه‌ی هوش مصنوعی بگیر و اگر لازم شد، با متخصص تاییدشده جلسه‌ی آنلاین رزرو کن.
-              </Paragraph>
-              <HeroAsk />
-              <Flex gap={8} wrap className="hero-cta">
-                <Button icon={<CalendarOutlined />} href="/specialists">رزرو جلسه آنلاین</Button>
-                <Button type="link" href={panelAskUrl()}>یا مستقیم وارد پنل شو</Button>
-              </Flex>
-              <Row gutter={24} className="hero-stats">
-                <Col span={8}><Statistic title="متخصص تاییدشده" value={formatCount(specialists.length)} /></Col>
-                <Col span={8}><Statistic title="حوزه‌ی تخصصی" value={formatCount(categories.length)} /></Col>
-                <Col span={8}><Statistic title="پاسخ هوش مصنوعی" value="فوری" /></Col>
-              </Row>
-            </Col>
-            <Col xs={24} md={10}>
-              <Card className="hero-art" aria-hidden="true" styles={{ body: { padding: 0 } }}>
-                <HeroStage />
-              </Card>
-            </Col>
-          </Row>
+        <HeroStage />
+        <div className="wrap hero-inner">
+          <h1>هر سوال، متخصص خودش را دارد</h1>
+          <p>سوالت را بپرس، همان لحظه پاسخ هوش مصنوعی بگیر و اگر لازم شد با متخصص تاییدشده جلسه‌ی آنلاین رزرو کن.</p>
+          <HeroAsk categories={categories.map((c) => ({ key: c.key, label: c.label }))} />
+          <div className="hero-stats">
+            <div><b>{formatCount(specialists.length)}+</b><span>متخصص تاییدشده</span></div>
+            <div><b>{formatCount(categories.length)}</b><span>حوزه‌ی تخصصی</span></div>
+            <div><b>۲۴/۷</b><span>پاسخ هوش مصنوعی</span></div>
+          </div>
         </div>
       </section>
 
-      <section className="section">
-        <div className="wrap">
-          <Title level={2}>چطور کار می‌کند؟</Title>
-          <Steps
-            className="home-steps"
-            current={0}
-            items={[
-              { title: "سوالت را بپرس", content: "در دسته‌ی مناسب بنویس.", icon: <SearchOutlined /> },
-              { title: "پاسخ فوری بگیر", content: "دستیار هوشمند همان لحظه جواب اولیه می‌دهد.", icon: <RobotOutlined /> },
-              { title: "با متخصص جلسه بگذار", content: "زمان خالی را انتخاب و پرداخت امن انجام بده.", icon: <VideoCameraOutlined /> },
-            ]}
-          />
-        </div>
-      </section>
+      {/* کارت‌های سرویس روی لبه‌ی هیرو می‌نشینند */}
+      <div className="wrap services">
+        <Row gutter={[16, 16]}>
+          {services.map((x) => (
+            <Col key={x.title} xs={12} md={6}>
+              <Link href={x.href}>
+                <Card className="service-card" hoverable>
+                  <span className="service-icon">{x.icon}</span>
+                  <b>{x.title}</b>
+                  <small>{x.desc}</small>
+                </Card>
+              </Link>
+            </Col>
+          ))}
+        </Row>
+      </div>
+
+      {categories.length > 0 && (
+        <section className="section" id="categories">
+          <div className="wrap">
+            <div className="section-head">
+              <Title level={2}>پرطرفدارترین حوزه‌ها</Title>
+            </div>
+            <Row gutter={[12, 12]}>
+              {categories.map((c) => (
+                <Col key={c.key} xs={12} md={8} lg={4}>
+                  <Link href={`/category/${c.key}`}>
+                    <Card className="tile" hoverable size="small">
+                      <b>{c.label}</b>
+                      <small>{formatCount(c.count)} سوال</small>
+                    </Card>
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          </div>
+        </section>
+      )}
 
       {topSpecialists.length > 0 && (
         <section className="section">
           <div className="wrap">
             <div className="section-head">
-              <Title level={2}>متخصص‌های برتر</Title>
-              <Link className="more" href="/specialists">همه‌ی متخصص‌ها <ArrowLeftOutlined /></Link>
+              <Title level={2}>برترین متخصص‌ها</Title>
+              <Link className="more" href="/specialists">مشاهده‌ی همه <ArrowLeftOutlined /></Link>
             </div>
-            <TopSpecialists
-              items={topSpecialists.map((s) => ({
-                id: s.id,
-                href: `/specialists/${buildSlug(s.name, s.id)}`,
-                name: s.name,
-                avatar: s.avatar,
-                subtitle: s.specialty || s.categoryLabel || "",
-                ratingAvg: s.ratingAvg,
-                ratingCount: s.ratingCount,
-              }))}
-            />
+            <Row gutter={[16, 16]}>
+              {topSpecialists.map((s) => {
+                const href = `/specialists/${buildSlug(s.name, s.id)}`;
+                return (
+                  <Col key={s.id} xs={12} md={8} lg={{ flex: "20%" }}>
+                    <Card className="doctor-card">
+                      <Link href={href} className="doctor-main">
+                        <Avatar name={s.name} src={s.avatar} size={84} />
+                        <b>{s.name}<VerifiedTick /></b>
+                        <small>{s.specialty || s.categoryLabel || ""}</small>
+                        {s.ratingAvg > 0 ? <Stars value={s.ratingAvg} size={13} /> : <span className="doctor-norate">بدون نظر</span>}
+                      </Link>
+                      <Button block href={href}>رزرو جلسه</Button>
+                    </Card>
+                  </Col>
+                );
+              })}
+            </Row>
           </div>
         </section>
       )}
+
+      <section className="section">
+        <div className="wrap">
+          <div className="promo">
+            <div>
+              <Title level={3}>متخصص هستی؟ با وینو درآمد کسب کن</Title>
+              <Paragraph>مدارکت را ثبت کن، پس از تایید به سوال‌ها پاسخ بده و جلسه‌ی آنلاین رزرو بگیر. عضویت رایگان است.</Paragraph>
+            </div>
+            <Button size="large" href="/specialist-signup">شروع ثبت‌نام متخصص</Button>
+          </div>
+        </div>
+      </section>
 
       {posts.length > 0 && (
         <section className="section" id="posts">
@@ -146,25 +182,6 @@ export default async function HomePage() {
               {posts.map((p) => (
                 <Col key={p.id} xs={24} sm={12} lg={8}>
                   <PostCard post={p} />
-                </Col>
-              ))}
-            </Row>
-          </div>
-        </section>
-      )}
-
-      {categories.length > 0 && (
-        <section className="section" id="categories">
-          <div className="wrap">
-            <Title level={2}>حوزه‌ها</Title>
-            <Row gutter={[12, 12]}>
-              {categories.map((c) => (
-                <Col key={c.key} xs={12} md={8} lg={6}>
-                  <Link href={`/category/${c.key}`}>
-                    <Card className="cat" hoverable size="small">
-                      <Statistic title={c.label} value={formatCount(c.count)} suffix="سوال" />
-                    </Card>
-                  </Link>
                 </Col>
               ))}
             </Row>

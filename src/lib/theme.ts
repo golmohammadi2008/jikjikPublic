@@ -24,6 +24,8 @@ export const theme: ThemeConfig = {
     // طراحیِ antd، فقط با رنگِ برند و فونتِ Shabnam
     fontFamily: '"Shabnam", system-ui, sans-serif',
     lineHeight: 1.8,
+    borderRadius: 10,
+    controlHeight: 38,
   },
   components: {
     Button: { fontWeight: 500 },
