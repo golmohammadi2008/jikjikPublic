@@ -1,37 +1,39 @@
 import Link from "next/link";
+import { Col, Divider, Row } from "antd";
+import { PhoneOutlined } from "@/components/icons";
 import { SITE_NAME } from "@/lib/config";
+import { Paragraph, TypoLink } from "@/components/ui";
 
 export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="wrap">
-        <div className="cols">
-          <div>
+        <Row gutter={[32, 28]}>
+          <Col xs={24} md={9}>
             <Link className="logo" href="/">
               <span className="logo-mark" aria-hidden="true">و</span>
               {SITE_NAME}
             </Link>
-            <p style={{ marginTop: 8, maxWidth: 320 }}>
+            <Paragraph type="secondary" style={{ marginTop: 10, maxWidth: 320 }}>
               پلتفرم پرسش از متخصص و رزرو جلسه آنلاین.
-            </p>
-            <p style={{ marginTop: 12, fontSize: 13.5 }}>
-              پشتیبانی:{" "}
-              <a href="tel:+982191550953" style={{ color: "var(--thyme)", fontWeight: 600, direction: "ltr", display: "inline-block" }}>
-                ۰۲۱۹۱۵۵۰۹۵۳
-              </a>
-            </p>
-          </div>
-          <nav aria-label="لینک‌های فوتر">
-            <Link href="/how-it-works">چطور کار می‌کند</Link>
-            <Link href="/specialists">متخصص‌ها</Link>
-            <Link href="/faq">سوالات متداول</Link>
-            <Link href="/contact">ارتباط با ما</Link>
-            <Link href="/terms">شرایط و قوانین</Link>
-            <Link href="/privacy">حریم خصوصی</Link>
-            <Link href="/specialist-guide">آیین‌نامه متخصص</Link>
-            <Link href="/specialist-signup">متخصص شو</Link>
-          </nav>
-
+            </Paragraph>
+            <TypoLink href="tel:+982191550953" className="footer-phone">
+              <PhoneOutlined /> پشتیبانی: ۰۲۱۹۱۵۵۰۹۵۳
+            </TypoLink>
+          </Col>
+          <Col xs={24} md={11}>
+            <nav className="footer-links" aria-label="لینک‌های فوتر">
+              <Link href="/how-it-works">چطور کار می‌کند</Link>
+              <Link href="/specialists">متخصص‌ها</Link>
+              <Link href="/faq">سوالات متداول</Link>
+              <Link href="/contact">ارتباط با ما</Link>
+              <Link href="/terms">شرایط و قوانین</Link>
+              <Link href="/privacy">حریم خصوصی</Link>
+              <Link href="/specialist-guide">آیین‌نامه متخصص</Link>
+              <Link href="/specialist-signup">متخصص شو</Link>
+            </nav>
+          </Col>
+          <Col xs={24} md={4}>
           {/* نماد اعتماد الکترونیکی — کد و referrerPolicy برای اعتبارسنجی
               اینماد لازم‌اند و نباید حذف شوند. next/image استفاده نمی‌کنیم
               چون تصویر باید مستقیم از دامنه‌ی خود اینماد سرو شود. */}
@@ -50,7 +52,9 @@ export default function Footer() {
               />
             </a>
           </div>
-        </div>
+          </Col>
+        </Row>
+        <Divider />
         <p className="legal-note">
           پاسخ‌های هوش مصنوعی صرفاً جنبه اطلاع‌رسانی اولیه دارند و جایگزین تشخیص و نظر متخصص نیستند. در شرایط
           اضطراری با اورژانس (۱۱۵) یا اورژانس اجتماعی (۱۲۳) تماس بگیرید.

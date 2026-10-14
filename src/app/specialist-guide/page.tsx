@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { SITE_NAME, PANEL_URL } from "@/lib/config";
 import { pageMeta } from "@/lib/pageMeta";
+import { CtaBanner, LegalBody, LegalCallout } from "@/components/legal/Legal";
+import LegalToc from "@/components/legal/LegalToc";
 
 export const metadata: Metadata = pageMeta({
   title: "آیین‌نامه و رفتار حرفه‌ای متخصص",
@@ -22,20 +24,22 @@ export default function SpecialistGuidePage() {
       <script {...jsonLdProps(jsonLd)} />
       <article>
         <h1>آیین‌نامه و رفتار حرفه‌ای متخصص</h1>
-        <div className="p-text legal">
+        <LegalBody>
           <p className="lead">
             متخصص‌ها چهره‌ی {SITE_NAME} هستند. این آیین‌نامه شرایط عضویت، تعهدات حرفه‌ای و قوانین مالی را
             روشن می‌کند. عضویت به‌منزله‌ی پذیرش کامل این آیین‌نامه و <a href="/terms">شرایط و قوانین</a> است.
           </p>
 
-          <nav className="legal-toc" aria-label="فهرست">
-            <a href="#eligibility">شرایط عضویت</a>
-            <a href="#docs">مدارک و احراز هویت</a>
-            <a href="#conduct">اصول رفتار حرفه‌ای</a>
-            <a href="#sessions">جلسات و پاسخ‌گویی</a>
-            <a href="#money">کارمزد و تسویه</a>
-            <a href="#violations">تخلفات و تعلیق</a>
-          </nav>
+          <LegalToc
+            items={[
+              { href: "#eligibility", title: "شرایط عضویت" },
+              { href: "#docs", title: "مدارک و احراز هویت" },
+              { href: "#conduct", title: "اصول رفتار حرفه‌ای" },
+              { href: "#sessions", title: "جلسات و پاسخ‌گویی" },
+              { href: "#money", title: "کارمزد و تسویه" },
+              { href: "#violations", title: "تخلفات و تعلیق" },
+            ]}
+          />
 
           <h2 id="eligibility">۱) شرایط عضویت</h2>
           <ul>
@@ -84,11 +88,11 @@ export default function SpecialistGuidePage() {
             </li>
           </ul>
 
-          <div className="legal-callout">
+          <LegalCallout>
             <strong>سهم شما پیش از انتشار هر تایم، در پنل با عدد دقیق نشان داده می‌شود.</strong>{" "}
             هنگام تعیین قیمت جلسه، مبلغی که پس از کسر کارمزد به شما می‌رسد همان‌جا محاسبه و نمایش
             داده می‌شود — لازم نیست چیزی را خودتان حساب کنید.
-          </div>
+          </LegalCallout>
 
           <ul>
             <li>
@@ -117,15 +121,10 @@ export default function SpecialistGuidePage() {
             <li>لغو مکرر جلسات و بی‌توجهی به کاربران.</li>
           </ul>
 
-          <div className="app-banner">
-            <div>
-              <h2 style={{ marginTop: 0 }}>می‌خواهید متخصص شوید؟</h2>
-              <p>درخواست عضویت بدهید و پس از تایید مدارک، فعالیت‌تان را شروع کنید.</p>
-            </div>
-            {/* /specialist-signup در پنل وجود ندارد و ۴۰۴ می‌داد — مسیر واقعی احراز هویت /verify است */}
-            <a className="btn btn-saffron" href={`${PANEL_URL}/verify`}>شروع ثبت‌نام متخصص</a>
-          </div>
-        </div>
+          <CtaBanner title="می‌خواهید متخصص شوید؟" href={`${PANEL_URL}/verify`} cta="شروع ثبت‌نام متخصص">
+            درخواست عضویت بدهید و پس از تایید مدارک، فعالیت‌تان را شروع کنید.
+          </CtaBanner>
+        </LegalBody>
       </article>
     </main>
   );

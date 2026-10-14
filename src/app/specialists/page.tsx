@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Empty } from "antd";
+import PageCrumbs from "@/components/PageCrumbs";
 import { getSpecialists } from "@/lib/api";
 import { SITE_NAME, SITE_URL } from "@/lib/config";
 import { pageMeta } from "@/lib/pageMeta";
 import SpecialistsFilter from "@/components/SpecialistsFilter";
 import { buildSlug } from "@/lib/slug";
+import { Title } from "@/components/ui";
 
 export const metadata: Metadata = pageMeta({
   title: "متخصص‌ها",
@@ -49,16 +51,12 @@ export default async function SpecialistsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <nav className="breadcrumb" aria-label="مسیر صفحه">
-        <Link href="/">{SITE_NAME}</Link> › متخصص‌ها
-      </nav>
+      <PageCrumbs trail={[{ title: "متخصص‌ها" }]} />
 
-      <div className="section-head">
-        <h1>متخصص‌های تاییدشده</h1>
-      </div>
+      <Title level={1}>متخصص‌های تاییدشده</Title>
 
       {specialists.length === 0 ? (
-        <p style={{ color: "var(--ink-2)", padding: "20px 0" }}>در حال حاضر متخصصی برای نمایش وجود ندارد.</p>
+        <Empty description="در حال حاضر متخصصی برای نمایش وجود ندارد." />
       ) : (
         <SpecialistsFilter specialists={specialists} />
       )}

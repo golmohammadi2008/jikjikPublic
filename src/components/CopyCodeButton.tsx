@@ -1,16 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "antd";
+import { CheckOutlined, CopyOutlined } from "@/components/icons";
 
 /** تنها بخشِ کلاینتیِ کپشن — بقیه‌اش روی سرور رندر می‌شود و در HTML اولیه هست */
 export default function CopyCodeButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
 
   return (
-    <button
-      type="button"
+    <Button
       className="code-copy"
+      size="small"
+      type="text"
       aria-label="کپی کد"
+      icon={copied ? <CheckOutlined /> : <CopyOutlined />}
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(code);
@@ -23,6 +27,6 @@ export default function CopyCodeButton({ code }: { code: string }) {
       }}
     >
       {copied ? "کپی شد" : "کپی"}
-    </button>
+    </Button>
   );
 }

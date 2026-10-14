@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { SITE_NAME, PANEL_URL } from "@/lib/config";
 import { pageMeta } from "@/lib/pageMeta";
+import { CtaBanner, LegalBody } from "@/components/legal/Legal";
+import LegalToc from "@/components/legal/LegalToc";
 
 export const metadata: Metadata = pageMeta({
   title: "چطور کار می‌کند و چطور ثبت‌نام کنم",
@@ -22,19 +24,21 @@ export default function HowItWorksPage() {
       <script {...jsonLdProps(jsonLd)} />
       <article>
         <h1>{SITE_NAME} چطور کار می‌کند؟</h1>
-        <div className="p-text legal">
+        <LegalBody>
           <p className="lead">
             {SITE_NAME} شما را به متخصص‌های تاییدشده وصل می‌کند: سوالتان را بپرسید، پاسخ اولیه‌ی هوشمند
             بگیرید و در صورت نیاز با متخصص جلسه‌ی آنلاین بگذارید. این صفحه قدم‌به‌قدم توضیح می‌دهد چطور شروع کنید.
           </p>
 
-          <nav className="legal-toc" aria-label="فهرست">
-            <a href="#user">راهنمای کاربران</a>
-            <a href="#ask">پرسیدن سوال</a>
-            <a href="#book">رزرو جلسه</a>
-            <a href="#wallet">کیف پول و پرداخت</a>
-            <a href="#pro">راهنمای متخصص‌ها</a>
-          </nav>
+          <LegalToc
+            items={[
+              { href: "#user", title: "راهنمای کاربران" },
+              { href: "#ask", title: "پرسیدن سوال" },
+              { href: "#book", title: "رزرو جلسه" },
+              { href: "#wallet", title: "کیف پول و پرداخت" },
+              { href: "#pro", title: "راهنمای متخصص‌ها" },
+            ]}
+          />
 
           <h2 id="user">۱) ثبت‌نام کاربر</h2>
           <ul>
@@ -80,14 +84,10 @@ export default function HowItWorksPage() {
             <a href="/terms"> شرایط و قوانین</a> را مطالعه کنید.
           </p>
 
-          <div className="app-banner">
-            <div>
-              <h2 style={{ marginTop: 0 }}>آماده‌اید شروع کنید؟</h2>
-              <p>حساب بسازید و اولین سوالتان را بپرسید یا به‌عنوان متخصص عضو شوید.</p>
-            </div>
-            <a className="btn btn-saffron" href={`${PANEL_URL}`}>ورود به پنل {SITE_NAME}</a>
-          </div>
-        </div>
+          <CtaBanner title="آماده‌اید شروع کنید؟" href={PANEL_URL} cta={`ورود به پنل ${SITE_NAME}`}>
+            حساب بسازید و اولین سوالتان را بپرسید یا به‌عنوان متخصص عضو شوید.
+          </CtaBanner>
+        </LegalBody>
       </article>
     </main>
   );

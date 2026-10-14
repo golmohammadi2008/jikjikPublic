@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge, Tag } from "antd";
 import { useOnlineStatus } from "@/lib/useOnlineStatus";
 
 /**
@@ -14,9 +15,8 @@ export default function OnlineChip({ specialistId }: { specialistId: string }) {
   if (!online.has(specialistId)) return null;
 
   return (
-    <span className="sp-chip sp-chip--live">
-      <span className="sp-live-dot" aria-hidden="true" />
-      هم‌اکنون آنلاین
-    </span>
+    <Tag color="success">
+      <Badge status="processing" color="green" /> هم‌اکنون آنلاین
+    </Tag>
   );
 }

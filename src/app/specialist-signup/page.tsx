@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Steps } from "antd";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
 import { pageMeta } from "@/lib/pageMeta";
+import { CtaBanner, LegalBody, LegalCallout } from "@/components/legal/Legal";
+import LegalToc from "@/components/legal/LegalToc";
 
 // دکمه‌ها باید به مسیر واقعیِ احراز هویتِ پنل بروند. مسیر قبلی
 // `${PANEL_URL}/specialist-signup` در پنل اصلاً وجود ندارد و ۴۰۴ می‌داد —
@@ -45,21 +48,23 @@ export default function SpecialistSignupPage() {
     <main className="wrap post-page">
       <article>
         <h1>متخصص {SITE_NAME} شو</h1>
-        <div className="p-text legal">
+        <LegalBody>
           <p className="lead">
             اگر پزشک، وکیل، روان‌شناس، مربی، مشاور مالی یا هر متخصص دیگری هستید، می‌توانید در {SITE_NAME} به
             سوال‌ها پاسخ بدهید، پست منتشر کنید و جلسه‌ی آنلاین رزرو بگیرید. این صفحه <strong>همه‌ی شرایط</strong> را
             پیش از شروع روشن می‌کند: مدارک لازم، مراحل، کارمزد و قوانین.
           </p>
 
-          <nav className="legal-toc" aria-label="فهرست">
-            <a href="#who">چه کسی می‌تواند عضو شود</a>
-            <a href="#docs">مدارک لازم</a>
-            <a href="#steps">مراحل ثبت‌نام</a>
-            <a href="#money">کارمزد، درآمد و تسویه</a>
-            <a href="#rules">قوانین فعالیت</a>
-            <a href="#faq">سوال‌های پرتکرار</a>
-          </nav>
+          <LegalToc
+            items={[
+              { href: "#who", title: "چه کسی می‌تواند عضو شود" },
+              { href: "#docs", title: "مدارک لازم" },
+              { href: "#steps", title: "مراحل ثبت‌نام" },
+              { href: "#money", title: "کارمزد، درآمد و تسویه" },
+              { href: "#rules", title: "قوانین فعالیت" },
+              { href: "#faq", title: "سوال‌های پرتکرار" },
+            ]}
+          />
 
           <h2 id="who">۱) چه کسی می‌تواند عضو شود؟</h2>
           <ul>
@@ -81,30 +86,24 @@ export default function SpecialistSignupPage() {
             <li><strong>مدرک یا مجوز شغلی</strong> — معتبر و مرتبط با حوزه‌ی تخصص.</li>
             <li><strong>ویدیوی کوتاه احراز هویت</strong> — با خواندن جمله‌ای که سامانه نشان می‌دهد.</li>
           </ul>
-          <div className="legal-callout">
+          <LegalCallout>
             <p>
               <strong>حریم خصوصی مدارک:</strong> کارت ملی، مدرک شغلی و ویدیوی احراز هویت فقط برای بررسیِ تیم
               {" "}{SITE_NAME} استفاده می‌شوند و در پروفایل عمومی شما نمایش داده نمی‌شوند. تصویر امضای شما هم
               هیچ آدرس عمومی ندارد و فقط داخل خود سند قرارداد نگهداری می‌شود.
             </p>
-          </div>
+          </LegalCallout>
           <p>
             مسئولیت صحت و اعتبار مدارک بر عهده‌ی متخصص است. ارائه‌ی مدرک جعلی تخلف جدی است و به تعلیق دائم
             می‌انجامد.
           </p>
 
           <h2 id="steps">۳) مراحل ثبت‌نام</h2>
-          <ol className="signup-steps">
-            {STEPS.map((s, i) => (
-              <li key={s.title}>
-                <span className="signup-step-num" aria-hidden>{i + 1}</span>
-                <div>
-                  <b>{s.title}</b>
-                  <p>{s.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <Steps
+            orientation="vertical"
+            current={-1}
+            items={STEPS.map((s) => ({ title: s.title, content: s.body }))}
+          />
           <p>
             پس از تایید، حساب شما به «متخصص» ارتقا می‌یابد: می‌توانید صفحه‌ی کسب‌وکار بسازید، تعرفه تعیین
             کنید، تایم‌های آزادتان را ثبت کنید و رزرو بگیرید.
@@ -128,10 +127,10 @@ export default function SpecialistSignupPage() {
             </li>
           </ul>
 
-          <div className="legal-callout">
+          <LegalCallout>
             <strong>سهم شما پیش از انتشار هر تایم، در پنل با عدد دقیق نشان داده می‌شود.</strong>{" "}
             هنگام تعیین قیمت، مبلغی که پس از کسر کارمزد به شما می‌رسد همان‌جا محاسبه می‌شود.
-          </div>
+          </LegalCallout>
 
           <ul>
             <li>سهم شما پس از انجام جلسه به <strong>کیف پول</strong> شما واریز می‌شود.</li>
@@ -179,14 +178,10 @@ export default function SpecialistSignupPage() {
             هر دو. مراحل احراز هویت، ثبت تایم و مدیریت جلسه‌ها در اپ اندروید و پنل وب یکسان است و حساب یکی است.
           </p>
 
-          <div className="app-banner">
-            <div>
-              <h2 style={{ marginTop: 0 }}>آماده‌اید شروع کنید؟</h2>
-              <p>مدارک را ارسال کنید؛ پس از تایید، پروفایل تخصصی شما فعال می‌شود.</p>
-            </div>
-            <a className="btn btn-saffron" href={SIGNUP_URL}>شروع ثبت‌نام متخصص</a>
-          </div>
-        </div>
+          <CtaBanner title="آماده‌اید شروع کنید؟" href={SIGNUP_URL} cta="شروع ثبت‌نام متخصص">
+            مدارک را ارسال کنید؛ پس از تایید، پروفایل تخصصی شما فعال می‌شود.
+          </CtaBanner>
+        </LegalBody>
       </article>
     </main>
   );

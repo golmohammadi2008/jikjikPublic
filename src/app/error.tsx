@@ -1,5 +1,7 @@
 "use client";
 
+import { Button, Result } from "antd";
+
 /* پرنده‌ی وینو پاش رفته روی سیم و برق قطع شده — صحنه‌ی خطای سرور */
 function ErrorArt() {
   return (
@@ -68,17 +70,15 @@ function ErrorArt() {
 export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <main className="wrap err-page">
-      <ErrorArt />
-      <span className="err-code">خطای سرور</span>
-      <h1>اوه اوه… یکی پاش رفت رو سیم!</h1>
-      <p>
-        یه اتصالی کوچیک پیش اومده و تیم فنی همین الان داره دوشاخه رو می‌زنه سر جاش.
-        چند لحظه دیگه دوباره امتحان کن.
-      </p>
-      <div className="err-actions">
-        <button onClick={reset} className="btn btn-saffron">دوباره امتحان کن</button>
-        <a href="/" className="btn btn-ghost">صفحه‌ی اصلی</a>
-      </div>
+      <Result
+        icon={<ErrorArt />}
+        title="اوه اوه… یکی پاش رفت رو سیم!"
+        subTitle="یه اتصالی کوچیک پیش اومده و تیم فنی همین الان داره دوشاخه رو می‌زنه سر جاش. چند لحظه دیگه دوباره امتحان کن."
+        extra={[
+          <Button key="retry" type="primary" size="large" onClick={reset}>دوباره امتحان کن</Button>,
+          <Button key="home" size="large" href="/">صفحه‌ی اصلی</Button>,
+        ]}
+      />
     </main>
   );
 }

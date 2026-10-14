@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Alert, Button, Typography } from "antd";
+import { AudioOutlined } from "@/components/icons";
 
 export default function VoiceAnswer({
   answerId,
@@ -38,20 +40,14 @@ export default function VoiceAnswer({
       <audio controls src={audioUrl} style={{ width: "100%", height: 40 }} />
 
       {transcript ? (
-        <p style={{ marginTop: 10, fontSize: 14.5, color: "var(--ink-2)" }}>{transcript}</p>
+        <Typography.Paragraph type="secondary" style={{ marginTop: 10 }}>{transcript}</Typography.Paragraph>
       ) : (
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          onClick={handleTranscribe}
-          disabled={loading}
-          style={{ marginTop: 10 }}
-        >
+        <Button size="small" icon={<AudioOutlined />} loading={loading} onClick={handleTranscribe} style={{ marginTop: 10 }}>
           {loading ? "در حال تبدیل…" : "تبدیل ویس به متن"}
-        </button>
+        </Button>
       )}
 
-      {error && <p style={{ marginTop: 8, fontSize: 13, color: "var(--saffron-deep)" }}>{error}</p>}
+      {error && <Alert type="error" showIcon title={error} style={{ marginTop: 8 }} />}
     </div>
   );
 }

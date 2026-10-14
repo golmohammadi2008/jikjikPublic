@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Button, Card, Flex } from "antd";
+import { CalendarOutlined, MessageOutlined } from "@/components/icons";
+import PageCrumbs from "@/components/PageCrumbs";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getPost } from "@/lib/api";
 import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
@@ -9,6 +12,7 @@ import { captionPlainText } from "@/lib/caption";
 import type { PublicPostMedia } from "@/lib/types";
 import Avatar from "@/components/Avatar";
 import Caption from "@/components/Caption";
+import { Text, Title } from "@/components/ui";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -242,15 +246,14 @@ export default async function PostPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <nav className="breadcrumb" aria-label="مسیر صفحه">
-        <Link href="/">{SITE_NAME}</Link> ›{" "}
-        {post.author.category ? (
-          <>
-            <Link href={`/category/${post.author.category}`}>{post.author.categoryLabel}</Link> ›{" "}
-          </>
-        ) : null}
-        پست متخصص
-      </nav>
+      <PageCrumbs
+        trail={[
+          ...(post.author.category
+            ? [{ title: post.author.categoryLabel ?? "", href: `/category/${post.author.category}` }]
+            : []),
+          { title: "پست متخصص" },
+        ]}
+      />
 
       <article>
         <div className="p-head" style={{ padding: "0 0 6px" }}>
@@ -267,7 +270,7 @@ export default async function PostPage({ params }: Props) {
           </div>
         </div>
 
-        <h1>{title}</h1>
+        <Title level={1}>{title}</Title>
 
         {/* کاروسل کاملاً با CSS کار می‌کند (scroll-snap) — این صفحه سرورساید و
             بدونِ جاوااسکریپتِ کلاینت رندر می‌شود و باید همان‌طور بماند.
@@ -303,28 +306,26 @@ export default async function PostPage({ params }: Props) {
           <Caption text={post.caption} />
         </div>
 
-        <div className="answer-card" style={{ marginTop: 24 }}>
-          <div className="expert-strip" style={{ border: 0, margin: 0, padding: 0 }}>
-            <div className="who">
+        <Card className="answer-card" style={{ marginTop: 24 }}>
+          <Flex justify="space-between" align="center" gap={16} wrap>
+            <Flex align="center" gap={12}>
               <Avatar name={post.author.name} src={post.author.avatar} />
               <span>
                 <b>سوالی درباره این موضوع داری؟</b>
                 <br />
-                <small style={{ color: "var(--ink-2)" }}>
+                <Text type="secondary">
                   از {post.author.name} بپرس یا جلسه آنلاین رزرو کن
-                </small>
+                </Text>
               </span>
-            </div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <a className="btn btn-ghost btn-sm" href={panelAskUrl()}>
-                سوال بپرس
-              </a>
-              <a className="btn btn-saffron btn-sm" href={panelUserUrl(post.author.username)}>
+            </Flex>
+            <Flex gap={8} wrap>
+              <Button icon={<MessageOutlined />} href={panelAskUrl()}>سوال بپرس</Button>
+              <Button type="primary" icon={<CalendarOutlined />} href={panelUserUrl(post.author.username)}>
                 رزرو جلسه
-              </a>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </Flex>
+          </Flex>
+        </Card>
 
       </article>
     </main>

@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Card, Col, Row, Statistic, Tag } from "antd";
+import { CheckCircleOutlined, FireOutlined } from "@/components/icons";
+import PageCrumbs from "@/components/PageCrumbs";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getSpecialist } from "@/lib/api";
-import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
-import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
+import { buildSlug, extractObjectId } from "@/lib/slug";
+import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/config";
 import { excerpt, formatCount, formatJalali, formatRating, isRecentlyActive } from "@/lib/format";
-import { captionPlainText } from "@/lib/caption";
 import Avatar from "@/components/Avatar";
 import VerifiedTick from "@/components/VerifiedTick";
-import PostThumb from "@/components/PostThumb";
+import PostCard from "@/components/PostCard";
 import Stars from "@/components/Stars";
 import BookingCard from "@/components/BookingCard";
 import OnlineChip from "@/components/OnlineChip";
+import { Paragraph, Title } from "@/components/ui";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -226,156 +228,128 @@ export default async function SpecialistPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <nav className="breadcrumb" aria-label="مسیر صفحه">
-        <Link href="/">{SITE_NAME}</Link> › <Link href="/specialists">متخصص‌ها</Link>
-      </nav>
+      <PageCrumbs trail={[{ title: "متخصص‌ها", href: "/specialists" }, { title: specialist.name }]} />
 
       <article>
         {/* سربرگ: کیست، چقدر خوب است، و چرا می‌شود به او اعتماد کرد.
-            قبلاً آواتار ۵۶ پیکسلی گوشه‌ی بالا بود و اسم هم‌وزنِ متنِ بدنه —
             صفحه‌ی پروفایل باید با خودِ آدم شروع شود. */}
-        <header className="sp-hero">
-          <div className="sp-hero__avatar">
-            <Avatar name={specialist.name} src={specialist.avatar} size={96} />
-          </div>
-          <div className="sp-hero__main">
-            <h1>
-              {specialist.name}
-              <VerifiedTick />
-            </h1>
-            <div className="sp-hero__role">{jobTitle}</div>
+        <Card className="sp-hero" variant="borderless">
+          <Row gutter={[24, 20]} align="middle">
+            <Col flex="none">
+              <Avatar name={specialist.name} src={specialist.avatar} size={96} />
+            </Col>
+            <Col flex="1 1 280px">
+              <Title level={1} className="sp-hero__name">
+                {specialist.name}
+                <VerifiedTick />
+              </Title>
+              <div className="sp-hero__role">{jobTitle}</div>
 
-            {hasRating ? (
               <div className="sp-hero__rating">
-                <Stars value={specialist.ratingAvg} size={15} />
-                <b>{formatRating(specialist.ratingAvg)}</b>
-                <span>از {formatCount(specialist.ratingCount)} نظر</span>
+                {hasRating ? (
+                  <>
+                    <Stars value={specialist.ratingAvg} size={15} />
+                    <b>{formatRating(specialist.ratingAvg)}</b>
+                    <span>از {formatCount(specialist.ratingCount)} نظر</span>
+                  </>
+                ) : (
+                  <span>هنوز نظری ثبت نشده</span>
+                )}
               </div>
-            ) : (
-              <div className="sp-hero__rating">
-                <span>هنوز نظری ثبت نشده</span>
+
+              <div className="sp-trust">
+                {/* زنده — بقیه‌ی این نشان‌ها ثابت‌اند ولی این یکی نه */}
+                <OnlineChip specialistId={specialist.id} />
+                <Tag color="blue" icon={<CheckCircleOutlined />}>هویت تاییدشده</Tag>
+                {isRecentlyActive(specialist.lastActivityAt) && (
+                  <Tag color="green" icon={<FireOutlined />}>این هفته فعال بوده</Tag>
+                )}
+                {specialist.categoryLabel && <Tag>{specialist.categoryLabel}</Tag>}
               </div>
-            )}
+            </Col>
 
-            <div className="sp-trust">
-              {/* زنده — بقیه‌ی این نشان‌ها ثابت‌اند ولی این یکی نه */}
-              <OnlineChip specialistId={specialist.id} />
-              <span className="sp-chip">هویت تاییدشده</span>
-              {isRecentlyActive(specialist.lastActivityAt) && (
-                <span className="sp-chip">این هفته فعال بوده</span>
-              )}
-              {specialist.categoryLabel && (
-                <span className="sp-chip sp-chip--muted">{specialist.categoryLabel}</span>
-              )}
-            </div>
-          </div>
+            {/* نیمه‌ی خالیِ سربرگ با عددهای واقعی پر می‌شود، نه تزیین: اینها
+                همان چیزهایی‌اند که بازدیدکننده پیش از رزرو می‌سنجد. */}
+            <Col xs={24} md={8} className="sp-stats">
+              <Row gutter={16}>
+                <Col span={8}><Statistic title="نظر" value={formatCount(specialist.ratingCount)} /></Col>
+                <Col span={8}><Statistic title="پست" value={formatCount(posts.length)} /></Col>
+                <Col span={8}><Statistic title="امتیاز" value={hasRating ? formatRating(specialist.ratingAvg) : "—"} /></Col>
+              </Row>
+            </Col>
+          </Row>
+        </Card>
 
-          {/* نیمه‌ی خالیِ سربرگ با عددهای واقعی پر می‌شود، نه تزیین: اینها
-              همان چیزهایی‌اند که بازدیدکننده پیش از رزرو می‌سنجد. */}
-          <dl className="sp-stats">
-            <div>
-              <dt>نظر</dt>
-              <dd>{formatCount(specialist.ratingCount)}</dd>
-            </div>
-            <div>
-              <dt>پست</dt>
-              <dd>{formatCount(posts.length)}</dd>
-            </div>
-            <div>
-              <dt>امتیاز</dt>
-              <dd>{hasRating ? formatRating(specialist.ratingAvg) : "—"}</dd>
-            </div>
-          </dl>
-        </header>
-
-        <div className="sp-layout">
-          <div>
+        <Row gutter={[24, 24]} className="sp-layout">
+          <Col xs={24} lg={16}>
             {specialist.bio && (
               <section className="sp-section" aria-labelledby="about-title">
-                <h2 id="about-title">درباره‌ی {specialist.name}</h2>
-                <div className="sp-about">{specialist.bio}</div>
+                <Title level={2} id="about-title">درباره‌ی {specialist.name}</Title>
+                <Paragraph className="sp-about">{specialist.bio}</Paragraph>
               </section>
             )}
 
-        {/* نظرها بالای پست‌ها می‌آیند: کسی که پروفایل متخصص را باز می‌کند اول
-            می‌خواهد بداند تجربه‌ی بقیه چه بوده، بعد محتوایش را ببیند */}
-        {reviews.length > 0 && (
-          <section className="reviews sp-section" aria-labelledby="reviews-title">
-            <h2 id="reviews-title">نظر کاربران</h2>
+            {/* نظرها بالای پست‌ها می‌آیند: کسی که پروفایل متخصص را باز می‌کند اول
+                می‌خواهد بداند تجربه‌ی بقیه چه بوده، بعد محتوایش را ببیند */}
+            {reviews.length > 0 && (
+              <section className="reviews sp-section" aria-labelledby="reviews-title">
+                <Title level={2} id="reviews-title">نظر کاربران</Title>
 
-            {hasRating && (
-              <div className="sp-rating-bar">
-                <b>{formatRating(specialist.ratingAvg)}</b>
-                <div>
-                  <Stars value={specialist.ratingAvg} />
-                  <small>بر پایه‌ی {formatCount(specialist.ratingCount)} نظرِ ثبت‌شده پس از جلسه</small>
-                </div>
-              </div>
+                {hasRating && (
+                  <Card className="sp-rating-bar" size="small" variant="borderless">
+                    <b>{formatRating(specialist.ratingAvg)}</b>
+                    <div>
+                      <Stars value={specialist.ratingAvg} />
+                      <small>بر پایه‌ی {formatCount(specialist.ratingCount)} نظرِ ثبت‌شده پس از جلسه</small>
+                    </div>
+                  </Card>
+                )}
+
+                <ul className="review-list">
+                  {reviews.map((r) => (
+                    <li key={r.id}>
+                      <Card className="review-card" size="small">
+                        <div className="r-head">
+                          <Avatar name={r.client.name} src={r.client.avatar} size={40} />
+                          <div className="r-who">
+                            <b>{r.client.name}</b>
+                            <Stars value={r.rating} />
+                          </div>
+                          <time dateTime={r.createdAt}>{formatJalali(r.createdAt)}</time>
+                        </div>
+                        <Paragraph style={{ marginBottom: 0 }}>{r.text}</Paragraph>
+                      </Card>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
 
-            <ul className="review-list">
-              {reviews.map((r) => (
-                <li className="review-card" key={r.id}>
-                  <div className="r-head">
-                    <Avatar name={r.client.name} src={r.client.avatar} size={40} />
-                    <div className="r-who">
-                      <b>{r.client.name}</b>
-                      <Stars value={r.rating} />
-                    </div>
-                    <time dateTime={r.createdAt}>{formatJalali(r.createdAt)}</time>
-                  </div>
-                  <p>{r.text}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {posts.length > 0 && (
-          <section className="sp-section">
-            <h2>پست‌های {specialist.name}</h2>
-            <div className="post-grid">
-              {posts.map((p) => {
-                // مثل صفحه‌ی اصلی: کارت متنِ ساده، صفحه‌ی پست نشانه‌گذاری
-                const plain = captionPlainText(p.caption);
-                const postSlug = buildPostSlug(p);
-                return (
-                  <article className="post-card" key={p.id}>
-                    <Link className="p-media" href={`/post/${postSlug}`} aria-label="مشاهده پست">
-                      <PostThumb
-                        imageUrl={p.imageUrl}
-                        isVideo={p.isVideo}
-                        alt={excerpt(plain, 100) || "پست منتشرشده"}
-                        fallbackText={plain.slice(0, 24)}
-                      />
-                    </Link>
-                    <div className="p-body">
-                      <p>{excerpt(plain, 90)}</p>
-                    </div>
-                    <div className="p-foot">
-                      <span className="stats">
-                        {formatCount(p.likesCount)} پسند · {formatCount(p.commentsCount)} دیدگاه
-                        {(p.viewsCount || 0) > 0 ? ` · ${formatCount(p.viewsCount!)} بازدید` : ''}
-                      </span>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
+            {posts.length > 0 && (
+              <section className="sp-section">
+                <Title level={2}>پست‌های {specialist.name}</Title>
+                <Row gutter={[16, 16]}>
+                  {posts.map((p) => (
+                    <Col key={p.id} xs={24} sm={12}>
+                      <PostCard post={p} />
+                    </Col>
+                  ))}
+                </Row>
+              </section>
+            )}
 
             {!specialist.bio && posts.length === 0 && reviews.length === 0 && (
-              <div className="sp-empty sp-section">
+              <Card className="sp-empty sp-section" variant="borderless">
                 {specialist.name} هنوز محتوایی منتشر نکرده. می‌توانی مستقیم سوالت را بپرسی یا وقت بگیری.
-              </div>
+              </Card>
             )}
-          </div>
+          </Col>
 
           {/* ستونِ چسبان در دسکتاپ */}
-          <BookingCard specialist={specialist} variant="column" />
-        </div>
+          <Col xs={0} lg={8}>
+            <BookingCard specialist={specialist} variant="column" />
+          </Col>
+        </Row>
       </article>
 
       {/* موبایل: همان کارت به‌صورتِ نوارِ چسبانِ پایین */}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "antd";
+import { CloseOutlined } from "@/components/icons";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -81,24 +83,19 @@ export default function InstallAppBar() {
       </span>
 
       {isAndroid ? (
-        <a className="install-bar-cta" href={APK_URL} download>
+        <Button type="primary" href={APK_URL} download>
           دانلود اپ
-        </a>
+        </Button>
       ) : (
-        <button
-          type="button"
-          className="install-bar-cta"
+        <Button
+          type="primary"
           onClick={() => void deferred?.prompt().then(() => { setDeferred(null); setHidden(true); })}
         >
           نصب
-        </button>
+        </Button>
       )}
 
-      <button type="button" className="install-bar-close" onClick={dismiss} aria-label="بستن">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-          <path d="M18 6 6 18M6 6l12 12" />
-        </svg>
-      </button>
+      <Button type="text" shape="circle" icon={<CloseOutlined />} onClick={dismiss} aria-label="بستن" />
     </div>
   );
 }

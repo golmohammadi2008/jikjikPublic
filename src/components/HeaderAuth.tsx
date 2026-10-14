@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { API_BASE_URL, PANEL_URL, SESSION_TOKEN_COOKIE, panelProfileUrl } from "@/lib/config";
+import { Button } from "antd";
 import Avatar from "@/components/Avatar";
 
 type Me = { name: string; username: string; avatar: string | null };
@@ -58,20 +59,15 @@ export default function HeaderAuth() {
 
   if (me) {
     return (
-      <a className="btn btn-ghost btn-sm" href={panelProfileUrl()} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <Avatar name={me.name} src={me.avatar} size={24} />
+      <Button href={panelProfileUrl()} icon={<Avatar name={me.name} src={me.avatar} size={24} />}>
         پروفایل من
-      </a>
+      </Button>
     );
   }
   return (
     <>
-      <a className="btn btn-ghost btn-sm" href={PANEL_URL}>
-        ورود
-      </a>
-      <a className="btn btn-saffron btn-sm" href={`${PANEL_URL}/auth`}>
-        ثبت‌نام
-      </a>
+      <Button className="auth-login" href={PANEL_URL}>ورود</Button>
+      <Button type="primary" href={`${PANEL_URL}/auth`}>ثبت‌نام</Button>
     </>
   );
 }

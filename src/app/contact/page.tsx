@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
-import Link from "next/link";
-import ContactForm from "@/components/ContactForm";
+import { Card, Col, Row } from "antd";
 import { SITE_NAME } from "@/lib/config";
+import { MailOutlined, PhoneOutlined } from "@/components/icons";
+import PageCrumbs from "@/components/PageCrumbs";
+import ContactForm from "@/components/ContactForm";
 import { pageMeta } from "@/lib/pageMeta";
+import { Paragraph, Title, TypoLink } from "@/components/ui";
 
 export const metadata: Metadata = pageMeta({
   title: "ارتباط با ما",
@@ -22,37 +25,36 @@ export default function ContactPage() {
   return (
     <main className="wrap contact-page">
       <script {...jsonLdProps(jsonLd)} />
-      <nav className="breadcrumb" aria-label="مسیر صفحه">
-        <Link href="/">{SITE_NAME}</Link> › ارتباط با ما
-      </nav>
+      <PageCrumbs trail={[{ title: "ارتباط با ما" }]} />
 
-      <div className="section-head">
-        <h2>ارتباط با ما</h2>
-      </div>
-      <p style={{ color: "var(--ink-2)", marginBottom: 24 }}>
+      <Title level={1}>ارتباط با ما</Title>
+      <Paragraph type="secondary" style={{ marginBottom: 24 }}>
         سوال، پیشنهاد یا مشکلی دارید؟ از راه‌های زیر با ما در تماس باشید — تیم پشتیبانی در سریع‌ترین زمان پاسخ می‌دهد.
-      </p>
+      </Paragraph>
 
-      <div className="contact-grid">
-        <aside className="contact-info">
-          <div className="contact-info-item">
-            <span className="ci-icon" aria-hidden="true">☎</span>
-            <div>
-              <b>پشتیبانی تلفنی</b>
-              <a href="tel:+982191550953" dir="ltr" style={{ display: "inline-block", color: "var(--thyme)", fontWeight: 600 }}>۰۲۱۹۱۵۵۰۹۵۳</a>
+      <Row gutter={[24, 24]}>
+        <Col xs={24} md={8}>
+          <Card variant="borderless" className="contact-info">
+            <div className="contact-info-item">
+              <PhoneOutlined className="ci-icon" />
+              <div>
+                <b>پشتیبانی تلفنی</b>
+                <TypoLink href="tel:+982191550953" style={{ direction: "ltr", display: "block" }}>۰۲۱۹۱۵۵۰۹۵۳</TypoLink>
+              </div>
             </div>
-          </div>
-          <div className="contact-info-item">
-            <span className="ci-icon" aria-hidden="true">✉</span>
-            <div>
-              <b>ایمیل</b>
-              <a href="mailto:info@weeno.ir" dir="ltr" style={{ display: "inline-block", color: "var(--thyme)", fontWeight: 600 }}>info@weeno.ir</a>
+            <div className="contact-info-item">
+              <MailOutlined className="ci-icon" />
+              <div>
+                <b>ایمیل</b>
+                <TypoLink href="mailto:info@weeno.ir" style={{ direction: "ltr", display: "block" }}>info@weeno.ir</TypoLink>
+              </div>
             </div>
-          </div>
-        </aside>
-
-        <ContactForm />
-      </div>
+          </Card>
+        </Col>
+        <Col xs={24} md={16}>
+          <ContactForm />
+        </Col>
+      </Row>
     </main>
   );
 }

@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import { Card, Col, Row } from "antd";
+import {
+  CodeOutlined,
+  HeartOutlined,
+  BulbOutlined,
+  SafetyOutlined,
+} from "@/components/icons";
 import AssistantWidget from "@/components/AssistantWidget";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { pageMeta } from "@/lib/pageMeta";
 import { SITE_NAME } from "@/lib/config";
+import { Paragraph, Title } from "@/components/ui";
 
 /**
  * صفحه‌ی مستقلِ دستیار هوشمند.
@@ -28,10 +36,10 @@ export const metadata: Metadata = pageMeta({
 export const revalidate = 300;
 
 const DOMAINS = [
-  { icon: "⚖️", title: "حقوقی", body: "قرارداد، شکایت، مهلت قانونی" },
-  { icon: "🩺", title: "پزشکی", body: "علائم، آزمایش، کِی جدی است" },
-  { icon: "🧠", title: "روان‌شناسی", body: "بدون قضاوت، هر ساعت شب" },
-  { icon: "💻", title: "برنامه‌نویسی", body: "کد، خطا، معماری" },
+  { icon: <SafetyOutlined />, title: "حقوقی", body: "قرارداد، شکایت، مهلت قانونی" },
+  { icon: <HeartOutlined />, title: "پزشکی", body: "علائم، آزمایش، کِی جدی است" },
+  { icon: <BulbOutlined />, title: "روان‌شناسی", body: "بدون قضاوت، هر ساعت شب" },
+  { icon: <CodeOutlined />, title: "برنامه‌نویسی", body: "کد، خطا، معماری" },
 ];
 
 export default function AssistantPage() {
@@ -48,10 +56,10 @@ export default function AssistantPage() {
 
       <section className="hero hero-compact">
         <div className="wrap">
-          <h1>سوالت را بپرس، جوابش را بگیر</h1>
-          <p className="hero-sub">
+          <Title level={1}>سوالت را بپرس، جوابش را بگیر</Title>
+          <Paragraph className="hero-sub">
             برای هر حوزه یک مدل تخصصی. و هر جا لازم شد، متخصص واقعی همین‌جاست.
-          </p>
+          </Paragraph>
         </div>
       </section>
 
@@ -59,15 +67,17 @@ export default function AssistantPage() {
 
       <section className="section">
         <div className="wrap">
-          <div className="domain-row">
+          <Row gutter={[16, 16]}>
             {DOMAINS.map((d) => (
-              <div className="domain-chip" key={d.title}>
-                <span aria-hidden="true">{d.icon}</span>
-                <b>{d.title}</b>
-                <small>{d.body}</small>
-              </div>
+              <Col key={d.title} xs={12} md={6}>
+                <Card className="domain-chip" variant="borderless" size="small">
+                  <span className="domain-icon" aria-hidden="true">{d.icon}</span>
+                  <b>{d.title}</b>
+                  <small>{d.body}</small>
+                </Card>
+              </Col>
             ))}
-          </div>
+          </Row>
         </div>
       </section>
     </>

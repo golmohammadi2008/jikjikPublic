@@ -1,6 +1,9 @@
+import { Button, Card, Descriptions } from "antd";
+import { CalendarOutlined, MessageOutlined, SafetyOutlined } from "@/components/icons";
 import { panelAskUrl, panelUserUrl } from "@/lib/config";
 import { formatDuration, formatToman, formatWhenFuture } from "@/lib/format";
 import type { SpecialistProfile } from "@/lib/types";
+import { Paragraph, Title } from "@/components/ui";
 
 /**
  * کارتِ رزرو — مهم‌ترین چیز روی صفحه‌ی متخصص.
@@ -33,63 +36,47 @@ export default function BookingCard({
     return (
       <div className="sp-book sp-book--bar">
         <div style={{ minWidth: 0 }}>
-          {price ? (
-            <div className="sp-book__price">
-              <b>{price}</b>
-            </div>
-          ) : (
-            <b style={{ fontSize: 15 }}>رزرو جلسه</b>
-          )}
+          <b className="sp-book__bar-price">{price ?? "رزرو جلسه"}</b>
           <div className="sp-book__meta">
             {nextFree ? `نزدیک‌ترین وقت: ${nextFree}` : (duration ?? "جلسه‌ی آنلاین")}
           </div>
         </div>
-        <a className="btn btn-saffron" href={bookUrl}>
+        <Button type="primary" size="large" icon={<CalendarOutlined />} href={bookUrl}>
           رزرو جلسه
-        </a>
+        </Button>
       </div>
     );
   }
 
   return (
-    <aside className="sp-book sp-book--col" aria-label="رزرو جلسه">
-      {price ? (
-        <div className="sp-book__price">
-          <b>{price}</b>
-          <span>/ جلسه</span>
-        </div>
-      ) : (
-        <div className="sp-book__price">
-          <b style={{ fontSize: 20 }}>رزرو جلسه</b>
-        </div>
-      )}
-      <div className="sp-book__meta">
+    <Card className="sp-book sp-book--col" aria-label="رزرو جلسه" variant="borderless">
+      <Title level={3} className="sp-book__price">
+        {price ?? "رزرو جلسه"}
+        {price && <small> / جلسه</small>}
+      </Title>
+      <Paragraph type="secondary">
         {duration ? `جلسه‌ی آنلاین ${duration}` : "جلسه‌ی آنلاین و خصوصی"}
-      </div>
+      </Paragraph>
 
-      <div className="sp-book__rows">
-        <div className="sp-book__row">
-          <span>نزدیک‌ترین وقت</span>
-          <b>{nextFree ?? "با هماهنگی"}</b>
-        </div>
-        {duration && (
-          <div className="sp-book__row">
-            <span>مدت جلسه</span>
-            <b>{duration}</b>
-          </div>
-        )}
-      </div>
+      <Descriptions
+        size="small"
+        column={1}
+        items={[
+          { key: "next", label: "نزدیک‌ترین وقت", children: <b>{nextFree ?? "با هماهنگی"}</b> },
+          ...(duration ? [{ key: "dur", label: "مدت جلسه", children: <b>{duration}</b> }] : []),
+        ]}
+      />
 
-      <a className="btn btn-saffron" href={bookUrl}>
+      <Button type="primary" size="large" block icon={<CalendarOutlined />} href={bookUrl}>
         رزرو جلسه
-      </a>
-      <a className="btn btn-ghost" href={panelAskUrl()} style={{ marginTop: 8 }}>
+      </Button>
+      <Button size="large" block icon={<MessageOutlined />} href={panelAskUrl()} style={{ marginTop: 8 }}>
         اول یک سوال بپرس
-      </a>
+      </Button>
 
-      <p className="sp-book__note">
-        پرداخت داخل وینو انجام می‌شود و تا پایان جلسه نزد ما می‌ماند.
-      </p>
-    </aside>
+      <Paragraph type="secondary" className="sp-book__note">
+        <SafetyOutlined /> پرداخت داخل وینو انجام می‌شود و تا پایان جلسه نزد ما می‌ماند.
+      </Paragraph>
+    </Card>
   );
 }

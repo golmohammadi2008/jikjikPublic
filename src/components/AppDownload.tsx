@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Button, Card, Steps, Tabs, Typography } from "antd";
 import { APP_DOWNLOAD_URL, PANEL_URL, SITE_NAME, STORE_URLS } from "@/lib/config";
 
 /**
@@ -90,56 +90,124 @@ function StoreButton({ href, name, storeKey }: { href: string; name: string; sto
   }
 
   return (
-    <a className="dl-store" href={href} target="_blank" rel="noopener">
-      <span className="dl-store__sub">دریافت از</span>
-      <span className="dl-store__name">{name}</span>
-    </a>
+    <Button size="large" href={href} target="_blank" rel="noopener">
+      دریافت از {name}
+    </Button>
   );
 }
 
-function Steps({ items }: { items: string[] }) {
+function InstallSteps({ items }: { items: string[] }) {
   return (
-    <ol className="dl-steps">
-      {items.map((s, i) => (
-        <li key={i}>
-          <span className="dl-step-num">{(i + 1).toLocaleString("fa-IR")}</span>
-          <span>{s}</span>
-        </li>
-      ))}
-    </ol>
+    <Steps
+      className="dl-steps"
+      orientation="vertical"
+      size="small"
+      current={-1}
+      items={items.map((title) => ({ title }))}
+    />
   );
 }
 
 export default function AppDownload() {
-  const [tab, setTab] = useState<Tab>("android");
   const stores = [
     { key: "myket", name: "مایکت", href: STORE_URLS.myket },
     { key: "bazaar", name: "کافه‌بازار", href: STORE_URLS.bazaar },
   ].filter((s) => s.href);
+  const extraStores = stores.filter((s) => s.key !== "bazaar");
+
+  const tabs = TABS.map((t) => ({
+    key: t.key,
+    label: (
+      <span className="dl-tab-label">
+        <t.Icon />
+        {t.label}
+      </span>
+    ),
+    children:
+      t.key === "android" ? (
+        <>
+          {/* دکمه‌ها بالا در نوارِ hero هستند و این‌جا تکرار نمی‌شوند.
+              فروشگاهی که badge ندارد (مثلاً مایکت وقتی منتشر شود) این‌جا
+              می‌آید، چون در hero فقط راهِ اول جا می‌شود. */}
+          {extraStores.length > 0 && (
+            <div className="dl-stores">
+              {extraStores.map((s) => (
+                <StoreButton key={s.key} href={s.href} name={s.name} storeKey={s.key} />
+              ))}
+            </div>
+          )}
+          <Typography.Paragraph>
+            از <b>کافه‌بازار</b> نصب کن تا به‌روزرسانی‌ها خودکار بیاید. اگر بازار نداری،
+            فایل نصبی را مستقیم بگیر — حدود ۸۹ مگابایت.
+          </Typography.Paragraph>
+          <InstallSteps
+            items={[
+              "فایل را دانلود کن.",
+              "اگر اندروید پرسید، «نصب از منابع ناشناس» را برای مرورگرت اجازه بده.",
+              "روی فایل دانلودشده بزن و نصب را تمام کن.",
+            ]}
+          />
+        </>
+      ) : t.key === "ios" ? (
+        <>
+          <Typography.Paragraph>
+            روی آیفون، {SITE_NAME} به‌صورت <b>وب‌اپ</b> نصب می‌شود — آیکونش کنار بقیه‌ی
+            اپ‌ها می‌نشیند و تمام‌صفحه باز می‌شود.
+          </Typography.Paragraph>
+          <Button type="primary" href={PANEL_URL}>باز کردن در سافاری</Button>
+          <InstallSteps
+            items={[
+              "این صفحه را در «سافاری» باز کن — کروم روی آیفون این قابلیت را ندارد.",
+              "دکمه‌ی اشتراک‌گذاری (مربع با فلشِ رو به بالا) را بزن.",
+              "«Add to Home Screen» را انتخاب و تایید کن.",
+            ]}
+          />
+          <Typography.Text type="secondary" className="dl-note">
+            اعلان‌ها روی iOS فقط بعد از همین نصب کار می‌کنند و به iOS ۱۶٫۴ به بالا نیاز دارند.
+          </Typography.Text>
+        </>
+      ) : (
+        <>
+          <Typography.Paragraph>
+            روی ویندوز، مک، لینوکس و اندروید می‌توانی وینو را مثل یک برنامه‌ی مستقل نصب کنی —
+            بدون نوار آدرس، با آیکون خودش.
+          </Typography.Paragraph>
+          <Button type="primary" href={PANEL_URL}>باز کردن پنل وینو</Button>
+          <InstallSteps
+            items={[
+              "پنل را در کروم یا اِج باز کن.",
+              "در نوار آدرس، آیکون نصب را بزن — یا از منوی سه‌نقطه «Install» را انتخاب کن.",
+              "روی «نصب» بزن؛ وینو به‌عنوان برنامه‌ی جدا باز می‌شود.",
+            ]}
+          />
+        </>
+      ),
+  }));
 
   return (
-    <div className="dl-card">
+    <Card className="dl-card" variant="borderless">
       {/* ── نوارِ بالا: عنوان و کارِ اصلی در یک سو، QR در سوی دیگر ──
           QR روی موبایل عمداً رندر نمی‌شود (`dl-hero__scan` زیر ۷۲۰px
           حذف است): کسی که با گوشی این صفحه را باز کرده، خودش همان‌جاست
           که QR می‌خواهد ببردش. آن‌جا دکمه‌ها تمام‌عرض می‌شوند. */}
       <div className="dl-hero">
         <div className="dl-hero__copy">
-          <h2>وینو را روی گوشی‌ات داشته باش</h2>
-          <p>پاسخ متخصص و یادآوری جلسه‌ها با اعلان به دستت می‌رسد.</p>
+          <Typography.Title level={2}>وینو را روی گوشی‌ات داشته باش</Typography.Title>
+          <Typography.Paragraph type="secondary">
+            پاسخ متخصص و یادآوری جلسه‌ها با اعلان به دستت می‌رسد.
+          </Typography.Paragraph>
 
           <div className="dl-hero__cta">
             {STORE_URLS.bazaar && (
               <StoreButton href={STORE_URLS.bazaar} name="کافه‌بازار" storeKey="bazaar" />
             )}
-            <a className="dl-hero__apk" href={APP_DOWNLOAD_URL}>
-              <IconDownload />
+            <Button size="large" icon={<IconDownload />} href={APP_DOWNLOAD_URL}>
               دانلود مستقیم فایل نصبی
-            </a>
+            </Button>
           </div>
         </div>
 
-        <div className="dl-hero__scan" aria-hidden="false">
+        <div className="dl-hero__scan">
           <div className="dl-qr">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/qr-weeno.svg" alt="کد QR برای باز کردن وینو روی گوشی" width={200} height={200} />
@@ -148,94 +216,7 @@ export default function AppDownload() {
         </div>
       </div>
 
-      <div className="dl-tabs" role="tablist" aria-label="روش نصب">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            role="tab"
-            type="button"
-            aria-selected={tab === t.key}
-            className={`dl-tab${tab === t.key ? " is-active" : ""}`}
-            onClick={() => setTab(t.key)}
-          >
-            <t.Icon />
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="dl-panel" role="tabpanel">
-        {tab === "android" && (
-          <>
-            {/* دکمه‌ها بالا در نوارِ hero هستند و این‌جا تکرار نمی‌شوند.
-                فروشگاهی که badge ندارد (مثلاً مایکت وقتی منتشر شود) این‌جا
-                می‌آید، چون در hero فقط راهِ اول جا می‌شود. */}
-            {stores.filter((s) => s.key !== "bazaar").length > 0 && (
-              <div className="dl-stores">
-                {stores
-                  .filter((s) => s.key !== "bazaar")
-                  .map((s) => (
-                    <StoreButton key={s.key} href={s.href} name={s.name} storeKey={s.key} />
-                  ))}
-              </div>
-            )}
-
-            <p className="dl-lead">
-              از <b>کافه‌بازار</b> نصب کن تا به‌روزرسانی‌ها خودکار بیاید. اگر بازار نداری،
-              فایل نصبی را مستقیم بگیر — حدود ۸۹ مگابایت.
-            </p>
-
-            <Steps
-              items={[
-                "فایل را دانلود کن.",
-                "اگر اندروید پرسید، «نصب از منابع ناشناس» را برای مرورگرت اجازه بده.",
-                "روی فایل دانلودشده بزن و نصب را تمام کن.",
-              ]}
-            />
-          </>
-        )}
-
-        {tab === "ios" && (
-          <>
-            <p className="dl-lead">
-              روی آیفون، {SITE_NAME} به‌صورت <b>وب‌اپ</b> نصب می‌شود — آیکونش کنار بقیه‌ی
-              اپ‌ها می‌نشیند و تمام‌صفحه باز می‌شود.
-            </p>
-            <a className="btn btn-thyme" href={PANEL_URL}>
-              باز کردن در سافاری
-            </a>
-            <Steps
-              items={[
-                "این صفحه را در «سافاری» باز کن — کروم روی آیفون این قابلیت را ندارد.",
-                "دکمه‌ی اشتراک‌گذاری (مربع با فلشِ رو به بالا) را بزن.",
-                "«Add to Home Screen» را انتخاب و تایید کن.",
-              ]}
-            />
-            <p className="dl-note">
-              اعلان‌ها روی iOS فقط بعد از همین نصب کار می‌کنند و به iOS ۱۶٫۴ به بالا نیاز دارند.
-            </p>
-          </>
-        )}
-
-        {tab === "pwa" && (
-          <>
-            <p className="dl-lead">
-              روی ویندوز، مک، لینوکس و اندروید می‌توانی وینو را مثل یک برنامه‌ی مستقل نصب کنی —
-              بدون نوار آدرس، با آیکون خودش.
-            </p>
-            <a className="btn btn-thyme" href={PANEL_URL}>
-              باز کردن پنل وینو
-            </a>
-            <Steps
-              items={[
-                "پنل را در کروم یا اِج باز کن.",
-                "در نوار آدرس، آیکون نصب را بزن — یا از منوی سه‌نقطه «Install» را انتخاب کن.",
-                "روی «نصب» بزن؛ وینو به‌عنوان برنامه‌ی جدا باز می‌شود.",
-              ]}
-            />
-          </>
-        )}
-      </div>
-    </div>
+      <Tabs defaultActiveKey="android" items={tabs} />
+    </Card>
   );
 }

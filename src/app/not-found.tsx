@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Button, Result } from "antd";
 
 export const metadata: Metadata = {
   title: "صفحه پیدا نشد",
@@ -72,17 +72,15 @@ function NotFoundArt() {
 export default function NotFound() {
   return (
     <main className="wrap err-page">
-      <NotFoundArt />
-      <span className="err-code">۴۰۴</span>
-      <h1>این صفحه رو همه‌جا گشتیم، نبود!</h1>
-      <p>
-        یا آدرس اشتباه تایپ شده، یا این صفحه جمع کرده رفته یه جای بهتر.
-        نگران نباش — جواب سوالت هنوز همین‌جاست.
-      </p>
-      <div className="err-actions">
-        <Link href="/" className="btn btn-saffron">بریم صفحه‌ی اصلی</Link>
-        <Link href="/specialists" className="btn btn-ghost">مرور متخصص‌ها</Link>
-      </div>
+      <Result
+        icon={<NotFoundArt />}
+        title="این صفحه رو همه‌جا گشتیم، نبود!"
+        subTitle="یا آدرس اشتباه تایپ شده، یا این صفحه جمع کرده رفته یه جای بهتر. نگران نباش — جواب سوالت هنوز همین‌جاست."
+        extra={[
+          <Button key="home" type="primary" size="large" href="/">بریم صفحه‌ی اصلی</Button>,
+          <Button key="spec" size="large" href="/specialists">مرور متخصص‌ها</Button>,
+        ]}
+      />
     </main>
   );
 }

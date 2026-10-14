@@ -13,6 +13,7 @@
  */
 
 import { useState } from "react";
+import { Card, Input, Typography } from "antd";
 import { PANEL_URL } from "@/lib/config";
 
 export default function AssistantWidget() {
@@ -29,31 +30,22 @@ export default function AssistantWidget() {
   return (
     <section className="section" id="assistant">
       <div className="wrap">
-        <div className="asst-box">
-          <p className="asst-empty">
+        <Card className="asst-box" variant="borderless">
+          <Typography.Paragraph type="secondary" className="asst-empty">
             سوالت را بنویس — وارد که شدی، جوابِ همین سوال منتظرت است.
-          </p>
-
-          <div className="asst-form">
-            <input
-              className="asst-input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") go(); }}
-              placeholder="مثلاً: قرارداد کارم بند عجیبی دارد، مشکل‌دار است؟"
-              maxLength={1000}
-              disabled={going}
-            />
-            <button
-              type="button"
-              className="btn btn-saffron"
-              onClick={go}
-              disabled={going || !input.trim()}
-            >
-              {going ? "…" : "بپرس"}
-            </button>
-          </div>
-        </div>
+          </Typography.Paragraph>
+          <Input.Search
+            size="large"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onSearch={go}
+            enterButton="بپرس"
+            loading={going}
+            disabled={going}
+            maxLength={1000}
+            placeholder="مثلاً: قرارداد کارم بند عجیبی دارد، مشکل‌دار است؟"
+          />
+        </Card>
       </div>
     </section>
   );

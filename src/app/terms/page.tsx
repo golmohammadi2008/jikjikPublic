@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
 import { pageMeta } from "@/lib/pageMeta";
+import { LegalBanner, LegalBody, LegalCallout } from "@/components/legal/Legal";
+import LegalToc from "@/components/legal/LegalToc";
 
 export const metadata: Metadata = pageMeta({
   title: "شرایط و قوانین استفاده",
@@ -24,40 +26,36 @@ export default function TermsPage() {
         <h1>شرایط و قوانین استفاده از {SITE_NAME}</h1>
 
         {/* هدرِ بالای صفحه: این نسخه عمومی است، جزئیاتِ حسابِ خودِ کاربر پشتِ ورود */}
-        <aside className="legal-banner" role="note">
-          <div className="legal-banner-body">
-            <b>این نسخه‌ی «عمومی» شرایط است.</b>
-            <p>
+        <LegalBanner title="این نسخه‌ی «عمومی» شرایط است." href={`${PANEL_URL}/terms`} cta="ورود و مشاهده‌ی شرایط حساب من">
+            
               اعداد این صفحه سقف‌ها و قواعد کلیِ پلتفرم‌اند. شرایط دقیقی که به <em>حساب شما</em> اعمال
               می‌شود — نرخ کارمزد واقعی شما، قوانین لغو و تسویه‌ی متناسب با نقشتان (کاربر یا متخصص) و
               تعهدات اختصاصی — پس از ورود در پنل نمایش داده می‌شود.
-            </p>
-          </div>
-          <a className="btn btn-saffron btn-sm" href={`${PANEL_URL}/terms`}>
-            ورود و مشاهده‌ی شرایط حساب من
-          </a>
-        </aside>
+            
+          </LegalBanner>
 
-        <div className="p-text legal">
+        <LegalBody>
           <p className="lead">
             {SITE_NAME} بستری آنلاین برای پرسش از متخصص‌های تاییدشده، دریافت پاسخ اولیه‌ی هوش مصنوعی و رزرو
             جلسه‌ی آنلاین با متخصص است. با ساخت حساب یا استفاده از وب‌سایت و اپلیکیشن، این شرایط را
             می‌پذیرید. اگر با بخشی از آن موافق نیستید، لطفاً از خدمات استفاده نکنید.
           </p>
 
-          <nav className="legal-toc" aria-label="فهرست">
-            <a href="#definitions">تعاریف</a>
-            <a href="#service">ماهیت خدمات</a>
-            <a href="#account">حساب کاربری</a>
-            <a href="#user-duties">تعهدات کاربر</a>
-            <a href="#pro-duties">تعهدات متخصص</a>
-            <a href="#booking">رزرو و پرداخت</a>
-            <a href="#cancel">انصراف و بازپرداخت</a>
-            <a href="#bypass">پرداخت خارج از پلتفرم</a>
-            <a href="#content">محتوا و مالکیت</a>
-            <a href="#suspend">تعلیق حساب</a>
-            <a href="#changes">تغییرات و قوانین حاکم</a>
-          </nav>
+          <LegalToc
+            items={[
+              { href: "#definitions", title: "تعاریف" },
+              { href: "#service", title: "ماهیت خدمات" },
+              { href: "#account", title: "حساب کاربری" },
+              { href: "#user-duties", title: "تعهدات کاربر" },
+              { href: "#pro-duties", title: "تعهدات متخصص" },
+              { href: "#booking", title: "رزرو و پرداخت" },
+              { href: "#cancel", title: "انصراف و بازپرداخت" },
+              { href: "#bypass", title: "پرداخت خارج از پلتفرم" },
+              { href: "#content", title: "محتوا و مالکیت" },
+              { href: "#suspend", title: "تعلیق حساب" },
+              { href: "#changes", title: "تغییرات و قوانین حاکم" },
+            ]}
+          />
 
           <h2 id="definitions">۱) تعاریف</h2>
           <ul>
@@ -74,10 +72,10 @@ export default function TermsPage() {
             تشخیص، ویزیت، نسخه یا نظر تخصصی متخصص انسانی نیستند. مسئولیت نهایی هر تصمیم درمانی، حقوقی یا مالی
             بر عهده‌ی خود کاربر و بر پایه‌ی مشورت با متخصص است.
           </p>
-          <div className="legal-callout">
+          <LegalCallout>
             در شرایط اضطراری پزشکی با <strong>اورژانس ۱۱۵</strong> و در بحران‌های فوری اجتماعی با
             <strong> اورژانس اجتماعی ۱۲۳</strong> تماس بگیرید. {SITE_NAME} سرویس اورژانسی نیست.
-          </div>
+          </LegalCallout>
           <p>
             {SITE_NAME} واسطه‌ی ارتباط کاربر و متخصص است و ارائه‌دهنده‌ی مستقیم خدمات درمانی/حقوقی نیست.
             صحت مدارک و مجوزهای حرفه‌ای هر متخصص پیش از فعال‌سازی بررسی می‌شود، اما مسئولیت کیفیت مشاوره بر
@@ -147,10 +145,10 @@ export default function TermsPage() {
             جلسه</strong> بستگی دارد. هرچه به زمان جلسه نزدیک‌تر باشید، سهم کمتری بازمی‌گردد، چون
             وقتِ رزروشده‌ی متخصص دیگر قابل فروش به کسِ دیگری نیست.
           </p>
-          <div className="legal-callout">
+          <LegalCallout>
             <strong>پیش از تایید لغو، مبلغ دقیقِ بازگشتی به شما نشان داده می‌شود</strong> — لازم
             نیست چیزی را حساب کنید یا حدس بزنید.
-          </div>
+          </LegalCallout>
           <ul>
             <li>
               <strong>لغو خیلی زودهنگام</strong> (فاصله‌ی زیاد تا جلسه) — کل مبلغ بدون کسر
@@ -216,7 +214,7 @@ export default function TermsPage() {
             پشتیبانی اقدام کنید.
           </p>
           <p style={{ marginTop: 18, fontSize: 13, color: "var(--ink-3)" }}>آخرین به‌روزرسانی: تیر ۱۴۰۴</p>
-        </div>
+        </LegalBody>
       </article>
     </main>
   );

@@ -3,6 +3,8 @@ import { webPageLd, jsonLdProps } from "@/lib/jsonLd";
 import Link from "next/link";
 import { PANEL_URL, SITE_NAME } from "@/lib/config";
 import { pageMeta } from "@/lib/pageMeta";
+import { LegalBanner, LegalBody } from "@/components/legal/Legal";
+import LegalToc from "@/components/legal/LegalToc";
 
 export const metadata: Metadata = pageMeta({
   title: "حریم خصوصی",
@@ -36,38 +38,34 @@ export default function PrivacyPage() {
       <article>
         <h1>حریم خصوصی {SITE_NAME}</h1>
 
-        <aside className="legal-banner" role="note">
-          <div className="legal-banner-body">
-            <b>خلاصه‌ی یک‌خطی.</b>
-            <p>
+        <LegalBanner title="خلاصه‌ی یک‌خطی." href={`${PANEL_URL}/profile`} cta="مدیریت داده‌های حساب من">
+            
               برای ورود شماره‌ی موبایلتان را می‌گیریم، برای برگزاری جلسه و پرداخت آنچه لازم است، و
               همین. داده‌ی شما را نمی‌فروشیم و برای تبلیغات در اختیار کسی نمی‌گذاریم. هر وقت
               بخواهید حسابتان و داده‌هایش حذف می‌شوند.
-            </p>
-          </div>
-          <a className="btn btn-saffron btn-sm" href={`${PANEL_URL}/profile`}>
-            مدیریت داده‌های حساب من
-          </a>
-        </aside>
+            
+          </LegalBanner>
 
-        <div className="p-text legal">
+        <LegalBody>
           <p className="lead">
             این صفحه می‌گوید {SITE_NAME} چه اطلاعاتی جمع‌آوری می‌کند، چرا، با چه کسانی به اشتراک
             می‌گذارد، چقدر نگه می‌دارد و شما چه اختیاری روی آن دارید. با استفاده از پلتفرم، این
             سیاست را می‌پذیرید.
           </p>
 
-          <nav className="legal-toc" aria-label="فهرست">
-            <a href="#collect">چه اطلاعاتی جمع می‌شود</a>
-            <a href="#why">کجا استفاده می‌شود</a>
-            <a href="#third-party">اشتراک‌گذاری اطلاعات</a>
-            <a href="#security">امنیت</a>
-            <a href="#retention">مدت نگهداری</a>
-            <a href="#rights">اختیارات شما</a>
-            <a href="#public">محتوای عمومی</a>
-            <a href="#children">کودکان</a>
-            <a href="#changes">تغییرات و تماس</a>
-          </nav>
+          <LegalToc
+            items={[
+              { href: "#collect", title: "چه اطلاعاتی جمع می‌شود" },
+              { href: "#why", title: "کجا استفاده می‌شود" },
+              { href: "#third-party", title: "اشتراک‌گذاری اطلاعات" },
+              { href: "#security", title: "امنیت" },
+              { href: "#retention", title: "مدت نگهداری" },
+              { href: "#rights", title: "اختیارات شما" },
+              { href: "#public", title: "محتوای عمومی" },
+              { href: "#children", title: "کودکان" },
+              { href: "#changes", title: "تغییرات و تماس" },
+            ]}
+          />
 
           <h2 id="collect">۱) چه اطلاعاتی جمع‌آوری می‌شود</h2>
           <ul>
@@ -176,7 +174,7 @@ export default function PrivacyPage() {
             یا پشتیبانی داخل برنامه با ما در تماس باشید. همچنین{" "}
             <Link href="/terms">شرایط و قوانین استفاده</Link> را ببینید.
           </p>
-        </div>
+        </LegalBody>
       </article>
     </main>
   );
