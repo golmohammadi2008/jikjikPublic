@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Empty, List } from "antd";
+import { Empty } from "antd";
+import LinkList from "@/components/LinkList";
 import PageCrumbs from "@/components/PageCrumbs";
 import { notFound } from "next/navigation";
 import { getCategory, getSpecialists } from "@/lib/api";
@@ -9,7 +9,7 @@ import { postTitle } from "@/lib/caption";
 import { OG_IMAGE, SITE_NAME } from "@/lib/config";
 import { formatCount } from "@/lib/format";
 import { collectionLd, jsonLdProps } from "@/lib/jsonLd";
-import { ListItem, Text, Title } from "@/components/ui";
+import { Title } from "@/components/ui";
 
 type Props = { params: Promise<{ key: string }> };
 
@@ -99,18 +99,13 @@ export default async function CategoryPage({ params }: Props) {
       {posts.length === 0 ? (
         <Empty description="در حال حاضر مطلبی در این حوزه منتشر نشده." />
       ) : (
-        <List
-          className="related"
-          bordered
-          dataSource={posts}
-          renderItem={(p) => (
-            <ListItem
-              key={p.id}
-              extra={<Text type="secondary">{formatCount(p.likesCount)} پسند</Text>}
-            >
-              <Link href={`/post/${buildSlug(p.title || p.caption, p.id)}`}>{postTitle(p.title, p.caption)}</Link>
-            </ListItem>
-          )}
+        <LinkList
+          items={posts.map((p) => ({
+            key: p.id,
+            href: `/post/${buildSlug(p.title || p.caption, p.id)}`,
+            title: postTitle(p.title, p.caption),
+            extra: `${formatCount(p.likesCount)} پسند`,
+          }))}
         />
       )}
 
@@ -121,18 +116,13 @@ export default async function CategoryPage({ params }: Props) {
       {specialists.length > 0 && (
         <section className="sp-section">
           <Title level={2}>متخصص‌های {category.label}</Title>
-          <List
-            className="related"
-            bordered
-            dataSource={specialists}
-            renderItem={(s) => (
-              <ListItem
-                key={s.id}
-                extra={s.specialty ? <Text type="secondary">{s.specialty}</Text> : null}
-              >
-                <Link href={`/specialists/${buildSlug(s.name, s.id)}`}>{s.name}</Link>
-              </ListItem>
-            )}
+          <LinkList
+            items={specialists.map((s) => ({
+              key: s.id,
+              href: `/specialists/${buildSlug(s.name, s.id)}`,
+              title: s.name,
+              extra: s.specialty ?? undefined,
+            }))}
           />
         </section>
       )}

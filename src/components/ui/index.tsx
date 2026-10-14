@@ -14,6 +14,7 @@ export const Paragraph = Typography.Paragraph;
 export const Text = Typography.Text;
 export const TypoLink = Typography.Link;
 export const ListItem = List.Item;
+export const ListItemMeta = List.Item.Meta;
 export const CardMeta = Card.Meta;
 export const SkeletonButton = Skeleton.Button;
 export const SkeletonAvatar = Skeleton.Avatar;

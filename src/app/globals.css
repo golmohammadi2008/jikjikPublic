@@ -23,7 +23,7 @@
 }
 
 :root {
-  --bg: #F4F7FA;
+  --bg: #F5F5F5;
   --surface: #FFFFFF;
   --ink: #1E2B29;
   --ink-2: #4E5F5B;
@@ -33,9 +33,9 @@
   --brand-tint: #E8EFFE;
   --ai: #7C5CFF;
   --line: #E5E7EB;
-  --radius: 14px;
-  --radius-lg: 22px;
-  --shadow: 0 1px 2px rgba(30, 43, 41, .05), 0 8px 24px -12px rgba(30, 43, 41, .12);
+  --radius: 8px;
+  --radius-lg: 8px;
+  --shadow: none;
   --font: "Shabnam", system-ui, sans-serif;
   --wrap: 1080px;
 }
@@ -70,18 +70,16 @@ img, video { max-width: 100%; display: block; }
 /* ============ هدر ============ */
 .site-header {
   position: sticky; top: 0; z-index: 50;
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
-  backdrop-filter: blur(12px);
+  background: #fff;
   border-bottom: 1px solid var(--line);
 }
 .site-header-bar { display: flex; align-items: center; gap: 20px; height: 64px; }
 .logo { display: inline-flex; align-items: center; gap: 9px; font-weight: 800; font-size: 22px; color: var(--ink); }
 .logo-mark {
-  width: 36px; height: 36px; border-radius: 12px;
-  background: linear-gradient(145deg, #3B82F6, #1D4ED8);
+  width: 32px; height: 32px; border-radius: 6px;
+  background: var(--brand);
   color: #fff; font-size: 20px; font-weight: 800; line-height: 1;
   display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px -4px rgba(37, 99, 235, .5);
 }
 .main-nav.ant-menu { flex: 1; min-width: 0; background: transparent; border-bottom: 0; line-height: 62px; }
 .header-actions { margin-inline-start: auto; display: flex; align-items: center; gap: 8px; }
@@ -93,41 +91,23 @@ img, video { max-width: 100%; display: block; }
 }
 
 /* ============ هیرو ============ */
-.hero {
-  position: relative; overflow: hidden; padding: 56px 0 24px;
-  background:
-    radial-gradient(60% 70% at 85% 10%, rgba(37, 99, 235, .13), transparent 70%),
-    radial-gradient(50% 60% at 10% 90%, rgba(124, 92, 255, .12), transparent 70%);
-}
-.hero::after { content: ""; position: absolute; inset: auto 0 0; height: 90px; background: linear-gradient(transparent, var(--bg)); pointer-events: none; }
-.hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 32px; }
-.hero h1 { font-weight: 800; font-size: clamp(30px, 5vw, 52px); line-height: 1.5; margin: 0; }
-.hero h1 em { font-style: normal; color: var(--brand); }
-.hero .lead { color: var(--ink-2); font-size: clamp(15px, 2.2vw, 18px); margin: 14px 0 0; }
-.hero-cta { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
-.trust-strip { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--ink-2); font-size: 13.5px; }
-.trust-strip .anticon { color: var(--brand); margin-inline-end: 4px; }
-
-.hero-art { position: relative; height: 440px; }
+.hero { background: #fff; border-bottom: 1px solid var(--line); padding: 48px 0; }
+.hero-title.ant-typography { font-size: clamp(28px, 4vw, 42px); line-height: 1.6; margin-top: 0; }
+.hero-title em { font-style: normal; color: var(--brand); }
+.hero .lead.ant-typography { font-size: 16px; margin-bottom: 20px; }
+.hero-cta { margin-top: 12px; }
+.hero-stats { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); }
+.hero-art.ant-card { height: 380px; overflow: hidden; background: #FAFBFF; }
+.hero-art .ant-card-body { height: 100%; position: relative; }
 .hero-canvas, .hero-canvas-skeleton { position: absolute; inset: 0; }
 .hero-canvas canvas { touch-action: pan-y; }
-.hero-art .ha-float { position: absolute; margin: 0; box-shadow: var(--shadow); animation: ha-float 6s ease-in-out infinite alternate; }
-.hero-art .ha-specialist { top: 28px; inset-inline-end: 4%; border-radius: 16px; }
-.ha-specialist b, .ha-specialist small { display: block; }
-.ha-specialist small { color: var(--ink-3); font-size: 11.5px; }
-.hero-art .ha-ai { bottom: 36px; inset-inline-start: 4%; padding: 6px 12px; border-radius: 999px; font-size: 12.5px; animation-delay: .8s; }
-@keyframes ha-float { from { translate: 0 -6px; } to { translate: 0 6px; } }
-@media (max-width: 860px) {
-  .hero { padding-top: 32px; }
-  .hero-grid { grid-template-columns: 1fr; }
-  .hero-art { height: 300px; order: -1; }
-}
-
-.assistant-teaser { text-align: center; border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--brand-tint), #F0ECFF); }
-.assistant-teaser .ant-typography { margin-top: 0; }
-.hero-compact { padding: 48px 0 8px; text-align: center; }
-.hero-compact h1 { font-size: clamp(26px, 4vw, 38px); }
+@media (max-width: 767px) { .hero { padding: 28px 0; } .hero-art.ant-card { height: 260px; } }
+.home-steps { background: #fff; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); }
+.surface.ant-list { background: #fff; }
+.hero-compact { padding: 40px 0 8px; text-align: center; }
+.hero-compact h1 { font-size: clamp(24px, 4vw, 34px); }
 .hero-sub { color: var(--ink-2); font-size: 16px; }
+.assistant-teaser { text-align: center; }
 
 /* ============ کارت پست ============ */
 .post-card { border-radius: var(--radius-lg); overflow: hidden; height: 100%; }
@@ -187,7 +167,7 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 .review-card time { margin-inline-start: auto; align-self: flex-start; font-size: 12px; color: var(--ink-3); white-space: nowrap; }
 .sp-empty.ant-card { color: var(--ink-2); }
 
-.sp-book--col.ant-card { position: sticky; top: 84px; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+.sp-book--col.ant-card { position: sticky; top: 84px; }
 .sp-book__price.ant-typography { margin: 0; }
 .sp-book__price small { font-size: 14px; color: var(--ink-2); font-weight: 400; }
 .sp-book__note.ant-typography { margin: 14px 0 0; font-size: 12.5px; }
@@ -198,7 +178,6 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
     background: var(--surface); border-top: 1px solid var(--line);
-    box-shadow: 0 -8px 24px -12px rgba(0, 0, 0, .18);
   }
   .sp-book__bar-price { font-size: 18px; }
   .sp-book__meta { font-size: 12px; color: var(--ink-3); }
@@ -254,7 +233,7 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 .cta-banner .ant-card-body { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 
 /* ============ سوالات متداول / تماس / دستیار ============ */
-.faq-hero { padding: 48px 0 28px; text-align: center; background: radial-gradient(60% 100% at 50% 0, rgba(37, 99, 235, .1), transparent 70%); }
+.faq-hero { padding: 40px 0 24px; text-align: center; background: #fff; border-bottom: 1px solid var(--line); }
 .faq-hero .wrap { display: flex; flex-direction: column; align-items: center; }
 .faq-search { width: 100%; max-width: 520px; margin: 18px 0; }
 .faq-cats { max-width: 100%; overflow-x: auto; }

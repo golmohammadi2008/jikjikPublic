@@ -18,20 +18,15 @@ export const theme: ThemeConfig = {
     colorInfo: BRAND.primary,
     colorLink: BRAND.primary,
     colorTextBase: BRAND.ink,
-    colorBgLayout: BRAND.bg,
+    colorBgLayout: "#F5F5F5",
     colorBorder: "#E5E7EB",
-    borderRadius: 12,
-    borderRadiusLG: 18,
+    // پیش‌فرضِ خودِ antd (۶ پیکسل، ۱۴ پیکسل، ۳۲ پیکسل) — ظاهرِ استانداردِ
+    // طراحیِ antd، فقط با رنگِ برند و فونتِ Shabnam
     fontFamily: '"Shabnam", system-ui, sans-serif',
-    fontSize: 15,
-    lineHeight: 1.9,
-    controlHeight: 40,
-    wireframe: false,
+    lineHeight: 1.8,
   },
   components: {
-    Button: { fontWeight: 700, primaryShadow: "0 6px 18px -8px rgba(37,99,235,.55)" },
-    Card: { bodyPadding: 18 },
+    Button: { fontWeight: 500 },
     Skeleton: { gradientFromColor: "rgba(37,99,235,.06)", gradientToColor: "rgba(37,99,235,.14)" },
-    Menu: { itemBg: "transparent", horizontalItemSelectedColor: BRAND.primary },
   },
 };
