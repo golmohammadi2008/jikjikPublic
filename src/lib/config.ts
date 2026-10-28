@@ -32,6 +32,14 @@ export function panelUserUrl(username: string): string {
   return `${PANEL_URL}/user/${username}`;
 }
 
+/**
+ * خرید — صفحه‌ی تسویه‌ی پنل. اگر لاگین نباشد، پنل به ورود می‌فرستد و بعد از
+ * ورود به همین‌جا برمی‌گرداند (`?next=`).
+ */
+export function panelCheckoutUrl(postId: string): string {
+  return `${PANEL_URL}/checkout/${postId}`;
+}
+
 /** بپرس — دستیار هوشمند در پنل وب (پیش‌تر فرمِ ثبت سوال بود) */
 export function panelAskUrl(): string {
   return `${PANEL_URL}/assistant`;

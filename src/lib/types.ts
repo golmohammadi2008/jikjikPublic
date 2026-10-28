@@ -32,6 +32,18 @@ export type PublicPostMedia = {
   aspectRatio?: number;
 };
 
+/**
+ * محصولِ یک پست برای بازدیدکننده — قیمت و موجود/ناموجود. خرید فقط در پنل و اپ
+ * است (پرداختِ امانی حسابِ کاربری می‌خواهد)؛ سایت فقط نمایش و سئو.
+ */
+export type PublicProduct = {
+  /** تومان */
+  price: number;
+  kind: "physical" | "digital";
+  inStock: boolean;
+  shippingFee: number;
+};
+
 export type PublicPost = {
   id: string;
   /** عنوانِ صریحِ پست؛ خالی یعنی از کپشن حدس بزن */
@@ -55,11 +67,17 @@ export type PublicPost = {
   /** بازدید — بک‌اندهای قدیمی‌تر نمی‌فرستادند، پس اختیاری */
   viewsCount?: number;
   createdAt: string;
+  /** پستی که برای فروش گذاشته شده؛ null یعنی فروشی نیست */
+  product?: PublicProduct | null;
   author: PublicPostAuthor;
 };
 
 export type HomeData = {
   posts: PublicPost[];
+  /** تازه‌ترین محصولاتِ موجود */
+  products?: PublicPost[];
+  /** کارمزدِ فروشِ محصول (۰٫۱ = ۱۰٪) — متنِ تبلیغی از همین ساخته می‌شود */
+  shopCommissionRate?: number;
   categories: { key: string; label: string; count: number }[];
 };
 
@@ -104,6 +122,7 @@ export type SpecialistPost = {
   /** بازدید — بک‌اندهای قدیمی‌تر نمی‌فرستادند، پس اختیاری */
   viewsCount?: number;
   createdAt: string;
+  product?: PublicProduct | null;
 };
 
 /** نظر یک مراجع پس از جلسه — فقط نام و آواتارِ نظردهنده عمومی است */
@@ -130,6 +149,8 @@ export type SpecialistProfile = SpecialistListItem & {
 export type SpecialistDetail = {
   specialist: SpecialistProfile;
   posts: SpecialistPost[];
+  /** محصولاتِ فعالِ همین متخصص */
+  products?: SpecialistPost[];
   /** فقط نظرهای متن‌دار؛ سرور نظرهای بی‌متن را فیلتر می‌کند */
   reviews: SpecialistReview[];
   related: { id: string; text: string; answerCount: number }[];
@@ -148,7 +169,14 @@ export type CategoryPost = {
   commentsCount: number;
   viewsCount: number;
   createdAt: string;
+  product?: PublicProduct | null;
   author: { id: string; name: string; username: string; avatar: string };
+};
+
+/** فروشگاه: صفحه‌ای از محصولات با cursor */
+export type ProductsPage = {
+  products: PublicPost[];
+  nextCursor: string | null;
 };
 
 export type CategoryDetail = {

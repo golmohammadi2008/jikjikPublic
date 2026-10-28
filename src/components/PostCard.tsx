@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { Button, Card, Flex } from "antd";
-import { CalendarOutlined } from "@/components/icons";
+import { CalendarOutlined, ShoppingOutlined } from "@/components/icons";
 import Avatar from "@/components/Avatar";
 import PostThumb from "@/components/PostThumb";
 import VerifiedTick from "@/components/VerifiedTick";
-import { panelUserUrl } from "@/lib/config";
+import { panelCheckoutUrl, panelUserUrl } from "@/lib/config";
 import { captionPlainText } from "@/lib/caption";
-import { excerpt, formatCount, formatRating } from "@/lib/format";
+import { excerpt, formatCount, formatRating, formatToman } from "@/lib/format";
 import { buildPostSlug, buildSlug } from "@/lib/slug";
 import type { PublicPost, PublicPostAuthor } from "@/lib/types";
 import { CardMeta, Paragraph, Text } from "@/components/ui";
 
 /** هر پستی که کارت لازم دارد؛ بدون `author` یعنی داخل صفحه‌ی خودِ نویسنده است. */
-type CardPost = Pick<PublicPost, "id" | "title" | "caption" | "imageUrl" | "isVideo" | "likesCount" | "commentsCount" | "viewsCount"> & {
+type CardPost = Pick<PublicPost, "id" | "title" | "caption" | "imageUrl" | "isVideo" | "likesCount" | "commentsCount" | "viewsCount" | "product"> & {
   author?: PublicPostAuthor;
 };
 
@@ -39,6 +39,12 @@ export default function PostCard({ post: p }: { post: CardPost }) {
             alt={excerpt(plain, 100) || "پست منتشرشده"}
             fallbackText={plain.slice(0, 24)}
           />
+          {/* محصول: قیمت روی خودِ تصویر — بازدیدکننده بدونِ باز کردن می‌فهمد فروشی است */}
+          {p.product && (
+            <span className={`price-chip${p.product.inStock ? "" : " is-out"}`}>
+              <ShoppingOutlined /> {p.product.inStock ? formatToman(p.product.price) : "ناموجود"}
+            </span>
+          )}
         </Link>
       }
     >
@@ -66,7 +72,11 @@ export default function PostCard({ post: p }: { post: CardPost }) {
             {formatCount(p.likesCount)} پسند · {formatCount(p.commentsCount)} دیدگاه
             {(p.viewsCount || 0) > 0 ? ` · ${formatCount(p.viewsCount!)} بازدید` : ""}
           </Text>
-          {author && (
+          {p.product?.inStock ? (
+            <Button type="primary" size="small" icon={<ShoppingOutlined />} href={panelCheckoutUrl(p.id)}>
+              خرید
+            </Button>
+          ) : author && (
             <Button type="primary" size="small" icon={<CalendarOutlined />} href={panelUserUrl(author.username)}>
               رزرو جلسه
             </Button>

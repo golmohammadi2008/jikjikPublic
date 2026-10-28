@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button, Card, Flex } from "antd";
-import { CalendarOutlined, MessageOutlined } from "@/components/icons";
+import { CalendarOutlined, MessageOutlined, SafetyCertificateOutlined, ShoppingOutlined } from "@/components/icons";
 import PageCrumbs from "@/components/PageCrumbs";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getPost } from "@/lib/api";
 import { buildPostSlug, buildSlug, extractObjectId } from "@/lib/slug";
-import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelUserUrl } from "@/lib/config";
-import { deriveTitle, excerpt, formatCount, formatJalali } from "@/lib/format";
+import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl, panelCheckoutUrl, panelUserUrl } from "@/lib/config";
+import { deriveTitle, excerpt, formatCount, formatJalali, formatToman } from "@/lib/format";
 import { captionPlainText } from "@/lib/caption";
 import type { PublicPostMedia } from "@/lib/types";
 import Avatar from "@/components/Avatar";
@@ -219,9 +219,34 @@ export default async function PostPage({ params }: Props) {
       : { mainEntityOfPage: pageUrl }),
   };
 
+  /**
+   * پستِ فروشی: داده‌ی ساختاریافته‌ی Product با Offer تا گوگل قیمت و موجود
+   * بودن را کنارِ نتیجه نشان دهد. فروشنده خودِ متخصص است، نه وینو.
+   */
+  const product = post.product;
+  const productNode = product
+    ? {
+        "@type": "Product",
+        "@id": `${pageUrl}#product`,
+        name: title,
+        description: excerpt(plain, 300) || title,
+        image: post.imageUrl ? [post.imageUrl] : undefined,
+        offers: {
+          "@type": "Offer",
+          url: pageUrl,
+          // ریالِ ایران؛ قیمت‌ها در وینو تومان‌اند
+          priceCurrency: "IRR",
+          price: product.price * 10,
+          availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          seller: { "@type": "Person", name: post.author.name, url: `${SITE_URL}/specialists/${authorSlug}` },
+        },
+      }
+    : null;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
+      ...(productNode ? [productNode] : []),
       ...(videoNode
         ? [
             videoNode,
@@ -300,6 +325,30 @@ export default async function PostPage({ params }: Props) {
               </>
             )}
           </div>
+        )}
+
+        {product && (
+          <section className="product-box" aria-label="خرید">
+            <Flex justify="space-between" align="center" gap={12} wrap>
+              <div>
+                <div className="pb-price">{product.inStock ? formatToman(product.price) : "ناموجود"}</div>
+                <div className="pb-meta">
+                  {product.kind === "digital"
+                    ? "محصول دیجیتال — تحویل در وینو پس از پرداخت"
+                    : product.shippingFee ? `هزینه‌ی ارسال: ${formatToman(product.shippingFee)}` : "ارسال رایگان"}
+                </div>
+              </div>
+              {product.inStock && (
+                <Button type="primary" size="large" icon={<ShoppingOutlined />} href={panelCheckoutUrl(post.id)}>
+                  خرید امن
+                </Button>
+              )}
+            </Flex>
+            <div className="pb-trust">
+              <span><SafetyCertificateOutlined /> <b>پرداخت امانی:</b> مبلغ تا وقتی تحویل بگیری نزد وینو می‌ماند و به فروشنده نمی‌رسد.</span>
+              <span>اگر فروشنده ارسال نکند، پول خودکار برمی‌گردد؛ برای مرجوعی هم در خودِ سفارش با فروشنده گفتگو می‌کنی و پشتیبانی پشتِ ماجراست.</span>
+            </div>
+          </section>
         )}
 
         <div className="p-text">

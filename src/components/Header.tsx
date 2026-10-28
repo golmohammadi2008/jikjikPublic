@@ -14,6 +14,7 @@ const NAV = [
   { key: "/", label: <Link href="/">صفحه اصلی</Link> },
   { key: "/assistant", label: <Link href="/assistant">دستیار هوشمند</Link> },
   { key: "/specialists", label: <Link href="/specialists">متخصصان</Link> },
+  { key: "/shop", label: <Link href="/shop">فروشگاه</Link> },
   { key: "/how-it-works", label: <Link href="/how-it-works">چطور کار می‌کند</Link> },
   { key: "sessions", label: <a href={`${PANEL_URL}/sessions`}>جلسات من</a> },
 ];

@@ -6,6 +6,7 @@ import {
   CalendarOutlined,
   RobotOutlined,
   SafetyCertificateOutlined,
+  ShoppingOutlined,
   TeamOutlined,
 } from "@/components/icons";
 import { getHome, getSpecialists } from "@/lib/api";
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     title: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
-    description: "پاسخ فوری هوش مصنوعی + پاسخ متخصص تاییدشده + رزرو جلسه آنلاین.",
+    description: "پاسخ فوری هوش مصنوعی، رزرو جلسه با متخصص تاییدشده و خرید امن محصولاتشان — همه در وینو.",
     url: "/",
     images: [OG_IMAGE],
   },
@@ -37,6 +38,8 @@ export default async function HomePage() {
   const specialists = spec?.specialists ?? [];
   const topSpecialists = [...specialists].sort((x, y) => (y.ratingAvg || 0) - (x.ratingAvg || 0)).slice(0, 5);
   const posts = data?.posts ?? [];
+  const products = data?.products ?? [];
+  const commission = Math.round((data?.shopCommissionRate ?? 0.1) * 100);
   const categories = data?.categories ?? [];
 
   const jsonLd = {
@@ -65,8 +68,8 @@ export default async function HomePage() {
   const services = [
     { icon: <RobotOutlined />, title: "پرسش از دستیار هوشمند", desc: "پاسخ اولیه، همان لحظه", href: "/assistant" },
     { icon: <CalendarOutlined />, title: "رزرو جلسه آنلاین", desc: "با متخصص تاییدشده", href: "/specialists" },
-    { icon: <SafetyCertificateOutlined />, title: "متخصص‌های تاییدشده", desc: "احراز هویت و مدارک", href: "/specialists" },
-    { icon: <TeamOutlined />, title: "متخصص شو", desc: "پاسخ بده و درآمد کسب کن", href: "/specialist-signup" },
+    { icon: <ShoppingOutlined />, title: "فروشگاه متخصص‌ها", desc: "خرید امن با پرداخت امانی", href: "/shop" },
+    { icon: <TeamOutlined />, title: "متخصص شو", desc: "خدمت و محصولت را بفروش", href: "/specialist-signup" },
   ];
 
   return (
@@ -82,7 +85,7 @@ export default async function HomePage() {
         <HeroStage />
         <div className="wrap hero-inner">
           <h1>هر سوال، متخصص خودش را دارد</h1>
-          <p>سوالت را بپرس، همان لحظه پاسخ هوش مصنوعی بگیر و اگر لازم شد با متخصص تاییدشده جلسه‌ی آنلاین رزرو کن.</p>
+          <p>سوالت را بپرس و همان لحظه پاسخ بگیر، با متخصص تاییدشده جلسه‌ی آنلاین رزرو کن، و محصولاتش را با پرداخت امن بخر.</p>
           <HeroAsk categories={categories.map((c) => ({ key: c.key, label: c.label }))} />
           <div className="hero-stats">
             <div><b>{formatCount(specialists.length)}+</b><span>متخصص تاییدشده</span></div>
@@ -160,12 +163,30 @@ export default async function HomePage() {
         </section>
       )}
 
+      {products.length > 0 && (
+        <section className="section" id="shop">
+          <div className="wrap">
+            <div className="section-head">
+              <Title level={2}>تازه‌های فروشگاه</Title>
+              <Link className="more" href="/shop">همه‌ی محصولات <ArrowLeftOutlined /></Link>
+            </div>
+            <Row gutter={[16, 16]}>
+              {products.map((p) => (
+                <Col key={p.id} xs={24} sm={12} lg={6}>
+                  <PostCard post={p} />
+                </Col>
+              ))}
+            </Row>
+          </div>
+        </section>
+      )}
+
       <section className="section">
         <div className="wrap">
           <div className="promo">
             <div>
               <Title level={3}>متخصص هستی؟ با وینو درآمد کسب کن</Title>
-              <Paragraph>مدارکت را ثبت کن، پس از تایید به سوال‌ها پاسخ بده و جلسه‌ی آنلاین رزرو بگیر. عضویت رایگان است.</Paragraph>
+              <Paragraph>مدارکت را ثبت کن و پس از تایید، جلسه‌ی آنلاین رزرو بگیر، دوره برگزار کن و محصولاتت را بفروش. عضویت رایگان است و برای فروش فقط {formatCount(commission)}٪ کارمزد پرداخت می‌کنی.</Paragraph>
             </div>
             <Button size="large" href="/specialist-signup">شروع ثبت‌نام متخصص</Button>
           </div>

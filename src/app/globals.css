@@ -308,3 +308,45 @@ html[dir="rtl"] .play-badge { translate: 50% -50%; }
 @keyframes err-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 @keyframes err-spark { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.15); } }
 .err-page .ant-result-icon { margin-bottom: 8px; }
+
+/* ─── فروشگاه ─────────────────────────────────────────────── */
+.price-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.price-chip.is-out { background: #6b7280; }
+
+.product-box {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  display: grid;
+  gap: 12px;
+}
+.product-box .pb-price { font-size: 24px; font-weight: 800; color: var(--ink); }
+.product-box .pb-meta { color: #6b7280; font-size: 13.5px; }
+.product-box .pb-trust { display: grid; gap: 8px; padding: 12px; border-radius: var(--radius); background: var(--brand-tint); font-size: 13px; line-height: 1.9; color: var(--ink); }
+.product-box .pb-trust b { color: var(--brand-deep); }
+
+.shop-hero { padding: 36px 0 12px; }
+.shop-hero h1 { margin: 0 0 8px; }
+.shop-hero p { margin: 0; color: #6b7280; line-height: 1.9; max-width: 640px; }
+.shop-cats { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 6px; }
+.shop-cats a { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 13px; }
+.shop-cats a.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+.shop-trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 22px 0; }
+.shop-trust > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 14px; font-size: 13px; line-height: 1.9; }
+.shop-trust b { display: block; font-size: 14px; margin-bottom: 4px; }
+.shop-more { display: flex; justify-content: center; margin: 24px 0; }

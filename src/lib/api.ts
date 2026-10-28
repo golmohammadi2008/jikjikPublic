@@ -1,4 +1,4 @@
-import { CategoryDetail, HomeData, PostDetail, PostsArchive, SpecialistDetail, SpecialistsList } from "./types";
+import { CategoryDetail, HomeData, PostDetail, PostsArchive, ProductsPage, SpecialistDetail, SpecialistsList } from "./types";
 
 // این‌جا Server Component است — مستقیم سمت سرور به بک‌اند وصل می‌شود (نه از
 // طریق rewrite که برای فراخوانی‌های کلاینتی/مرورگر است). روی خودِ سرور،
@@ -71,6 +71,16 @@ export const getSpecialist = (id: string) => get<SpecialistDetail>(`/specialists
 export const getCategory = (key: string) => get<CategoryDetail>(`/category/${key}`, 300);
 
 // آرشیو کامل سوال‌ها — بخش اصلی سئو؛ صفحه‌بندی‌شده + فیلتر دسته + مرتب‌سازی
+
+// فروشگاه — محصولاتِ فعال، جدیدترین اول. همان برچسبِ خانه: تغییرِ قیمت یا
+// موجودی (هوکِ UserPost) هر دو را باطل می‌کند
+export const getProducts = (opts: { category?: string; before?: string } = {}) => {
+  const qs = new URLSearchParams();
+  if (opts.category) qs.set("category", opts.category);
+  if (opts.before) qs.set("before", opts.before);
+  const q = qs.toString();
+  return get<ProductsPage>(`/products${q ? `?${q}` : ""}`, 120, [CACHE_TAGS.home]);
+};
 
 // آرشیو کامل پست‌ها — فقط سایت‌مپ از آن استفاده می‌کند
 export const getPostsArchive = (page = 1) =>

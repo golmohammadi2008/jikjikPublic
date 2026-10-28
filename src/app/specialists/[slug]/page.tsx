@@ -61,7 +61,7 @@ export default async function SpecialistPage({ params }: Props) {
   const data = await loadSpecialist(slug);
   if (!data) notFound();
 
-  const { specialist, posts, reviews = [] } = data;
+  const { specialist, posts, reviews = [], products = [] } = data;
   const canonicalSlug = buildSlug(specialist.name, specialist.id);
 
   // اسلاگِ غیرکانونیکال را ۳۰۸ می‌کنیم به‌جای سرو با تگ canonical.
@@ -317,6 +317,19 @@ export default async function SpecialistPage({ params }: Props) {
                     dateLabel: formatJalali(r.createdAt),
                   }))}
                 />
+              </section>
+            )}
+
+            {products.length > 0 && (
+              <section className="sp-section" id="products">
+                <Title level={2}>محصولات {specialist.name}</Title>
+                <Row gutter={[16, 16]}>
+                  {products.map((p) => (
+                    <Col key={p.id} xs={24} sm={12}>
+                      <PostCard post={p} />
+                    </Col>
+                  ))}
+                </Row>
               </section>
             )}
 

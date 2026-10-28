@@ -28,6 +28,8 @@ export {
   SafetyCertificateOutlined,
   SafetyOutlined,
   SearchOutlined,
+  ShoppingOutlined,
+  ShopOutlined,
   SendOutlined,
   StarFilled,
   TeamOutlined,
