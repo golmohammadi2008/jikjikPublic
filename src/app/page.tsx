@@ -5,7 +5,6 @@ import {
   ArrowLeftOutlined,
   CalendarOutlined,
   RobotOutlined,
-  SafetyCertificateOutlined,
   ShoppingOutlined,
   TeamOutlined,
 } from "@/components/icons";
@@ -23,11 +22,11 @@ import VerifiedTick from "@/components/VerifiedTick";
 import { buildSlug } from "@/lib/slug";
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
+  title: `${SITE_NAME} — متخصص‌های تاییدشده، جلسه‌ی آنلاین و فروشگاه امن`,
   alternates: { canonical: "/" },
   openGraph: {
-    title: `${SITE_NAME} — هر سوال، متخصص خودش را دارد`,
-    description: "پاسخ فوری هوش مصنوعی، رزرو جلسه با متخصص تاییدشده و خرید امن محصولاتشان — همه در وینو.",
+    title: `${SITE_NAME} — متخصص‌های تاییدشده، جلسه‌ی آنلاین و فروشگاه امن`,
+    description: "با متخصص‌های تاییدشده گفتگو کن، جلسه و تماس تصویری بگیر، در دوره‌هایشان شرکت کن و محصولاتشان را با پرداخت امانی بخر.",
     url: "/",
     images: [OG_IMAGE],
   },
@@ -66,10 +65,28 @@ export default async function HomePage() {
   };
 
   const services = [
-    { icon: <RobotOutlined />, title: "پرسش از دستیار هوشمند", desc: "پاسخ اولیه، همان لحظه", href: "/assistant" },
-    { icon: <CalendarOutlined />, title: "رزرو جلسه آنلاین", desc: "با متخصص تاییدشده", href: "/specialists" },
+    { icon: <CalendarOutlined />, title: "جلسه با متخصص", desc: "پیام، تماس تصویری و رزرو", href: "/specialists" },
     { icon: <ShoppingOutlined />, title: "فروشگاه متخصص‌ها", desc: "خرید امن با پرداخت امانی", href: "/shop" },
-    { icon: <TeamOutlined />, title: "متخصص شو", desc: "خدمت و محصولت را بفروش", href: "/specialist-signup" },
+    { icon: <RobotOutlined />, title: "دستیار هوشمند", desc: "پاسخ اولیه، همان لحظه", href: "/assistant" },
+    { icon: <TeamOutlined />, title: "متخصص شو", desc: "جلسه، دوره و محصولت را بفروش", href: "/specialist-signup" },
+  ];
+
+  // چرا با خیال راحت: همان سازوکارهایی که واقعاً در سامانه اجرا می‌شوند، نه شعار
+  const trust = [
+    { title: "متخصص تاییدشده", body: "هویت، مدرک شغلی و ویدیوی احراز هر متخصص پیش از فعال شدن بررسی می‌شود." },
+    { title: "پرداخت امانی", body: "پولِ خرید تا تحویل نزد وینو می‌ماند؛ اگر فروشنده نفرستد، خودکار برمی‌گردد." },
+    { title: "پول جلسه محفوظ", body: "مبلغ رزرو تا تایید متخصص فقط فریز می‌شود و با لغو او کامل برمی‌گردد." },
+    { title: "همه‌چیز داخل وینو", body: "گفتگو، تماس و پرداخت در خود سامانه است؛ برای هر اختلاف پشتیبانی داوری می‌کند." },
+  ];
+
+  // یک اپ برای کلِ رابطه با متخصص — از اولین سوال تا خرید و جامعه‌ی دور او
+  const features = [
+    { title: "پیام پیش از رزرو", body: "قبل از پرداخت با متخصص حرف بزن و مطمئن شو همان کسی است که لازم داری." },
+    { title: "تماس تصویری", body: "جلسه را داخل خود اپ برگزار کن؛ برای آشنایی هم سهمیه‌ی روزانه‌ی تماس رایگان هست." },
+    { title: "دوره‌ها و کلاس‌ها", body: "دوره‌های چندجلسه‌ای و کلاس‌های گروهیِ آنلاین با یک بار ثبت‌نام." },
+    { title: "گروه‌ها و گفتگو", body: "گروه بساز، با لینک دعوت عضو بگیر، پیام سنجاق کن و پست‌ها را با هم به اشتراک بگذارید." },
+    { title: "پست، استوری و اکسپلور", body: "محتوای آموزشی متخصص‌ها را دنبال کن و از ویدیوهای کوتاه چیز یاد بگیر." },
+    { title: "کیف پول", body: "یک بار شارژ کن و برای جلسه، دوره، خرید و دستیار هوشمند از همان پرداخت کن." },
   ];
 
   return (
@@ -84,8 +101,8 @@ export default async function HomePage() {
       <section className="hero">
         <HeroStage />
         <div className="wrap hero-inner">
-          <h1>هر سوال، متخصص خودش را دارد</h1>
-          <p>سوالت را بپرس و همان لحظه پاسخ بگیر، با متخصص تاییدشده جلسه‌ی آنلاین رزرو کن، و محصولاتش را با پرداخت امن بخر.</p>
+          <h1>متخصصِ درست، جلسه‌ی آنلاین و خرید امن — یک‌جا</h1>
+          <p>با متخصص‌های تاییدشده پیام بده و تماس تصویری بگیر، جلسه رزرو کن، در دوره‌هایشان شرکت کن و محصولاتشان را با پرداخت امانی بخر. برای پاسخ فوری هم دستیار هوشمند همیشه در دسترس است.</p>
           <HeroAsk categories={categories.map((c) => ({ key: c.key, label: c.label }))} />
           <div className="hero-stats">
             <div><b>{formatCount(specialists.length)}+</b><span>متخصص تاییدشده</span></div>
@@ -112,6 +129,19 @@ export default async function HomePage() {
         </Row>
       </div>
 
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <Title level={2}>چرا با خیال راحت؟</Title>
+          </div>
+          <div className="info-grid">
+            {trust.map((t) => (
+              <div key={t.title}><b>{t.title}</b>{t.body}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {categories.length > 0 && (
         <section className="section" id="categories">
           <div className="wrap">
@@ -124,7 +154,7 @@ export default async function HomePage() {
                   <Link href={`/category/${c.key}`}>
                     <Card className="tile" hoverable size="small">
                       <b>{c.label}</b>
-                      <small>{formatCount(c.count)} سوال</small>
+                      <small>{formatCount(c.count)} پست</small>
                     </Card>
                   </Link>
                 </Col>
@@ -209,6 +239,20 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <Title level={2}>یک اپ، همه‌ی کارهای تو با متخصص‌ها</Title>
+            <Link className="more" href="/how-it-works">راهنمای کامل <ArrowLeftOutlined /></Link>
+          </div>
+          <div className="info-grid">
+            {features.map((f) => (
+              <div key={f.title}><b>{f.title}</b>{f.body}</div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="section">
         <div className="wrap">

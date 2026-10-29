@@ -194,7 +194,7 @@ export default function AppDownload() {
         <div className="dl-hero__copy">
           <Typography.Title level={2}>وینو را روی گوشی‌ات داشته باش</Typography.Title>
           <Typography.Paragraph type="secondary">
-            پاسخ متخصص و یادآوری جلسه‌ها با اعلان به دستت می‌رسد.
+            پیام متخصص، یادآوری جلسه و وضعیت سفارش‌هایت با اعلان به دستت می‌رسد؛ تماس تصویری، گروه‌ها و فروشگاه هم همین‌جاست.
           </Typography.Paragraph>
 
           <div className="dl-hero__cta">

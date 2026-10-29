@@ -1,6 +1,6 @@
 import { Button, Card, Descriptions } from "antd";
 import { CalendarOutlined, MessageOutlined, SafetyOutlined } from "@/components/icons";
-import { panelAskUrl, panelUserUrl } from "@/lib/config";
+import { panelUserUrl } from "@/lib/config";
 import { formatDuration, formatToman, formatWhenFuture } from "@/lib/format";
 import type { SpecialistProfile } from "@/lib/types";
 import { Paragraph, Title } from "@/components/ui";
@@ -70,8 +70,9 @@ export default function BookingCard({
       <Button type="primary" size="large" block icon={<CalendarOutlined />} href={bookUrl}>
         رزرو جلسه
       </Button>
-      <Button size="large" block icon={<MessageOutlined />} href={panelAskUrl()} style={{ marginTop: 8 }}>
-        اول یک سوال بپرس
+      {/* پیام پیش از رزرو به خودِ متخصص — قبلاً به دستیارِ هوش مصنوعی می‌رفت */}
+      <Button size="large" block icon={<MessageOutlined />} href={bookUrl} style={{ marginTop: 8 }}>
+        اول پیام بده
       </Button>
 
       <Paragraph type="secondary" className="sp-book__note">

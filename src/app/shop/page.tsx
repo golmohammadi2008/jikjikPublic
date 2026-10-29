@@ -62,7 +62,7 @@ export default async function ShopPage({ searchParams }: Props) {
         </p>
       </section>
 
-      <div className="shop-trust">
+      <div className="info-grid">
         <div><b>پرداخت امانی</b>مبلغ تا وقتی کالا را تحویل بگیری نزد وینو می‌ماند و به فروشنده نمی‌رسد.</div>
         <div><b>فروشنده‌ی تاییدشده</b>فقط متخصص‌هایی که هویت و مدارکشان بررسی شده می‌توانند بفروشند.</div>
         <div><b>مرجوعی و پشتیبانی</b>اگر مشکلی بود، مرجوعی را با فروشنده هماهنگ کن یا پشتیبانی داوری می‌کند.</div>

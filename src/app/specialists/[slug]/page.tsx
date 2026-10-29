@@ -44,12 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${specialist.name} | ${specialist.specialty || specialist.categoryLabel || "متخصص"}`,
-    description: `پروفایل ${specialist.name}${specialist.specialty ? ` — ${specialist.specialty}` : ""} در ${SITE_NAME}. سوال بپرس یا جلسه آنلاین رزرو کن.`,
+    description: `پروفایل ${specialist.name}${specialist.specialty ? ` — ${specialist.specialty}` : ""} در ${SITE_NAME}. پیام بده، جلسه‌ی آنلاین رزرو کن یا از محصولاتش بخر.`,
     alternates: { canonical: `/specialists/${canonicalSlug}` },
     openGraph: {
       type: "profile",
       title: `${specialist.name} — ${specialist.specialty || specialist.categoryLabel || "متخصص"}`,
-      description: excerpt(specialist.bio || `سوال بپرس یا جلسه آنلاین رزرو کن.`, 155),
+      description: excerpt(specialist.bio || `پیام بده، جلسه‌ی آنلاین رزرو کن یا از محصولاتش بخر.`, 155),
       url: `/specialists/${canonicalSlug}`,
       images: specialist.avatar ? [{ url: specialist.avatar }] : [OG_IMAGE],
     },

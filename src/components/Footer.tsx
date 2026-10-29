@@ -15,7 +15,7 @@ export default function Footer() {
               {SITE_NAME}
             </Link>
             <Paragraph type="secondary" style={{ marginTop: 10, maxWidth: 320 }}>
-              پلتفرم پرسش از متخصص و رزرو جلسه آنلاین.
+              متخصص‌های تاییدشده، جلسه‌ی آنلاین، دوره‌ها و فروشگاه امن — یک‌جا.
             </Paragraph>
             <TypoLink href="tel:+982191550953" className="footer-phone">
               <PhoneOutlined /> پشتیبانی: ۰۲۱۹۱۵۵۰۹۵۳
@@ -25,6 +25,7 @@ export default function Footer() {
             <nav className="footer-links" aria-label="لینک‌های فوتر">
               <Link href="/how-it-works">چطور کار می‌کند</Link>
               <Link href="/specialists">متخصص‌ها</Link>
+              <Link href="/shop">فروشگاه</Link>
               <Link href="/faq">سوالات متداول</Link>
               <Link href="/contact">ارتباط با ما</Link>
               <Link href="/terms">شرایط و قوانین</Link>
