@@ -13,7 +13,6 @@ import { OG_IMAGE, SITE_NAME, SITE_URL, panelAskUrl } from "@/lib/config";
 import AppDownload from "@/components/AppDownload";
 import { formatCount } from "@/lib/format";
 import PostCard from "@/components/PostCard";
-import HeroStage from "@/components/three/HeroStage";
 import { Paragraph, Title } from "@/components/ui";
 import HeroAsk from "@/components/HeroAsk";
 import Avatar from "@/components/Avatar";
@@ -36,6 +35,8 @@ export default async function HomePage() {
   const [data, spec] = await Promise.all([getHome(), getSpecialists()]);
   const specialists = spec?.specialists ?? [];
   const topSpecialists = [...specialists].sort((x, y) => (y.ratingAvg || 0) - (x.ratingAvg || 0)).slice(0, 5);
+  // در هیرو: اول آن‌ها که عکس دارند، تا ستون با حروفِ اول پر نشود
+  const heroPeople = [...topSpecialists].sort((x, y) => Number(!!y.avatar) - Number(!!x.avatar)).slice(0, 4);
   const posts = data?.posts ?? [];
   const products = data?.products ?? [];
   const commission = Math.round((data?.shopCommissionRate ?? 0.1) * 100);
@@ -96,37 +97,73 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* هیرو (الهام از دکترتو/پذیرش۲۴): زمینه‌ی آبیِ تمام‌عرض، عنوانِ وسط، یک
-          جعبه‌ی جست‌وجوی بزرگ و عددهای واقعی. صحنه‌ی سه‌بعدی فقط پس‌زمینه است. */}
+      {/* هیرو: متن و جست‌وجو در یک ستون، و در ستونِ دیگر آدم‌های واقعیِ وینو و
+          نمونه‌ی رسیدِ پرداختِ امانی — به‌جای تصویرِ تزئینی، خودِ محصول را نشان می‌دهد. */}
       <section className="hero">
-        <HeroStage />
-        <div className="wrap hero-inner">
-          <h1>متخصصِ درست، جلسه‌ی آنلاین و خرید امن — یک‌جا</h1>
-          <p>با متخصص‌های تاییدشده پیام بده و تماس تصویری بگیر، جلسه رزرو کن، در دوره‌هایشان شرکت کن و محصولاتشان را با پرداخت امانی بخر. برای پاسخ فوری هم دستیار هوشمند همیشه در دسترس است.</p>
-          <HeroAsk categories={categories.map((c) => ({ key: c.key, label: c.label }))} />
-          <div className="hero-stats">
-            <div><b>{formatCount(specialists.length)}+</b><span>متخصص تاییدشده</span></div>
-            <div><b>{formatCount(categories.length)}</b><span>حوزه‌ی تخصصی</span></div>
-            <div><b>۲۴/۷</b><span>پاسخ هوش مصنوعی</span></div>
+        <div className="wrap hero-grid">
+          <div className="hero-copy">
+            <span className="hero-kicker">
+              <i aria-hidden="true" />
+              {formatCount(specialists.length)} متخصص تاییدشده در {formatCount(categories.length)} حوزه
+            </span>
+            <h1>متخصصِ درست را پیدا کن؛ <em>جلسه بگیر، یاد بگیر، امن بخر.</em></h1>
+            <p>پیش از پرداخت با متخصص پیام بده، جلسه و تماس تصویری بگیر، در دوره‌هایش شرکت کن و محصولاتش را با پرداخت امانی بخر.</p>
+            <HeroAsk categories={categories.map((c) => ({ key: c.key, label: c.label }))} />
+            {categories.length > 0 && (
+              <nav className="hero-cats" aria-label="حوزه‌ها">
+                {categories.slice(0, 6).map((c) => (
+                  <Link key={c.key} href={`/category/${c.key}`}>{c.label}</Link>
+                ))}
+              </nav>
+            )}
           </div>
+
+          {heroPeople.length > 0 && (
+            <div className="hero-side" aria-label="متخصص‌های وینو">
+              <div className="hero-people">
+                <div className="hero-people__head">
+                  <b>متخصص‌های وینو</b>
+                  <Link href="/specialists">همه <ArrowLeftOutlined /></Link>
+                </div>
+                {heroPeople.map((s) => (
+                  <Link key={s.id} href={`/specialists/${buildSlug(s.name, s.id)}`} className="hero-person">
+                    <Avatar name={s.name} src={s.avatar} size={44} />
+                    <span className="hero-person__who">
+                      <b>{s.name}<VerifiedTick /></b>
+                      <small>{s.specialty || s.categoryLabel || ""}</small>
+                    </span>
+                    {s.ratingAvg > 0 ? (
+                      <span className="hero-person__rate">★ {s.ratingAvg.toLocaleString("fa-IR", { maximumFractionDigits: 1 })}</span>
+                    ) : (
+                      <span className="hero-person__rate is-new">تازه</span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+              <div className="hero-receipt" aria-hidden="true">
+                <span className="hero-receipt__dot" />
+                <div>
+                  <b>پرداخت امانی</b>
+                  <small>پولت تا تحویل نزد وینو می‌ماند.</small>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* کارت‌های سرویس روی لبه‌ی هیرو می‌نشینند */}
-      <div className="wrap services">
-        <Row gutter={[16, 16]}>
+      <div className="wrap">
+        <nav className="services" aria-label="خدمات">
           {services.map((x) => (
-            <Col key={x.title} xs={12} md={6}>
-              <Link href={x.href}>
-                <Card className="service-card" hoverable>
-                  <span className="service-icon">{x.icon}</span>
-                  <b>{x.title}</b>
-                  <small>{x.desc}</small>
-                </Card>
-              </Link>
-            </Col>
+            <Link key={x.title} href={x.href} className="service">
+              <span className="service-icon">{x.icon}</span>
+              <span>
+                <b>{x.title}</b>
+                <small>{x.desc}</small>
+              </span>
+            </Link>
           ))}
-        </Row>
+        </nav>
       </div>
 
       <section className="section">
